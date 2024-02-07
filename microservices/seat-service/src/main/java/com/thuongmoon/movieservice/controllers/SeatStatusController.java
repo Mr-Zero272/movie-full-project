@@ -1,0 +1,38 @@
+package com.thuongmoon.movieservice.controllers;
+
+import com.thuongmoon.movieservice.dao.SeatDao;
+import com.thuongmoon.movieservice.models.Seat;
+import com.thuongmoon.movieservice.models.SeatStatus;
+import com.thuongmoon.movieservice.request.AddListSeatStatus;
+import com.thuongmoon.movieservice.request.GenerateSeatStatusRequest;
+import com.thuongmoon.movieservice.response.ResponseMessage;
+import com.thuongmoon.movieservice.services.SeatStatusService;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/auditorium/seat-status")
+public class SeatStatusController {
+    @Autowired
+    private SeatStatusService seatStatusService;
+
+    @GetMapping("/{screeningId}")
+    public List<SeatStatus> getListStatusByScreeningId(@PathVariable("screeningId") String screeningId) {
+        return seatStatusService.getListSeatStatusByScreeningId(screeningId);
+    }
+
+
+    @PostMapping
+    public ResponseEntity<ResponseMessage> creatListSeatStatus(@RequestBody AddListSeatStatus request) {
+        return null;
+    }
+
+    @PostMapping("/generate")
+    public ResponseEntity<ResponseMessage> generateSeatStatusByScreeningId(@RequestBody GenerateSeatStatusRequest request) {
+        return seatStatusService.generateSSByScreeningId(request);
+    }
+}
