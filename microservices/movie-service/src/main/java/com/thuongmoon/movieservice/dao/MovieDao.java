@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -86,4 +87,8 @@ public interface MovieDao extends MongoRepository<Movie, String> {
     Integer countMoviePaginationWithoutManufacturersAndGenres(
             @Param("q") String q,
             @Param("type") String type);
+
+    @Aggregation({"{$lookup: {from : \"requirement\", localField: \"requirement\", foreignField: \"_id\", as: \"req\"}}",
+            "{$match: { \"req.0.totalWeekScheduling\": { $gt: 0 }}}"})
+    List<Movie> getMovieToSchedule();
 }

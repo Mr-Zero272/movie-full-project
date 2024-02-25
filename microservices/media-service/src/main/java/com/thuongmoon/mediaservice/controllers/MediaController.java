@@ -28,6 +28,7 @@ public class MediaController {
     public @ResponseBody ResponseEntity<Resource> downloadImageFromFileSystem(@PathVariable("imageName") String imageName, @RequestParam(required = false, defaultValue = "") String type) throws IOException {
         //String imagePath = "D:\\HockyI_nam4\\Nien_luan_co_so\\csdl_booking_movie\\images\\movies\\" + imageName;
         //byte[] image = Files.readAllBytes(new File(imagePath).toPath());
+        System.out.println(imageName);
         Path imagePath;
         if (type.equals("avatar")) {
             imagePath = Paths.get("uploads/images/avatars");

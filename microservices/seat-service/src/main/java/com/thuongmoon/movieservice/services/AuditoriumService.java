@@ -33,16 +33,16 @@ public class AuditoriumService {
         Auditorium newAuditorium = new Auditorium(null, request.getName(), LocalDateTime.now());
         Auditorium savedAd = auditoriumDao.save(newAuditorium);
         newAuditorium.setName(request.getName());
-        List<String> nameRows = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I");
+        List<String> nameRows = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M");
         List<Seat> seats = new ArrayList<>();
-        int rowSeat = 0;
-        int totalLoop = request.getTotalSeats() / request.getTotalSeatInARow();
-        for (int i = 0; i < totalLoop; i++) {
-            for (int j = 0; j < request.getTotalSeatInARow(); j++) {
-                Seat seat = new Seat(null, nameRows.get(rowSeat), (j+1), savedAd);
+        for (int i = 0; i < 12; i++) {
+            int numberSeatInRow = 10;
+            if (nameRows.get(i).equals("A")) numberSeatInRow = 6;
+            if (nameRows.get(i).equals("B")) numberSeatInRow = 8;
+            for (int j = 0; j < numberSeatInRow; j++) {
+                Seat seat = new Seat(null, nameRows.get(i), (j+1), savedAd);
                 seats.add(seat);
             }
-            rowSeat++;
         }
         seatDao.saveAll(seats);
 
@@ -54,10 +54,8 @@ public class AuditoriumService {
         List<Auditorium> auditoriums = auditoriumDao.findAll();
         List<String> admIds = new ArrayList<>();
         for(Auditorium auditorium: auditoriums) {
-            if (auditorium.getLastUpdated().isBefore(LocalDateTime.now())) {
                 auditorium.setLastUpdated(startDate.plusDays(7L));
                 admIds.add(auditorium.getId());
-            }
 
             if(admIds.size() == numAuditoriums) break;
         }

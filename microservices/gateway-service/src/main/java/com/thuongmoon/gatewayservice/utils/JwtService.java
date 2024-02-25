@@ -6,6 +6,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class JwtService {
 	
 	public boolean isTokenValid(String token) {
 		try {
-			Jwts.parser().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
+			Jwts.parser().verifyWith(getSignInKey()).build().parseSignedClaims(token);
 		} catch (Exception e) {
 			return false;
 		}
@@ -47,13 +48,13 @@ public class JwtService {
 	public Claims extractAllClaims(String token) {
 		return Jwts
 				.parser()
-				.setSigningKey(getSignInKey())
+				.verifyWith(getSignInKey())
 				.build()
-				.parseClaimsJws(token)
-				.getBody();
+				.parseSignedClaims(token)
+				.getPayload();
 	}
 
-	private Key getSignInKey() {
+	private SecretKey getSignInKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
 		return Keys.hmacShaKeyFor(keyBytes);
 	}

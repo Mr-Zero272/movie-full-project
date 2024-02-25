@@ -19,7 +19,7 @@ public class JsonKafkaConsumer {
         this.seatStatusService = seatStatusService;
     }
 
-    @KafkaListener(topics = "seat_status", groupId = "myGroup")
+    @KafkaListener(topics = "seat_status", groupId = "movie_booking_project")
     public void consume(@Payload GenerateSeatStatusRequest request) {
         // call service to save it to database
         seatStatusService.generateSSByScreeningId(request);

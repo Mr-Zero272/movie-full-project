@@ -18,8 +18,7 @@ public class GenreController {
     private GenreService genreService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Genre>> findAllGenre(@RequestHeader("username") String username) {
-        System.out.println(username);
+    public ResponseEntity<List<Genre>> findAllGenre() {
         return genreService.fetchAllGenres();
     }
 

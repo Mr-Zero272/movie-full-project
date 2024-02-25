@@ -309,9 +309,6 @@ export function MovieAddForm() {
             numScreenings += +type.nscreenings;
         });
 
-        console.log(requirement.screeningsPerWeek);
-        console.log(numScreenings + specificRequireType.nscreenings);
-
         if (
             specificRequireType.nscreenings > requirement.screeningsPerWeek ||
             numScreenings + +specificRequireType.nscreenings > requirement.screeningsPerWeek
@@ -474,8 +471,10 @@ export function MovieAddForm() {
         const actorImages = actors.map((actor) => actor.file);
         movieInfo.cast = cast;
         const rDate = new Date(movieInfo.releaseDate);
-        console.log(format(rDate, 'yyyy-MM-dd HH:mm'));
+        // console.log(format(rDate, 'yyyy-MM-dd HH:mm'));
         movieInfo.releaseDate = format(rDate, 'yyyy-MM-dd HH:mm');
+        const randomRating = Math.floor(Math.random() * 9) + 1;
+        movieInfo.rating = movieInfo.rating * 18 + randomRating;
         let submitData = {
             movie: movieInfo,
             requirement: requirement,
@@ -490,7 +489,8 @@ export function MovieAddForm() {
         });
         // formData.append('movieImages', acceptedFiles);
         formData.append('movieTrailer', movieTrailer);
-        const resp = await movieService.addMovie(formData);
+        const token = localStorage.getItem('token');
+        const resp = await movieService.addMovie(formData, token);
         // console.log(actorImages);
         // console.log(acceptedFiles);
         // console.log(submitData);

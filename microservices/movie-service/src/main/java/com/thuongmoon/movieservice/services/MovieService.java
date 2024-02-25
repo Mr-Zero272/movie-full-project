@@ -16,6 +16,7 @@ import com.thuongmoon.movieservice.response.ResponsePagination;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -39,9 +40,11 @@ public class MovieService {
     private DateTimeTransfer dateTimeTransfer;
     @Autowired
     private MediaInterface mediaInterface;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Transactional
-    public ResponseEntity<ResponseMessage> addMovie(MovieAddRequest request, MultipartFile[] movieImages, MultipartFile movieTrailer, MultipartFile[] actorImages) {
+    public ResponseEntity<ResponseMessage> addMovie(MovieAddRequest request, MultipartFile[] movieImages, MultipartFile movieTrailer, MultipartFile[] actorImages, String username) {
         // do I need to handle image or video right there?
         MultipartFile[] movieTrailers = new MultipartFile[1];
         movieTrailers[0] = movieTrailer;
@@ -73,8 +76,9 @@ public class MovieService {
                 .duration_min(request.getMovie().getDuration_min())
                 .releaseDate(dateTimeTransfer.transperStrToLocalDateTime(request.getMovie().getReleaseDate()))
                 .rating(request.getMovie().getRating())
-                .userId(request.getMovie().getUserId())
+                .whoAdd(username)
                 .cast(request.getMovie().getCast())
+                .reviews(request.getMovie().getReviews())
                 .galleries(galleries)
                 .requirement(requirementSaved)
                 .genres(genres)
@@ -126,7 +130,7 @@ public class MovieService {
             movie.get().setDuration_min(newMovie.getDuration_min());
             movie.get().setReleaseDate(newMovie.getReleaseDate());
             movie.get().setRating(newMovie.getRating());
-            movie.get().setUserId(newMovie.getUserId());
+            movie.get().setWhoAdd(newMovie.getWhoAdd());
             movie.get().setGalleries(newMovie.getGalleries());
             movie.get().setGenres(newMovie.getGenres());
 
@@ -179,17 +183,25 @@ public class MovieService {
 
         if (manufacturers == null && genreIds == null) {
             movies =  movieDao.getMoviePaginationWithoutManufacturersAndGenres(q, type, size, skip);
-            totalResult = movieDao.countMoviePaginationWithoutManufacturersAndGenres(q, type);
+            if (!movies.isEmpty()) {
+                totalResult = movieDao.countMoviePaginationWithoutManufacturersAndGenres(q, type);
+            }
         } else if (manufacturers == null) {
             log.info("manufacturers null");
             movies =  movieDao.getMoviePaginationWithoutManufacturers(q, type, genreIds, size, skip);
-            totalResult = movieDao.countMoviePaginationWithoutManufacturers(q, type, genreIds);
+            if (!movies.isEmpty()) {
+                totalResult = movieDao.countMoviePaginationWithoutManufacturers(q, type, genreIds);
+            }
         } else if (genreIds == null) {
             movies =  movieDao.getMoviePaginationWithoutGenres(q, type, manufacturers, size, skip);
-            totalResult = movieDao.countMoviePaginationWithoutGenres(q, type, manufacturers);
+            if (!movies.isEmpty()) {
+                totalResult = movieDao.countMoviePaginationWithoutGenres(q, type, manufacturers);
+            }
         } else {
             movies =   movieDao.getMoviePagination(q, type, genreIds, manufacturers, size, skip);
-            totalResult = movieDao.countMoviePagination(q, type, genreIds, manufacturers);
+            if (!movies.isEmpty()) {
+                totalResult = movieDao.countMoviePagination(q, type, genreIds, manufacturers);
+            }
         }
 
         pagination.setSize(size);
@@ -202,4 +214,18 @@ public class MovieService {
         return new ResponseEntity<>(responsePagination, HttpStatus.OK);
     }
 
+    public ResponseEntity<Movie> getMovieInfo(String movieId) {
+        Optional<Movie> movie = movieDao.findById(movieId);
+        Movie result = new Movie();
+        result = movie.orElse(null);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<String>> getListManufactures() {
+        List<String> manufactures = mongoTemplate.query(Movie.class)
+                .distinct("manufacturer")
+                .as(String.class)
+                .all();
+        return new ResponseEntity<>(manufactures, HttpStatus.OK);
+    }
 }

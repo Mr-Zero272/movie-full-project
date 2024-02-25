@@ -47,7 +47,7 @@ export function GenreEditModal({ isOpen, onToggle, onSubmit, onChange, genreInfo
 }
 
 GenreEditModal.prototype = {
-    isOpen: PropTypes.string.isRequired,
+    isOpen: PropTypes.bool.isRequired,
     onToggle: PropTypes.func.isRequired,
     genreInfo: PropTypes.object.isRequired,
 };

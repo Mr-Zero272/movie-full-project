@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ResponseMessage {
@@ -14,4 +13,10 @@ public class ResponseMessage {
     private String rspCode;
     private String state;
     private Object data;
+
+    public ResponseMessage() {
+        message = "";
+        rspCode = "200";
+        state = "success";
+    }
 }

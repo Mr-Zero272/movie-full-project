@@ -1,22 +1,24 @@
 package com.thuongmoon.movieservice.services;
 
 import com.thuongmoon.movieservice.dao.MovieDao;
+import com.thuongmoon.movieservice.dao.RequirementDao;
+import com.thuongmoon.movieservice.dao.ScheduleStateDao;
 import com.thuongmoon.movieservice.dao.ScreeningDao;
 import com.thuongmoon.movieservice.feign.SeatServiceInterface;
 import com.thuongmoon.movieservice.helpers.DateTimeTransfer;
 import com.thuongmoon.movieservice.kafka.JsonKafkaProducer;
-import com.thuongmoon.movieservice.model.AuditoriumState;
-import com.thuongmoon.movieservice.model.Movie;
-import com.thuongmoon.movieservice.model.Requirement;
-import com.thuongmoon.movieservice.model.Screening;
+import com.thuongmoon.movieservice.model.*;
 import com.thuongmoon.movieservice.request.GenerateSeatStatusRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class SchedulingService {
@@ -25,7 +27,11 @@ public class SchedulingService {
     @Autowired
     private MovieDao movieDao;
     @Autowired
+    private RequirementDao requirementDao;
+    @Autowired
     private ScreeningDao screeningDao;
+    @Autowired
+    private ScheduleStateDao scheduleStateDao;
     @Autowired
     private SeatServiceInterface seatServiceInterface;
     @Autowired
@@ -35,7 +41,7 @@ public class SchedulingService {
         int maxScreeningsPerDay = 7;
         // start at 7:00 am
         LocalDateTime startTimeToSchedule = dateTimeTransfer.calculateDatePlusHours(startDate, 7F);
-        List<Movie> movies = movieDao.findAll();
+        List<Movie> movies = movieDao.getMovieToSchedule();
         List<Requirement> requirements = new ArrayList<>();
 
         movies.forEach(movie -> {
@@ -48,15 +54,19 @@ public class SchedulingService {
         movies.forEach(movie -> {
             requirements.add(movie.getRequirement());
         });
+        requirementDao.saveAll(requirements);
+
 
         List<Screening> screenings = new ArrayList<>();
         int totalScreeningsEstimated = movies.stream().reduce(0,
                 (total, movie) -> total + movie.getRequirement().getScreeningsPerWeek(), Integer::sum);
+//        System.out.println(totalScreeningsEstimated);
         int totalAuditoriumNeeded = (int) Math.ceil((double) totalScreeningsEstimated /(maxScreeningsPerDay*7));
+        System.out.println(totalAuditoriumNeeded);
         // call service roi lay so rap can thiet
         // tinh toan truoc so suat chieu tren tuan sau do lay so rap phu hop
         List<String> auditoriumIds = seatServiceInterface.getAvailableAuditorium(totalAuditoriumNeeded, startDate).getBody();
-        if(auditoriumIds.isEmpty()) {
+        if(auditoriumIds == null) {
             return ResponseEntity.ok("Failed to fetch auditorium for scheduling!");
         }
         List<AuditoriumState> auditoriumStates = new ArrayList<>();
@@ -89,10 +99,17 @@ public class SchedulingService {
                     break;
                 }
 
+                // Tạo một đối tượng Random
+                Random random = new Random();
+
+                // Tạo số ngẫu nhiên trong khoảng từ 60 đến 200
+                int randomPrice = random.nextInt(141) + 60;
+
                 Screening screening = Screening.builder()
                         .type(movie.getRequirement().getSpecificRequireTypes().get(0).getTypeName())
                         .screeningStart(screeningStart)
                         .auditoriumId(auditoriumStates.get(indexAuditorium).getAuditoriumId())
+                        .price(randomPrice * 1000)
                         .movie(movie)
                         .build();
 
@@ -122,16 +139,24 @@ public class SchedulingService {
             }
         }
 
-        movies.forEach(movie -> {
-            movie.setRequirement(requirements.get(0));
-            requirements.remove(0);
-        });
-        movieDao.saveAll(movies);
+        // update requirement
+//        movies.forEach(movie -> {
+//            movie.setRequirement(requirements.get(0));
+//            requirements.remove(0);
+//        });
+//        movieDao.saveAll(movies);
         List<Screening> screeningListSaved = screeningDao.saveAll(screenings);
+
+        // update schedule state
+        ScheduleState scheduleState = new ScheduleState();
+        scheduleState.setLastScheduledTime(startTimeToSchedule.plusDays(7L));
+        scheduleState.setTotalSchedules(screeningListSaved.size());
+        scheduleStateDao.save(scheduleState);
+
         screeningListSaved.forEach(screening -> {
             // send message to seat-service through kafka to generate list seat status
             GenerateSeatStatusRequest generateSeatStatusRequest = new GenerateSeatStatusRequest();
-            generateSeatStatusRequest.setPrice(76000);
+            generateSeatStatusRequest.setPrice(screening.getPrice());
             generateSeatStatusRequest.setScreeningId(screening.getId());
             generateSeatStatusRequest.setAuditoriumId(screening.getAuditoriumId());
             jsonKafkaProducer.sendSeatGenerateRequest(generateSeatStatusRequest);

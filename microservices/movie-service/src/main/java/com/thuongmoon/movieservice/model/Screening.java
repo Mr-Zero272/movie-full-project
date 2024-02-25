@@ -31,6 +31,7 @@ public class Screening implements Serializable {
 	// type 3D, 2D, 4D, IMAX 3D,...
 	private String type;
 	private LocalDateTime screeningStart;
+	private int price;
 	private String auditoriumId;
 	private List<String> seatDetailId;
 

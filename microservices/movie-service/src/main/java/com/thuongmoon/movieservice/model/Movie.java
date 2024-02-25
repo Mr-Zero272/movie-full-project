@@ -46,12 +46,15 @@ public class Movie implements Serializable {
 	private List<Actor> cast = new ArrayList<>();
 
 	//user add this movie -> must have role business
-	private String userId;
+	private String whoAdd;
 
 	private List<Gallery> galleries = new ArrayList<>();
 
 	@DocumentReference
 	private List<Genre> genres = new ArrayList<>();
+
+	@DocumentReference
+	private List<Review> reviews = new ArrayList<>();
 
 	@Override
 	public int hashCode() {

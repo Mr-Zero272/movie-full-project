@@ -2,6 +2,7 @@ package com.thuongmoon.movieservice.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thuongmoon.movieservice.dao.MovieDao;
 import com.thuongmoon.movieservice.dto.TestDta;
 import com.thuongmoon.movieservice.feign.MediaInterface;
 import com.thuongmoon.movieservice.model.Movie;
@@ -13,6 +14,8 @@ import com.thuongmoon.movieservice.services.MovieService;
 import com.thuongmoon.movieservice.services.SchedulingService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,14 +33,6 @@ public class MovieController {
     @Autowired
     private SchedulingService scheduleService;
 
-    @PostMapping("/test")
-    public ResponseEntity<String> testForm(@RequestPart String testObj) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        TestDta testDta = objectMapper.readValue(testObj, TestDta.class);
-        System.out.println(testDta.toString());
-        return ResponseEntity.ok("Test ok!");
-    }
-
     @PostMapping("/test-image")
     public ResponseEntity<ResponseMessage> addImagesForMovies(
             @RequestParam("files") MultipartFile[] files,
@@ -49,10 +44,11 @@ public class MovieController {
     public ResponseEntity<ResponseMessage> addNewMovie(@RequestPart("movieInfo") String movieInfo,
                                                        @RequestPart(value = "movieImages", required = false) MultipartFile[] movieImages,
                                                        @RequestPart(value = "movieTrailer", required = false) MultipartFile movieTrailer,
-                                                       @RequestPart(value = "actorImages", required = false) MultipartFile[] actorImages) throws JsonProcessingException {
+                                                       @RequestPart(value = "actorImages", required = false) MultipartFile[] actorImages,
+                                                       @RequestHeader("username") String username) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         MovieAddRequest movieInfoParse = objectMapper.readValue(movieInfo, MovieAddRequest.class);
-        return movieService.addMovie(movieInfoParse, movieImages, movieTrailer, actorImages);
+        return movieService.addMovie(movieInfoParse, movieImages, movieTrailer, actorImages, username);
     }
 
     @PutMapping("/{movieId}")
@@ -84,5 +80,15 @@ public class MovieController {
                                                      @RequestParam(required = false, defaultValue = "6") int size,
                                                      @RequestParam(required = false, defaultValue = "1") int cPage) {
         return movieService.fetchMoviePagination(q, type, genreIds, manufacturers, size, cPage);
+    }
+
+    @GetMapping("/info/{movieId}")
+    public ResponseEntity<Movie> getMovieInfo(@PathVariable String movieId) {
+        return movieService.getMovieInfo(movieId);
+    }
+
+    @GetMapping("/manufacture")
+    public ResponseEntity<List<String>> getAllManufactures() {
+        return movieService.getListManufactures();
     }
 }

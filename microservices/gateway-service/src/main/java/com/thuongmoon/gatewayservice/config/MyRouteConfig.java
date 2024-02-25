@@ -20,7 +20,32 @@ public class MyRouteConfig {
                                 .path("/api/v1/videos/**")
                                 .uri("lb://media-service"))
                 .route("movie-service", predicateSpec ->
-                        predicateSpec.path("/api/v1/movie/**")
+                        predicateSpec.path("/api/v1/movie")
+                                .filters(f -> f.filter(authenticationFilter))
+                                .uri("lb://movie-service"))
+                .route("movie-service", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/search")
+                                .uri("lb://movie-service"))
+                .route("movie-service", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/manufacture")
+                                .uri("lb://movie-service"))
+                .route("movie-service", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/genre/all")
+                                .uri("lb://movie-service"))
+                .route("movie-service", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/info/**")
+                                .uri("lb://movie-service"))
+                .route("movie-service", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/review/all/**")
+                                .uri("lb://movie-service"))
+                .route("movie-service", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/review/info/**")
+                                .uri("lb://movie-service"))
+                .route("movie-service", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/screening/**")
+                                .uri("lb://movie-service"))
+                .route("movie-service", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/review/**")
                                 .filters(f -> f.filter(authenticationFilter))
                                 .uri("lb://movie-service"))
                 .route("auth-service", predicateSpec ->

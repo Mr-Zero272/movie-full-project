@@ -30,6 +30,7 @@ public class MovieDto {
     private String userId;
 
     private List<Actor> cast = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     private List<Gallery> galleries = new ArrayList<>();
 
