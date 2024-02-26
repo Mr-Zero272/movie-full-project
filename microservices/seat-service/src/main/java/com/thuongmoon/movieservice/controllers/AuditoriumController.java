@@ -35,4 +35,9 @@ public class AuditoriumController {
                                                                @Param("startDate") LocalDateTime startDate) {
         return auditoriumService.provideAuditoriumNeed(numAuditoriums, startDate);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Auditorium>> getAllAuditoriums() {
+        return auditoriumService.fetchAllAuditoriums();
+    }
 }

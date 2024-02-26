@@ -83,4 +83,8 @@ public class AuditoriumService {
         }
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
+
+    public ResponseEntity<List<Auditorium>> fetchAllAuditoriums() {
+        return new ResponseEntity<>(auditoriumDao.findAll(), HttpStatus.OK);
+    }
 }

@@ -34,7 +34,12 @@ public class ScreeningService {
             return new ResponseEntity<>(screenings, HttpStatus.OK);
         }
 
-        if (movieId == null) {
+        if (type == null && movieId != null && date != null) {
+            screenings = screeningDao.fetchByMovieIdAndDate(date, date2, movieId);
+            return new ResponseEntity<>(screenings, HttpStatus.OK);
+        }
+
+        if (movieId == null && type != null && date != null) {
             screenings = screeningDao.fetchByTypeAndDate(type, date, date2);
         } else {
             screenings = screeningDao.fetchByTypeAndDateAndMovieId(type, date, date2, movieId);
