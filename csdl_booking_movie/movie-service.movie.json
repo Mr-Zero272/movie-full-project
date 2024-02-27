@@ -1,0 +1,730 @@
+[{
+  "_id": {
+    "$oid": "65a53ba732ca625097624236"
+  },
+  "title": "Love at First Sight",
+  "director": "Vanessa Caswill",
+  "description": "20-year old Hadley Sullivan misses her flight to London to attend her father’s wedding and is re-booked on the next flight. While waiting at the gate, she meets British 22-year old Yale mathematics student Oliver Jones who offers to lend her his charger when noticing hers is dead. The two get along and eat together; seeing Oliver carrying a garment bag, she assumes he is also going to attend a wedding and he does not contest this. When Oliver’s seat belt is broken, the flight attendant seats him next to Hadley. The two spend the flight talking and growing close. Hadley shares that her dad and her were very close prior to him moving to London to teach poetry and eventually divorcing her mother, leading her to be hesitant to attend his wedding and forgive him. Oliver encourages Hadley to do so. The two share a moment and nearly kiss while waiting for the bathroom before falling asleep for the remaining duration of the flight.",
+  "trailer": "trailer1.mp4",
+  "verticalImage": "v_m_1.1.jpg",
+  "horizontalImage": "h_m_1.1.jpg",
+  "manufacturer": "20th centeries",
+  "duration_min": 90,
+  "releaseDate": {
+    "$date": "2023-02-15T00:00:00.000Z"
+  },
+  "rating": 78,
+  "requirement": {
+    "$oid": "65a53ba732ca625097624235"
+  },
+  "cast": [
+    {
+      "fullName": "Haley Lu Richardson",
+      "characterName": "David",
+      "avatar": "actor1.1.jpg"
+    },
+    {
+      "fullName": "Ben Hardy",
+      "characterName": "Kenta",
+      "avatar": "actor1.2.jpg"
+    },
+    {
+      "fullName": "Rob Delaney",
+      "characterName": "Poly Kei",
+      "avatar": "actor1.3.jpg"
+    }
+  ],
+  "whoAdd": "",
+  "galleries": [
+    {
+      "imgUrl": "h_m_1.1.jpg"
+    },
+    {
+      "imgUrl": "h_m_1.2.jpg"
+    },
+    {
+      "imgUrl": "h_m_1.3.jpg"
+    },
+    {
+      "imgUrl": "v_m_1.1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65978b44080dda3f81e06106"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b17"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b19"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1a"
+    }
+  ],
+  "reviews": [
+    {
+      "$oid": "65cf2ea9b495f70d2da04e3d"
+    },
+    {
+      "$oid": "65cf844292765d2330c8cb22"
+    },
+    {
+      "$oid": "65d049431d920f129115ee65"
+    }
+  ],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+},
+{
+  "_id": {
+    "$oid": "65a53fbd32ca625097624238"
+  },
+  "title": "Talk to Me",
+  "director": "Danny Philippou",
+  "description": "Talk to Me is a 2022 Australian supernatural horror film directed by Danny and Michael Philippou and written by Danny Philippou and Bill Hinzman, based on a concept by Daley Pearson. It stars Sophie Wilde, Alexandra Jensen, Joe Bird, Otis Dhanji, Miranda Otto, Zoe Terakes, Chris Alosio, Marcus Johnson, and Alexandria Steffensen. The film follows a group of teenagers who discover they are able to contact spirits using a mysterious embalmed hand, only for things to go too far. Talk to Me premiered at the Adelaide Film Festival on 30 October 2022, and was released in Australia on 27 July 2023, 2y Maslow Entertainment. The film received positive reviews from critics, who praised its story, horror sequences, practical effects, sound design and performances, with Sophie Wilde and Joe Bird receiving particular praise. It was a box office success, grossing $68 million worldwide against a $4.5 million budget.[6] A sequel is currently in development.",
+  "trailer": "trailer2.mp4",
+  "verticalImage": "v_m_2.1.jpg",
+  "horizontalImage": "h_m_2.1.jpg",
+  "manufacturer": "20th centeries",
+  "duration_min": 95,
+  "releaseDate": {
+    "$date": "2023-02-11T00:00:00.000Z"
+  },
+  "rating": 98,
+  "requirement": {
+    "$oid": "65a53fbd32ca625097624237"
+  },
+  "cast": [
+    {
+      "fullName": "Sophie Wilde",
+      "characterName": "Kanon Ken",
+      "avatar": "actor2.1.jpg"
+    },
+    {
+      "fullName": "Alexandra Jensen",
+      "characterName": "Kamui Pil",
+      "avatar": "actor2.2.jpg"
+    },
+    {
+      "fullName": "Joe Bird",
+      "characterName": "Valency Wex",
+      "avatar": "actor2.3.jpg"
+    }
+  ],
+  "whoAdd": "",
+  "galleries": [
+    {
+      "imgUrl": "h_m_2.1.jpg"
+    },
+    {
+      "imgUrl": "h_m_2.2.jpg"
+    },
+    {
+      "imgUrl": "h_m_2.3.jpg"
+    },
+    {
+      "imgUrl": "v_m_2.1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65967db079041d00e5ba9b7f"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b16"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b17"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b19"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1a"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1b"
+    }
+  ],
+  "reviews": [
+    {
+      "$oid": "65d033dd3db3883c6518b330"
+    }
+  ],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+},
+{
+  "_id": {
+    "$oid": "65a541e732ca62509762423a"
+  },
+  "title": "A Haunting in Venice",
+  "director": "Kenneth Branagh",
+  "description": "A Haunting in Venice is a 2023 A2erican murder mystery film produced and directed by Kenneth Branagh, who reprises his role from the previous films, from a screenplay by Michael Green, loosely based on the 1969 novel Hallowe'en Party by Agatha Christie. It serves as a sequel to Death on the Nile (2022) and is the third film in which Branagh portrays the Belgian detective Hercule Poirot.[5] The ensemble cast includes Kyle Allen, Camille Cottin, Jamie Dornan, Tina Fey, Jude Hill, Ali Khan, Emma Laird, Kelly Reilly, Riccardo Scamarcio, and Michelle Yeoh. A Haunting in Venice was released in the United States on September 15, 2023 b2 20th Century Studios. The film received generally positive reviews from critics and has grossed $38 million worldwide.",
+  "trailer": "trailer3.mp4",
+  "verticalImage": "v_m_3.1.jpg",
+  "horizontalImage": "h_m_3.1.jpg",
+  "manufacturer": "The sunshine",
+  "duration_min": 104,
+  "releaseDate": {
+    "$date": "2023-02-15T00:00:00.000Z"
+  },
+  "rating": 87,
+  "requirement": {
+    "$oid": "65a541e732ca625097624239"
+  },
+  "cast": [
+    {
+      "fullName": "Kenneth Branagh",
+      "characterName": "James",
+      "avatar": "actor3.1.jpg"
+    },
+    {
+      "fullName": "Kyle Allen",
+      "characterName": "Mern",
+      "avatar": "actor3.2.jpg"
+    },
+    {
+      "fullName": "Camille Cottin",
+      "characterName": "Robert",
+      "avatar": "actor3.3.jpg"
+    }
+  ],
+  "whoAdd": "",
+  "galleries": [
+    {
+      "imgUrl": "h_m_3.1.jpg"
+    },
+    {
+      "imgUrl": "h_m_3.2.jpg"
+    },
+    {
+      "imgUrl": "h_m_3.3.jpg"
+    },
+    {
+      "imgUrl": "v_m_3.1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65967db079041d00e5ba9b7f"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b16"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b17"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1b"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1c"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1d"
+    }
+  ],
+  "reviews": [
+    {
+      "$oid": "65d437222b19bb41342cae11"
+    }
+  ],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+},
+{
+  "_id": {
+    "$oid": "65a5448c32ca62509762423e"
+  },
+  "title": "Ahsoka (2023)",
+  "director": "Dave Filoni",
+  "description": "Rosario Dawson stars as Ahsoka Tano, reprising her role from The Mandalorian. The character was created for the animated series Star Wars: The Clone Wars (voiced by Ashley Eckstein), and made her live-action debut in the second season of The Mandalorian. A spin-off series focused on the character was announced in December 2020, with Dawson reprising her role and Filoni set as writer after he co-created the character. Filming began in early May 2022, when multiple characters from Rebels were revealed to be appearing, and wrapped in October. In April 2023, 2dditional castings were revealed, highlighted by Lars Mikkelsen reprising his Rebels role of Grand Admiral Thrawn, and the series was confirmed to be continuing the story established in Rebels.",
+  "trailer": "trailer4.mp4",
+  "verticalImage": "v_m_4.1.jpg",
+  "horizontalImage": "h_m_4.1.jpg",
+  "manufacturer": "The sunshine",
+  "duration_min": 192,
+  "releaseDate": {
+    "$date": "2023-02-11T00:00:00.000Z"
+  },
+  "rating": 57,
+  "requirement": {
+    "$oid": "65a5448c32ca62509762423d"
+  },
+  "cast": [
+    {
+      "fullName": "Rosario Dawson",
+      "characterName": "Keven Michael",
+      "avatar": "actor5.1.jpg"
+    },
+    {
+      "fullName": " Natasha Liu Bordizzo",
+      "characterName": "Linda Elizabeth",
+      "avatar": "actor5.2.jpg"
+    },
+    {
+      "fullName": "Mary Elizabeth Winstead",
+      "characterName": "KM Jessica",
+      "avatar": "actor5.3.jpg"
+    }
+  ],
+  "whoAdd": "",
+  "galleries": [
+    {
+      "imgUrl": "h_m_4.1.jpg"
+    },
+    {
+      "imgUrl": "h_m_4.2.jpg"
+    },
+    {
+      "imgUrl": "h_m_4.3.jpg"
+    },
+    {
+      "imgUrl": "v_m_4.1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65967db079041d00e5ba9b7f"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b19"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1c"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1d"
+    },
+    {
+      "$oid": "65a5436a32ca62509762423c"
+    }
+  ],
+  "reviews": [
+    {
+      "$oid": "65d4545e9b97102ce97d63da"
+    }
+  ],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+},
+{
+  "_id": {
+    "$oid": "65a5462c32ca625097624240"
+  },
+  "title": "Barbie (2023)",
+  "director": "Greta Gerwig",
+  "description": "Anand and Vaishnavi are neighours and high school students, who live in a slum in Hyderabad. Vaishnavi has a crush on Anand, however, he does not acknowledge her until one day, when she stands up to their teacher. Anand reciprocates her feelings, and they eventually start a relationship. Three years later, Anand drops out of Intermediate due to bad grades, while Vaishnavi goes on to join a prestigious Engineering college. Anand resorts to driving an auto for a living.",
+  "trailer": "trailer5.mp4",
+  "verticalImage": "v_m_5.1.jpg",
+  "horizontalImage": "h_m_5.1.jpg",
+  "manufacturer": "Lucasfilm",
+  "duration_min": 90,
+  "releaseDate": {
+    "$date": "2023-02-21T00:00:00.000Z"
+  },
+  "rating": 84,
+  "requirement": {
+    "$oid": "65a5462c32ca62509762423f"
+  },
+  "cast": [
+    {
+      "fullName": "Margot Robbie",
+      "characterName": "Kami Thomas",
+      "avatar": "actor6.1.jpg"
+    },
+    {
+      "fullName": "Ryan Gosling",
+      "characterName": "Kei Lisa",
+      "avatar": "actor6.2.jpg"
+    },
+    {
+      "fullName": "America Ferrera",
+      "characterName": "Yui Betty",
+      "avatar": "actor6.3.jpg"
+    }
+  ],
+  "whoAdd": "",
+  "galleries": [
+    {
+      "imgUrl": "h_m_5.1.jpg"
+    },
+    {
+      "imgUrl": "h_m_5.2.jpg"
+    },
+    {
+      "imgUrl": "h_m_5.3.jpg"
+    },
+    {
+      "imgUrl": "v_m_5.1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65978b44080dda3f81e06106"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b18"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1a"
+    }
+  ],
+  "reviews": [],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+},
+{
+  "_id": {
+    "$oid": "65a5489b32ca625097624242"
+  },
+  "title": "Expend4bles (2023)",
+  "director": "Scott Waugh",
+  "description": "Expend4bles (also known as The Expendables 4) is a 2023 A2erican action film directed by Scott Waugh from a screenplay by Kurt Wimmer, Tad Daggerhart, and Max Adams, based on a story by Spenser Cohen, Wimmer, and Daggerhart. It is the sequel to The Expendables 3 (2014) and the fourth installment in The Expendables film series. The film stars an ensemble cast including Jason Statham, Sylvester Stallone, Dolph Lundgren, and Randy Couture reprising their roles from previous films, with Curtis \"50 Cent\" Jackson, Megan Fox, Tony Jaa, Iko Uwais, Jacob Scipio, Levy Tran, and Andy García joining the cast. Expend4bles was released in China on September 15, 2023, 2nd is scheduled to be released in the United States on September 22, 2023, 2y Lionsgate. The film retains an R rating like the first two installments of the series, after the third film's PG-13 rating was poorly received by fans.",
+  "trailer": "trailer6.mp4",
+  "verticalImage": "v_m_6.1.jpg",
+  "horizontalImage": "h_m_6.1.jpg",
+  "manufacturer": "Lucasfilm",
+  "duration_min": 103,
+  "releaseDate": {
+    "$date": "2023-02-22T00:00:00.000Z"
+  },
+  "rating": 71,
+  "requirement": {
+    "$oid": "65a5489b32ca625097624241"
+  },
+  "cast": [
+    {
+      "fullName": "Jason Statham",
+      "characterName": "Charles",
+      "avatar": "actor4.1.jpg"
+    },
+    {
+      "fullName": "Sylvester Stallone",
+      "characterName": "Anthony Kamai",
+      "avatar": "actor4.2.jpg"
+    },
+    {
+      "fullName": "50 Cent",
+      "characterName": "50 Cent",
+      "avatar": "actor4.3.jpg"
+    }
+  ],
+  "whoAdd": "",
+  "galleries": [
+    {
+      "imgUrl": "h_m_6.1.jpg"
+    },
+    {
+      "imgUrl": "h_m_6.2.jpg"
+    },
+    {
+      "imgUrl": "h_m_6.3.jpg"
+    },
+    {
+      "imgUrl": "v_m_6.1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65967db079041d00e5ba9b7f"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b18"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b19"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1b"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1c"
+    },
+    {
+      "$oid": "65a5436a32ca62509762423c"
+    }
+  ],
+  "reviews": [],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+},
+{
+  "_id": {
+    "$oid": "65a5498132ca625097624244"
+  },
+  "title": "Meg 2: The Trench (2023)",
+  "director": "Ben Wheatley",
+  "description": "Meg 2: The Trench (titled Shark 2 in some territories)[2] is a 2023 s2ience fiction action film directed by Ben Wheatley from a screenplay by Jon Hoeber, Erich Hoeber, and Dean Georgaris. It is based on the 1999 novel The Trench by Steve Alten. Serving as the sequel to The Meg (2018), the film stars Jason Statham, Wu Jing, Sophia Cai, Page Kennedy, Sergio Peris-Mencheta, Skyler Samuels and Cliff Curtis. Like the previous film, it follows a group of scientists who must outrun and outswim the titular Megalodons when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.",
+  "trailer": "trailer7.mp4",
+  "verticalImage": "v_m_7.1.jpg",
+  "horizontalImage": "h_m_7.1.jpg",
+  "manufacturer": "Night Start",
+  "duration_min": 116,
+  "releaseDate": {
+    "$date": "2023-02-04T00:00:00.000Z"
+  },
+  "rating": 91,
+  "requirement": {
+    "$oid": "65a5498132ca625097624243"
+  },
+  "cast": [
+    {
+      "fullName": "Jason Statham",
+      "characterName": "Keven Mark",
+      "avatar": "actor7.1.jpg"
+    },
+    {
+      "fullName": "Wu Jing",
+      "characterName": "Plate Donald",
+      "avatar": "actor7.2.jpg"
+    },
+    {
+      "fullName": "Shuya Sophia Cai",
+      "characterName": "Kimberly",
+      "avatar": "actor7.3.jpg"
+    }
+  ],
+  "whoAdd": "",
+  "galleries": [
+    {
+      "imgUrl": "h_m_7.1.jpg"
+    },
+    {
+      "imgUrl": "h_m_7.2.jpg"
+    },
+    {
+      "imgUrl": "h_m_7.3.jpg"
+    },
+    {
+      "imgUrl": "v_m_7.1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65967db079041d00e5ba9b7f"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b16"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b17"
+    },
+    {
+      "$oid": "65a5436a32ca62509762423b"
+    }
+  ],
+  "reviews": [],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+},
+{
+  "_id": {
+    "$oid": "65a54a5c32ca625097624246"
+  },
+  "title": "The Little Mermaid (2023)",
+  "director": "Rob Marshall",
+  "description": "The youngest of King Triton’s daughters, and the most defiant, Ariel longs to find out more about the world beyond the sea, and while visiting the surface, falls for the dashing Prince Eric. With mermaids forbidden to interact with humans, Ariel makes a deal with the evil sea witch, Ursula, which gives her a chance to experience life on land, but ultimately places her life – and her father’s crown – in jeopardy.",
+  "trailer": "trailer8.mp4",
+  "verticalImage": "v_m_8.1.jpg",
+  "horizontalImage": "h_m_8.1.jpg",
+  "manufacturer": "Night Start",
+  "duration_min": 135,
+  "releaseDate": {
+    "$date": "2023-02-26T00:00:00.000Z"
+  },
+  "rating": 83,
+  "requirement": {
+    "$oid": "65a54a5c32ca625097624245"
+  },
+  "cast": [
+    {
+      "fullName": "Halle Bailey",
+      "characterName": "Carki Michelle",
+      "avatar": "actor8.1.jpg"
+    },
+    {
+      "fullName": "Jonah Hauer-King",
+      "characterName": "BG Brian",
+      "avatar": "actor8.2.jpg"
+    },
+    {
+      "fullName": "Daveed Diggs",
+      "characterName": "Trupio Timothy",
+      "avatar": "actor8.3.jpg"
+    }
+  ],
+  "whoAdd": "",
+  "galleries": [
+    {
+      "imgUrl": "h_m_8.1.jpg"
+    },
+    {
+      "imgUrl": "h_m_8.2.jpg"
+    },
+    {
+      "imgUrl": "h_m_8.3.jpg"
+    },
+    {
+      "imgUrl": "v_m_8.1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65967db079041d00e5ba9b7f"
+    },
+    {
+      "$oid": "65978b44080dda3f81e06106"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b16"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b19"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1a"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1c"
+    },
+    {
+      "$oid": "65a5436a32ca62509762423b"
+    }
+  ],
+  "reviews": [],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+},
+{
+  "_id": {
+    "$oid": "65ccdbebd20a340ec73bc186"
+  },
+  "title": "The Iron Claw (2023)",
+  "director": "Sean Durkin",
+  "description": "The true story of the inseparable Von Erich brothers, who made history in the intensely competitive world of professional wrestling in the early 1980s. Through tragedy and triumph, under the shadow of their domineering father and coach, the brothers seek larger-than-life immortality on the biggest stage in sports.",
+  "trailer": "TheIronTrailer.mp4",
+  "verticalImage": "theironv_m_1.1.jpg",
+  "horizontalImage": "theironh_m_1.1.jpg",
+  "manufacturer": "The Bear",
+  "duration_min": 131,
+  "releaseDate": {
+    "$date": "2023-12-22T00:00:00.000Z"
+  },
+  "rating": 76,
+  "requirement": {
+    "$oid": "65d05323b3cb2f8948fc8f89"
+  },
+  "cast": [
+    {
+      "fullName": "Zac Efron",
+      "characterName": "Kevin Von Erich",
+      "avatar": "actor9.1.jpg"
+    },
+    {
+      "fullName": "Jeremy Allen White",
+      "characterName": "Kerry Von Erich",
+      "avatar": "actor9.2.jpg"
+    },
+    {
+      "fullName": "Harris Dickinson",
+      "characterName": "David Von Erich",
+      "avatar": "actor9.3.jpg"
+    }
+  ],
+  "whoAdd": "pitithuong",
+  "galleries": [
+    {
+      "imgUrl": "theironv_m_1.1.jpg"
+    },
+    {
+      "imgUrl": "theironh_m_1.3.jpg"
+    },
+    {
+      "imgUrl": "theironh_m_1.2.jpg"
+    },
+    {
+      "imgUrl": "theironh_m_1.1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65967db079041d00e5ba9b7f"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b18"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1c"
+    }
+  ],
+  "reviews": [
+    {
+      "$oid": "65d4304b196412669d53a688"
+    },
+    {
+      "$oid": "65da0372871a861c5c5981ef"
+    }
+  ],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+},
+{
+  "_id": {
+    "$oid": "65cce3cfd20a340ec73bc188"
+  },
+  "title": "Upgraded (2024)",
+  "director": "Carlson Young",
+  "description": "Ana is an ambitious intern dreaming of a career in the art world while trying to impress her demanding boss Claire. When she's upgraded to first class on a work trip, she meets handsome Will, who mistakes Ana for her boss– a white lie that sets off a glamorous chain of events, romance and opportunity, until her fib threatens to surface.",
+  "trailer": "UpgradedTraile.mp4",
+  "verticalImage": "Upgradedv_m_1.jpg",
+  "horizontalImage": "Upgradedh_m_1.jpg",
+  "manufacturer": "The white",
+  "duration_min": 105,
+  "releaseDate": {
+    "$date": "2024-02-07T00:00:00.000Z"
+  },
+  "rating": 74,
+  "requirement": {
+    "$oid": "65cce3cfd20a340ec73bc187"
+  },
+  "cast": [
+    {
+      "fullName": "Camila Mendes",
+      "characterName": "Ana Santos",
+      "avatar": "Upgraded_actor_1.jpg"
+    },
+    {
+      "fullName": "Archie Renaux",
+      "characterName": "William",
+      "avatar": "Upgraded_actor_2.jpg"
+    },
+    {
+      "fullName": "Marisa Tomei",
+      "characterName": "Claire Dupont",
+      "avatar": "Upgraded_actor_3.jpg"
+    }
+  ],
+  "whoAdd": "pitithuong",
+  "galleries": [
+    {
+      "imgUrl": "Upgradedv_m_1.jpg"
+    },
+    {
+      "imgUrl": "Upgradedh_m_3.jpg"
+    },
+    {
+      "imgUrl": "Upgradedh_m_2.jpg"
+    },
+    {
+      "imgUrl": "Upgradedh_m_1.jpg"
+    }
+  ],
+  "genres": [
+    {
+      "$oid": "65978b44080dda3f81e06106"
+    },
+    {
+      "$oid": "659815c07cf787120fb34b17"
+    },
+    {
+      "$oid": "659816977cf787120fb34b1a"
+    }
+  ],
+  "reviews": [],
+  "_class": "com.thuongmoon.movieservice.model.Movie"
+}]

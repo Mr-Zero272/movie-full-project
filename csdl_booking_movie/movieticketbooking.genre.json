@@ -1,0 +1,130 @@
+[{
+  "_id": {
+    "$oid": "65967db079041d00e5ba9b7f"
+  },
+  "name": "action",
+  "lastUpdate": {
+    "$date": "2024-01-24T10:09:15.607Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "65978b44080dda3f81e06106"
+  },
+  "name": "comedy",
+  "lastUpdate": {
+    "$date": "2024-01-24T10:12:05.937Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "659815c07cf787120fb34b16"
+  },
+  "name": "horror",
+  "lastUpdate": {
+    "$date": "2024-01-05T14:44:16.746Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "659815c07cf787120fb34b17"
+  },
+  "name": "mystery",
+  "lastUpdate": {
+    "$date": "2024-01-05T14:44:16.787Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "659815c07cf787120fb34b18"
+  },
+  "name": "drama",
+  "lastUpdate": {
+    "$date": "2024-01-05T14:44:16.789Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "659815c07cf787120fb34b19"
+  },
+  "name": "fantasy",
+  "lastUpdate": {
+    "$date": "2024-01-05T14:44:16.792Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "659816977cf787120fb34b1a"
+  },
+  "name": "romance",
+  "lastUpdate": {
+    "$date": "2024-01-05T14:47:51.178Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "659816977cf787120fb34b1b"
+  },
+  "name": "thriller",
+  "lastUpdate": {
+    "$date": "2024-01-05T14:47:51.182Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "659816977cf787120fb34b1c"
+  },
+  "name": "crime",
+  "lastUpdate": {
+    "$date": "2024-01-05T14:47:51.186Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "659816977cf787120fb34b1d"
+  },
+  "name": "sci-Fi",
+  "lastUpdate": {
+    "$date": "2024-01-05T14:47:51.190Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "659bfc67704a482277bbee6f"
+  },
+  "name": "anime",
+  "lastUpdate": {
+    "$date": "2024-01-08T13:45:11.435Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "65a5436a32ca62509762423b"
+  },
+  "name": "adventure",
+  "lastUpdate": {
+    "$date": "2024-01-15T14:38:34.463Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+},
+{
+  "_id": {
+    "$oid": "65a5436a32ca62509762423c"
+  },
+  "name": "science fiction",
+  "lastUpdate": {
+    "$date": "2024-01-15T14:38:34.467Z"
+  },
+  "_class": "com.thuongmoon.movieservice.model.Genre"
+}]

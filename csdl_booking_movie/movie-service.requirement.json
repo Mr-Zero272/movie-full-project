@@ -1,0 +1,220 @@
+[{
+  "_id": {
+    "$oid": "65a53ba732ca625097624235"
+  },
+  "screeningsPerWeek": 14,
+  "specificRequireTypes": [
+    {
+      "typeName": "2D subtitles",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "2D",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "3D",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "3D subtitles",
+      "nScreenings": 2
+    }
+  ],
+  "totalWeekScheduling": 3,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+},
+{
+  "_id": {
+    "$oid": "65a53fbd32ca625097624237"
+  },
+  "screeningsPerWeek": 14,
+  "specificRequireTypes": [
+    {
+      "typeName": "3D",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "2D",
+      "nScreenings": 2
+    },
+    {
+      "typeName": "2D subtitles",
+      "nScreenings": 8
+    }
+  ],
+  "totalWeekScheduling": 1,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+},
+{
+  "_id": {
+    "$oid": "65a541e732ca625097624239"
+  },
+  "screeningsPerWeek": 10,
+  "specificRequireTypes": [
+    {
+      "typeName": "2D",
+      "nScreenings": 3
+    },
+    {
+      "typeName": "3D",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "IMAX 3D",
+      "nScreenings": 3
+    }
+  ],
+  "totalWeekScheduling": 0,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+},
+{
+  "_id": {
+    "$oid": "65a5448c32ca62509762423d"
+  },
+  "screeningsPerWeek": 14,
+  "specificRequireTypes": [
+    {
+      "typeName": "2D",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "3D subtitles",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "2D subtitles",
+      "nScreenings": 2
+    },
+    {
+      "typeName": "3D",
+      "nScreenings": 4
+    }
+  ],
+  "totalWeekScheduling": 3,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+},
+{
+  "_id": {
+    "$oid": "65a5462c32ca62509762423f"
+  },
+  "screeningsPerWeek": 7,
+  "specificRequireTypes": [
+    {
+      "typeName": "IMAX 3D",
+      "nScreenings": 1
+    },
+    {
+      "typeName": "2D",
+      "nScreenings": 2
+    },
+    {
+      "typeName": "3D",
+      "nScreenings": 2
+    },
+    {
+      "typeName": "2D subtitles",
+      "nScreenings": 2
+    }
+  ],
+  "totalWeekScheduling": 3,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+},
+{
+  "_id": {
+    "$oid": "65a5489b32ca625097624241"
+  },
+  "screeningsPerWeek": 7,
+  "specificRequireTypes": [
+    {
+      "typeName": "2D",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "3D",
+      "nScreenings": 3
+    }
+  ],
+  "totalWeekScheduling": 2,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+},
+{
+  "_id": {
+    "$oid": "65a5498132ca625097624243"
+  },
+  "screeningsPerWeek": 8,
+  "specificRequireTypes": [
+    {
+      "typeName": "2D",
+      "nScreenings": 3
+    },
+    {
+      "typeName": "3D",
+      "nScreenings": 3
+    },
+    {
+      "typeName": "2D subtitiles",
+      "nScreenings": 1
+    },
+    {
+      "typeName": "3D subtitles",
+      "nScreenings": 1
+    }
+  ],
+  "totalWeekScheduling": 3,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+},
+{
+  "_id": {
+    "$oid": "65a54a5c32ca625097624245"
+  },
+  "screeningsPerWeek": 7,
+  "specificRequireTypes": [
+    {
+      "typeName": "2D subtitles",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "3D subtitles",
+      "nScreenings": 3
+    }
+  ],
+  "totalWeekScheduling": 1,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+},
+{
+  "_id": {
+    "$oid": "65cce3cfd20a340ec73bc187"
+  },
+  "screeningsPerWeek": 10,
+  "specificRequireTypes": [
+    {
+      "typeName": "2D",
+      "nScreenings": 4
+    },
+    {
+      "typeName": "2D subtitles",
+      "nScreenings": 6
+    }
+  ],
+  "totalWeekScheduling": 1,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+},
+{
+  "_id": {
+    "$oid": "65d05323b3cb2f8948fc8f89"
+  },
+  "screeningsPerWeek": 12,
+  "specificRequireTypes": [
+    {
+      "typeName": "2D",
+      "nScreenings": 5
+    },
+    {
+      "typeName": "3D",
+      "nScreenings": 7
+    }
+  ],
+  "totalWeekScheduling": 1,
+  "_class": "com.thuongmoon.movieservice.model.Requirement"
+}]
