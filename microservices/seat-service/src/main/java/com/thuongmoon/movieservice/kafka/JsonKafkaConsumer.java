@@ -1,17 +1,26 @@
 package com.thuongmoon.movieservice.kafka;
 
+import com.thuongmoon.movieservice.request.ChoosingSeatRequest;
 import com.thuongmoon.movieservice.request.GenerateSeatStatusRequest;
 import com.thuongmoon.movieservice.services.SeatStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JsonKafkaConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonKafkaConsumer.class);
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    public void sendDataToWebSocket(String destination, Object data) {
+        messagingTemplate.convertAndSend(destination, data);
+    }
 //    private final KafkaTemplate<String, GenerateSeatStatusRequest> kafkaTemplate;
     private final SeatStatusService seatStatusService;
 
@@ -26,19 +35,10 @@ public class JsonKafkaConsumer {
         LOGGER.info("Receive request generate -> " + request.toString());
     }
 
-//    @KafkaListener(topics = "seat", groupId = "myGroup")
-//    public void changeStatusSeat(@Payload Long id) {
-//        Optional<Seat> seat = seatDao.findById(id);
-//        if(seat.isPresent()) {
-//            if(seat.get().getStatus().equals("available")) {
-//                seat.get().setStatus("choosing");
-//                seatDao.save(seat.get());
-//            } else {
-//                seat.get().setStatus("available");
-//                seatDao.save(seat.get());
-//            }
-//        } else {
-//            LOGGER.info("ERROR FIND EDIT SEAT STATUS");
-//        }
-//    }
+    @KafkaListener(topics = "choosing_seat",  groupId = "movie_booking_project")
+    public void consumeSeat(@Payload ChoosingSeatRequest seatStatus) {
+        LOGGER.info(String.format("Received: -> %s", seatStatus.toString()));
+        seatStatusService.updateSeatStatus(seatStatus);
+        sendDataToWebSocket("/topic/seat-state", seatStatus);
+    }
 }

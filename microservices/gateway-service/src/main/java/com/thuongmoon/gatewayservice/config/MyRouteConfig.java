@@ -16,8 +16,10 @@ public class MyRouteConfig {
     public RouteLocator myRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("media-service", predicateSpec ->
-                        predicateSpec.path("/api/v1/images/**").or()
-                                .path("/api/v1/videos/**")
+                        predicateSpec.path("/api/v1/images/**")
+                                .uri("lb://media-service"))
+                .route("media-service", predicateSpec ->
+                        predicateSpec.path("/api/v1/videos/**")
                                 .uri("lb://media-service"))
                 .route("movie-service", predicateSpec ->
                         predicateSpec.path("/api/v1/movie")

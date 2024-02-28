@@ -4,6 +4,7 @@ import com.thuongmoon.movieservice.dao.SeatDao;
 import com.thuongmoon.movieservice.dao.SeatStatusDao;
 import com.thuongmoon.movieservice.models.Seat;
 import com.thuongmoon.movieservice.models.SeatStatus;
+import com.thuongmoon.movieservice.request.ChoosingSeatRequest;
 import com.thuongmoon.movieservice.request.GenerateSeatStatusRequest;
 import com.thuongmoon.movieservice.response.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -43,5 +45,13 @@ public class SeatStatusService {
 
     public List<SeatStatus> getListSeatStatusByScreeningId(String screeningId) {
         return seatStatusDao.findSeatStatusByScreeningId(screeningId);
+    }
+
+    public void updateSeatStatus(ChoosingSeatRequest request) {
+        Optional<SeatStatus> seatStatus = seatStatusDao.findById(request.getId());
+        if (seatStatus.isPresent()) {
+            seatStatus.get().setStatus(request.getStatus());
+            seatStatusDao.save(seatStatus.get());
+        }
     }
 }

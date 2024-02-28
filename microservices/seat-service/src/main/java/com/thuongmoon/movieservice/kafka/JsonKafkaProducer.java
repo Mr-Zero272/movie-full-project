@@ -1,6 +1,7 @@
 package com.thuongmoon.movieservice.kafka;
 
 import com.thuongmoon.movieservice.models.Seat;
+import com.thuongmoon.movieservice.request.ChoosingSeatRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,7 +16,7 @@ import java.util.List;
 public class JsonKafkaProducer {
     private static Logger LOGGER = LoggerFactory.getLogger(JsonKafkaProducer.class);
 
-    private KafkaTemplate<String, List<Seat>> kafkaTemplate;
+    private final KafkaTemplate<String, List<Seat>> kafkaTemplate;
 
     public JsonKafkaProducer(KafkaTemplate<String, List<Seat>> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
@@ -30,6 +31,20 @@ public class JsonKafkaProducer {
                 .setHeader(KafkaHeaders.TOPIC, "seat_status")
                 .build();
 
+        kafkaTemplate.send(message);
+    }
+
+    public void sendSeatStatusInfo(ChoosingSeatRequest request) {
+        if (request.getStatus().equals("available")) {
+            request.setStatus("choosing");
+        } else {
+            request.setStatus("available");
+        }
+
+        Message<ChoosingSeatRequest> message = MessageBuilder
+                .withPayload(request)
+                .setHeader(KafkaHeaders.TOPIC, "choosing_seat")
+                .build();
         kafkaTemplate.send(message);
     }
 }

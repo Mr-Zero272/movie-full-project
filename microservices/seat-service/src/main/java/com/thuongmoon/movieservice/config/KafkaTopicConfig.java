@@ -8,11 +8,11 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
 
-//    @Bean
-//    public NewTopic mrzeroTopic() {
-//        return TopicBuilder.name("mrzero")
-//                .build();
-//    }
+    @Bean
+    public NewTopic choosingSeatTopic() {
+        return TopicBuilder.name("choosing_seat")
+                .build();
+    }
 
     @Bean
     public NewTopic seatTopic() {

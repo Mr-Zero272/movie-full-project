@@ -1,0 +1,25 @@
+.wrapper {
+    margin: 20px 0 20px 0;
+    width: 100%;
+
+    + .wrapper {
+        margin-left: 20px;
+    }
+}
+
+.heading {
+    display: flex;
+}
+
+.title {
+    color: var(--text-color);
+    text-transform: capitalize;
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.line-gradient {
+    height: 2px;
+    background: linear-gradient(to right, var(--primary), white);
+}

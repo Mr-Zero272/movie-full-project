@@ -1,0 +1,32 @@
+.wrapper {
+    align-items: center;
+    display: flex;
+    padding: 6px 0;
+    width: 100%;
+    cursor: pointer;
+}
+
+.avatar {
+    background: transparent;
+    border-radius: 50%;
+    font-size: 0.5rem;
+
+    .avatar-image {
+        //border-radius: 50%;
+        height: 12em;
+        object-fit: cover;
+        width: 10em;
+    }
+}
+
+.name {
+    word-wrap: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: #292929;
+    display: -webkit-box;
+    font-size: 1.4rem;
+    line-height: 1.6;
+    margin-left: 12px;
+    overflow: hidden;
+}
