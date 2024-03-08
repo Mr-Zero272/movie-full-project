@@ -5,7 +5,7 @@ function useNotify() {
         toast(message, {
             type: type,
             style: { fontSize: '1.4rem' },
-            position: toast.POSITION.TOP_RIGHT,
+            position: 'top-right',
             closeOnClick: true,
             autoClose: 1500,
             className: 'foo-bar',

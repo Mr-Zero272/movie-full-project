@@ -10,7 +10,7 @@ import { MovieItemWithDesc } from '~/components/MovieItem';
 import NavStepper from '~/components/NavStepper';
 import { Step1 } from './FormBooking';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { fetchInfoAddToCart } from '~/store/add-to-cart-slice';
+import { addToCartActions, fetchInfoAddToCart } from '~/store/add-to-cart-slice';
 import * as cartService from '~/apiServices/cartService';
 import { fetchQuantityCart } from '~/store/cart-quantity';
 import { screeningService } from '~/apiServices';
@@ -26,16 +26,10 @@ function AddToCart() {
     //console.log(id);
     //console.log(addToCartInfo);
     useEffect(() => {
-        const screeningId = searchParams.get('screeningIds').split(',')[0];
-        console.log(screeningId);
-        //console.log('pagegoi', id);
-        // const fetchScreeningInfo = async () => {
-        //     const res = await screeningService.getScreeningsById(screeningId);
-        //     setScreeningInfo(res);
-        //     console.log(res);
-        // };
-        // fetchScreeningInfo();
+        const listScreenings = searchParams.get('screeningIds').split(',');
+        const screeningId = listScreenings[0];
         dispatch(fetchInfoAddToCart(screeningId));
+        dispatch(addToCartActions.setListScreening(listScreenings));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

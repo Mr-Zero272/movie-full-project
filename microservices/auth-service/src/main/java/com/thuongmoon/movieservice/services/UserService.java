@@ -4,16 +4,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thuongmoon.movieservice.config.JwtService;
 import com.thuongmoon.movieservice.dao.UserDao;
+import com.thuongmoon.movieservice.dto.Pagination;
 import com.thuongmoon.movieservice.dto.UserDto;
 import com.thuongmoon.movieservice.dto.UserUpdateDto;
 import com.thuongmoon.movieservice.feign.MediaInterface;
 import com.thuongmoon.movieservice.kafka.JsonKafkaProducer;
 import com.thuongmoon.movieservice.models.User;
 import com.thuongmoon.movieservice.response.ResponseMessage;
+import com.thuongmoon.movieservice.response.ResponsePagination;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -99,8 +104,7 @@ public class UserService  {
 		String username = "";
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			String currentUserName = authentication.getName();
-			username = currentUserName;
+            username = authentication.getName();
 		}
 		return username;
 	}
@@ -125,7 +129,7 @@ public class UserService  {
 						.id(currentUser.get().getId())
 						.username(currentUser.get().getUsername())
 						.email(currentUser.get().getEmail())
-						.phone(currentUser.get().getPhoneNumber())
+						.phoneNumber(currentUser.get().getPhoneNumber())
 						.avatar(currentUser.get().getAvatar())
 						.authorities(currentUser.get().getAuthorities())
 						.build();
@@ -153,28 +157,29 @@ public class UserService  {
 
 					int point1 = user.get().getAvatar().lastIndexOf("?type=avatar");
 					String oldName =user.get().getAvatar().substring(36, point1);
-					System.out.println(oldName);
 					mediaInterface.addAvatarUser(avatar, newFileName, oldName);
-					user.get().setAvatar("http://localhost:8272/api/v1/images/" + newFileName + "?type=avatar");
-					userUpdateDto.setAvatar("http://localhost:8272/api/v1/images/" + newFileName + "?type=avatar");
+					user.get().setAvatar("http://localhost:8272/api/v1/media/images/" + newFileName + "?type=avatar");
+					userUpdateDto.setAvatar("http://localhost:8272/api/v1/media/images/" + newFileName + "?type=avatar");
+				} else {
+					userUpdateDto.setAvatar(user.get().getAvatar());
 				}
 				// send to kafka to update
 				userUpdateDto.setId(user.get().getId());
 				userUpdateDto.setUsername(user.get().getUsername());
 				userUpdateDto.setEmail(newUserInfo.getEmail());
-				userUpdateDto.setPhone(newUserInfo.getPhone());
+				userUpdateDto.setPhone(newUserInfo.getPhoneNumber());
 				jsonKafkaProducer.updateUser(userUpdateDto);
 
 
 				user.get().setEmail(newUserInfo.getEmail());
-				user.get().setPhoneNumber(newUserInfo.getPhone());
+				user.get().setPhoneNumber(newUserInfo.getPhoneNumber());
 				User updatedUser = userDao.save(user.get());
 				UserDto userDtoUpdated = UserDto.builder()
 						.id(updatedUser.getId())
 						.username(updatedUser.getUsername())
 						.email(updatedUser.getEmail())
 						.avatar(updatedUser.getAvatar())
-						.phone(updatedUser.getPhoneNumber())
+						.phoneNumber(updatedUser.getPhoneNumber())
 						.authorities(updatedUser.getAuthorities())
 						.build();
 
@@ -183,5 +188,29 @@ public class UserService  {
 			}
 		}
 		return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+	}
+
+	public ResponseEntity<ResponsePagination> fetchPaginationMovies(String  role, String usernameLike, int size, int cPage) {
+		System.out.println(role);
+		ResponsePagination responsePagination = new ResponsePagination();
+		if (role.equals("ADMIN")) {
+			Pagination pagination = new Pagination();
+			Page<UserDto> page = null;
+			Pageable pageable = PageRequest.of(cPage - 1, size);
+			if (usernameLike != null) {
+				page = userDao.findAllByName(pageable, usernameLike);
+			}
+
+			pagination.setSize(page.getSize());
+			pagination.setTotalPage(page.getTotalPages());
+			pagination.setCurrentPage(page.getNumber() + 1);
+			pagination.setTotalResult((int) page.getTotalElements());
+
+			responsePagination.setPagination(pagination);
+			responsePagination.setData(page.getContent());
+		} else {
+			responsePagination.setData("You are not an admin!");
+		}
+		return new ResponseEntity<>(responsePagination, HttpStatus.OK);
 	}
 }

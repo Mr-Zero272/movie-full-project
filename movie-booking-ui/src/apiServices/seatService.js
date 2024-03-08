@@ -9,3 +9,13 @@ export const getListSeatStatusByScreeningId = async (screeningId) => {
         console.log(error);
     }
 };
+
+export const refreshSeatState = async (listSeatIds) => {
+    try {
+        const res = await auditoriumRequest.postRequest(`/seat-status/refresh-state`, listSeatIds);
+        return res;
+    } catch (error) {
+        alert('Refresh seat status error!');
+        console.log(error);
+    }
+};

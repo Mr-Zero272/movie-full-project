@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import PrivateRouter from '~/routes/PrivateRouter';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-loading-skeleton/dist/skeleton.css';
+import 'tippy.js/dist/tippy.css';
 
 function App() {
     // if (modalInfo.isOpen) {

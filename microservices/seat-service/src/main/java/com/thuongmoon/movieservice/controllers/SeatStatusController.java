@@ -35,4 +35,9 @@ public class SeatStatusController {
     public ResponseEntity<ResponseMessage> generateSeatStatusByScreeningId(@RequestBody GenerateSeatStatusRequest request) {
         return seatStatusService.generateSSByScreeningId(request);
     }
+
+    @PostMapping("/refresh-state")
+    public ResponseEntity<ResponseMessage> refreshSeatState(@RequestBody List<String> listSeatIds) {
+        return seatStatusService.refreshSeatState(listSeatIds);
+    }
 }

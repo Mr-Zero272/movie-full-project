@@ -149,17 +149,23 @@ const addToCartSlice = createSlice({
                 activeDate: action.payload,
             };
         },
-        setActiveScreening(state, action) {
-            return {
-                ...state,
-                activeScreening: action.payload,
-            };
-        },
+        // setActiveScreening(state, action) {
+        //     return {
+        //         ...state,
+        //         activeScreening: action.payload,
+        //     };
+        // },
         setNecessaryInfoAddToCart(state, action) {
             return {
                 ...state,
                 activeDate: action.payload.activeDate,
                 activeShowtime: action.payload.activeShowtime,
+            };
+        },
+        setListScreening(state, action) {
+            return {
+                ...state,
+                screenings: action.payload,
             };
         },
     },
@@ -168,12 +174,16 @@ const addToCartSlice = createSlice({
             state.loading = true;
         });
         builder.addCase(fetchInfoAddToCart.fulfilled, (state, action) => {
-            // console.log(action.payload);
+            console.log(action.payload);
             state.activeMovie = action.payload.movie.id;
             state.movieInfo = action.payload.movie;
             state.activeAuditorium = action.payload.auditoriumId;
-            state.activeScreening = action.payload.id;
-            state.screenings = [action.payload.id];
+            state.activeScreening = {
+                id: action.payload.id,
+                type: action.payload.type,
+                screeningStart: action.payload.screeningStart,
+            };
+            // state.screenings = [action.payload.id];
             state.activeDate = action.payload.screeningStart.split('T')[0] + 'T00:00:00';
             state.loading = false;
         });

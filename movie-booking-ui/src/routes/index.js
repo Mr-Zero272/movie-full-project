@@ -1,5 +1,5 @@
 //Layouts
-import { HeaderOnly } from '~/Layout';
+import { AdminDefaultLayout, HeaderOnly } from '~/Layout';
 
 //Pages
 import Home from '~/pages/Home';
@@ -15,6 +15,7 @@ import AddToCart from '~/pages/Booking/AddToCart';
 import Profile from '~/pages/Profile';
 import Payment from '~/pages/Payment';
 import Notify from '~/pages/Notify';
+import Dashboard from '~/pages/AdminPage/dashboard';
 
 //Public routes
 const publicRoutes = [
@@ -26,6 +27,7 @@ const publicRoutes = [
     { path: '/login', component: Login, layout: null },
     { path: '/register', component: Register, layout: null },
     { path: '/notify', component: Notify },
+    { path: '/admin', component: Dashboard, layout: AdminDefaultLayout },
 ];
 
 const privateRoutes = [

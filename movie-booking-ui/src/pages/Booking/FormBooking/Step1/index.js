@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { format } from 'date-fns';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
@@ -9,10 +8,8 @@ import { faArrowRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import Button from '~/components/Button';
 import styles from './Step1.module.scss';
 import SeatSection from './SeatSection';
-import { fetchQuantityCart } from '~/store/cart-quantity';
-import { addToCartActions, fetchInfoAddToCart } from '~/store/add-to-cart-slice';
+import { addToCartActions } from '~/store/add-to-cart-slice';
 import MyCustomDatePicker from '~/components/MyCustomDatePicker';
-import ScreeningItemPicker from './ScreeningItemPicker';
 import ScreeningPicker from './ScreeningPicker';
 import Seat from './Seat';
 
@@ -29,9 +26,9 @@ function Step1({ onNextStep = defaultF, nextBtn = false, addToCartBtn = false, o
         onSubmit();
     };
     //console.log(addToCartInfo);
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    // useEffect(() => {
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
 
     const handleChooseDate = (date) => {
         dispatch(addToCartActions.setActiveDate(date));
@@ -95,8 +92,11 @@ function Step1({ onNextStep = defaultF, nextBtn = false, addToCartBtn = false, o
                             </div>
                         </div>
                         {nextBtn && (
-                            <button className={cx('control-btn-nextStep')} onClick={() => onNextStep(2)}>
-                                <FontAwesomeIcon icon={faArrowRight} />
+                            <button
+                                className="text-primary-normal border border-primary-normal hover:bg-primary-hover hover:text-white focus:ring-4 focus:outline-none focus:ring-primary-focus font-medium rounded-lg text-sm p-3 text-center inline-flex items-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500"
+                                onClick={() => onNextStep(2)}
+                            >
+                                <FontAwesomeIcon className="size-7" icon={faArrowRight} />
                             </button>
                         )}
                         {addToCartBtn && (

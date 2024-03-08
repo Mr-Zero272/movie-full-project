@@ -26,14 +26,14 @@ public class AuthenticationService {
 	public AuthenticationResponse register(RegisterRequest request) {
 		String avatar = "", phone = "";
 		if (request.getAvatar() == null || request.getAvatar().isEmpty() || request.getAvatar().isBlank()) {
-			avatar = "http://localhost:8272/api/v1/images/no_image.png?type=avatar";
+			avatar = "http://localhost:8272/api/v1/media/images/no_image.png?type=avatar";
 		} else {
 			avatar = request.getAvatar();
 		}
 
 		if (request.getPhoneNumber() == null || request.getPhoneNumber().isEmpty()
 				|| request.getPhoneNumber().isBlank()) {
-			phone = "Please update yourphone number!";
+			phone = "Please update your phone number!";
 		} else {
 			phone = request.getPhoneNumber();
 		}

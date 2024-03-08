@@ -86,7 +86,7 @@ function ScreeningPicker({ movieId, activeDate, onChooseScreening = defaultFunc,
                         <ScreeningItemPicker
                             key={screening.id}
                             {...screening}
-                            active={activeScreening === screening.id}
+                            active={activeScreening.id === screening.id}
                             onClick={handleChooseScreening}
                         />
                     ))

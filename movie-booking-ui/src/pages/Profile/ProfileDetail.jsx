@@ -53,7 +53,7 @@ function ProfileDetail() {
 
     useEffect(() => {
         return () => {
-            newAvatar && URL.revokeObjectURL(newAvatar.review);
+            newAvatar && URL.revokeObjectURL(newAvatar.preview);
         };
     }, [newAvatar]);
 
@@ -103,7 +103,11 @@ function ProfileDetail() {
                 phone: userDetail.phone,
             };
 
-            formData.append('avatar', newAvatar);
+            if (newAvatar !== null) {
+                formData.append('avatar', newAvatar);
+            } else {
+                formData.append('avatar', null);
+            }
             formData.append('userInfo', JSON.stringify(userInfo));
             const res = await userService.updateUserInfo(token, formData);
             if (res) {
@@ -123,6 +127,7 @@ function ProfileDetail() {
                         ...prev,
                         ...res.data,
                     }));
+                    setNewAvatar(null);
                 } else {
                     notify('Update userinfo failed!', 'error');
                 }

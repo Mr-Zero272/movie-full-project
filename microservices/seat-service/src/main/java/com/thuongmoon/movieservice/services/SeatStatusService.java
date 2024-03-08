@@ -54,4 +54,21 @@ public class SeatStatusService {
             seatStatusDao.save(seatStatus.get());
         }
     }
+
+    @Transactional
+    public ResponseEntity<ResponseMessage> refreshSeatState(List<String> listSeatIds) {
+        ResponseMessage responseMessage = new ResponseMessage();
+        List<SeatStatus> seatStatusList = seatStatusDao.findAllById(listSeatIds);
+        seatStatusList.forEach(seatStatus -> {
+            seatStatus.setStatus("available");
+        });
+        seatStatusDao.saveAll(seatStatusList);
+
+        responseMessage.setMessage("Refresh state successfully!");
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    }
+
+    public List<SeatStatus> findAllSeatByIds(List<String> seatIds) {
+        return seatStatusDao.findAllById(seatIds);
+    }
 }

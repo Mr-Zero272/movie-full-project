@@ -20,4 +20,10 @@ public class KafkaTopicConfig {
                 .build();
     }
 
+    @Bean
+    public NewTopic cartTopic() {
+        return TopicBuilder.name("cart_reply")
+                .build();
+    }
+
 }

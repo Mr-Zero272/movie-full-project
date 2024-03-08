@@ -11,6 +11,7 @@ import { MovieItemWithDesc } from '~/components/MovieItem';
 import NavStepper from '~/components/NavStepper';
 import { Step1, Step2, Step3 } from './FormBooking';
 import { addToCartActions, fetchInfoAddToCart } from '~/store/add-to-cart-slice';
+import useNotify from '~/hooks/useNotify';
 
 const getUniqueArray = (array) => {
     var uniqueArray = array.filter(
@@ -29,24 +30,26 @@ const NAV_PURCHASE_TICKET = ['choose seats', 'purchase', 'complete'];
 function Booking() {
     let [searchParams, setSearchParams] = useSearchParams();
     const tab = searchParams.get('tab');
-    //console.log(tab);
+    const screeningIds = searchParams.get('screeningIds');
+    // console.log(tab);
     const dispatch = useDispatch();
     const [activeStep, setActiveStep] = useState(+tab);
     const checkoutInfo = useSelector((state) => state.addToCart);
     const [userInfo, setUserInfo] = useState({ username: '', email: '' });
     let sliderRef = useRef(null);
-    const movieId = checkoutInfo.activeMovie;
 
-    const notify = (message, type = 'success') => {
-        toast(message, {
-            type: type,
-            style: { fontSize: '1.4rem' },
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 2000,
-            closeOnClick: true,
-            className: 'foo-bar',
-        });
-    };
+    const notify = useNotify();
+
+    useEffect(() => {
+        const listScreenings = screeningIds.split(',');
+        const screeningId = listScreenings[0];
+        console.log(screeningId);
+        dispatch(fetchInfoAddToCart(screeningId));
+        dispatch(addToCartActions.setListScreening(listScreenings));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    console.log(checkoutInfo);
 
     const handleActiveStep = useCallback(
         (stepIndex) => {
@@ -75,7 +78,7 @@ function Booking() {
                 }
             }
             sliderRef.current.slickGoTo(stepIndex - 1);
-            setSearchParams({ tab: stepIndex });
+            setSearchParams({ screeningIds: screeningIds, tab: stepIndex });
             setActiveStep(stepIndex);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,11 +106,11 @@ function Booking() {
 
     //console.log(movieId);
     //console.log(checkoutInfo);
-    useEffect(() => {
-        //console.log('pagegoi', id);
-        dispatch(fetchInfoAddToCart(movieId));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    // useEffect(() => {
+    //     //console.log('pagegoi', id);
+    //     dispatch(fetchInfoAddToCart(movieId));
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
 
     const getCurrentMoviePosition = () => {
         const currentMoviePosition = uniqueListScreeningActive.findIndex(
@@ -116,38 +119,34 @@ function Booking() {
         return currentMoviePosition;
     };
     const handleNextBooking = useCallback(async () => {
-        const currentMoviePosition = getCurrentMoviePosition();
-        let nextMoviePosition =
-            currentMoviePosition + 1 > uniqueListScreeningActive?.length - 1 ? 0 : currentMoviePosition + 1;
-        const currentMovieInfo = uniqueListScreeningActive[nextMoviePosition];
-        await dispatch(
-            addToCartActions.onChangeBooking({
-                activeMovie: currentMovieInfo.movieId,
-                activeDate: currentMovieInfo.activeDate,
-                activeShowtime: currentMovieInfo.screeningId,
-                activeAuditorium: currentMovieInfo.auditoriumId,
-            }),
+        const currentIndexScreening = checkoutInfo.screenings.findIndex(
+            (item) => item === checkoutInfo.activeScreening.id,
         );
-        // Check if the action was successful
-        dispatch(fetchInfoAddToCart(currentMovieInfo.movieId));
-        // Dispatch the second action with the payload from the first action
+        let nextScreening = 0;
+        if (currentIndexScreening + 1 > checkoutInfo.screenings?.length - 1) {
+            nextScreening = 0;
+        } else {
+            nextScreening = currentIndexScreening + 1;
+        }
+        console.log(nextScreening);
+        console.log(checkoutInfo.screenings[nextScreening]);
+        dispatch(fetchInfoAddToCart(checkoutInfo.screenings[nextScreening]));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [checkoutInfo]);
 
     const handlePrevBooking = useCallback(async () => {
-        const currentMoviePosition = getCurrentMoviePosition();
-        let prevMoviePosition =
-            currentMoviePosition - 1 < 0 ? uniqueListScreeningActive?.length - 1 : currentMoviePosition - 1;
-        const currentMovieInfo = uniqueListScreeningActive[prevMoviePosition];
-        await dispatch(
-            addToCartActions.onChangeBooking({
-                activeMovie: currentMovieInfo.movieId,
-                activeDate: currentMovieInfo.activeDate,
-                activeShowtime: currentMovieInfo.screeningId,
-                activeAuditorium: currentMovieInfo.auditoriumId,
-            }),
+        const currentIndexScreening = checkoutInfo.screenings.findIndex(
+            (item) => item === checkoutInfo.activeScreening.id,
         );
-        dispatch(fetchInfoAddToCart(currentMovieInfo.movieId));
+        let prevScreening = 0;
+        if (currentIndexScreening - 1 < 0) {
+            prevScreening = checkoutInfo.screenings?.length - 1;
+        } else {
+            prevScreening = currentIndexScreening - 1;
+        }
+        console.log(checkoutInfo.screenings[prevScreening]);
+
+        dispatch(fetchInfoAddToCart(checkoutInfo.screenings[prevScreening]));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [checkoutInfo]);
 
@@ -157,16 +156,16 @@ function Booking() {
     }, []);
 
     return (
-        <div className="">
-            <div className="">
+        <div className="p-7 flex md:px-10 md:py-5">
+            <div className="hidden xl:mr-7 xl:block xl:w-[20%]">
                 <MovieItemWithDesc
-                    data={checkoutInfo.movieInfo}
-                    arrows={uniqueListScreeningActive?.length > 1}
+                    {...checkoutInfo.movieInfo}
+                    arrows={true}
                     onNext={handleNextBooking}
                     onPrev={handlePrevBooking}
                 />
             </div>
-            <div className="">
+            <div className="w-full xl:w-[80%] xl:pl-4">
                 <div className="">
                     <NavStepper items={NAV_PURCHASE_TICKET} activeStep={activeStep} onClick={handleActiveStep} />
                 </div>

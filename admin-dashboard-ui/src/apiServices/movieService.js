@@ -13,3 +13,21 @@ export const addMovie = async (formData, token) => {
         console.log('Add movie error!');
     }
 };
+
+export const searchMovie = async (q, type = '', genreIds = [], manufacturers = [], size = 6, cPage = 1) => {
+    try {
+        const res = await movieRequest.get('/search', {
+            params: {
+                q,
+                type,
+                genreIds,
+                manufacturers,
+                size,
+                cPage,
+            },
+        });
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};

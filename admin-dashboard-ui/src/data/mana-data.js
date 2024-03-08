@@ -1,6 +1,8 @@
 import { DoScheduleForm, GenreForm, MovieAddForm } from '@/components/form';
 import { GenreCustomTable } from '@/components/CustomTable';
 import { ChartBarIcon, PlusCircleIcon, DocumentChartBarIcon } from '@heroicons/react/24/solid';
+import GenreTable from '@/pages/dashboard/manage/genre/genreTable';
+import MovieTable from '@/pages/dashboard/manage/movie/movieTable';
 
 export const manageData = {
     Genre: [
@@ -8,7 +10,7 @@ export const manageData = {
             label: 'Genre Table',
             value: 'table',
             icon: DocumentChartBarIcon,
-            content: GenreCustomTable,
+            content: GenreTable,
         },
         {
             label: 'Add gere',
@@ -19,14 +21,14 @@ export const manageData = {
     ],
     Movie: [
         {
-            label: 'Schedule Table',
+            label: 'Movie table',
             value: 'table',
             icon: DocumentChartBarIcon,
-            content: GenreCustomTable,
+            content: MovieTable,
         },
         {
             label: 'Add movie',
-            value: 'addT',
+            value: 'add_movie',
             icon: PlusCircleIcon,
             content: MovieAddForm,
         },

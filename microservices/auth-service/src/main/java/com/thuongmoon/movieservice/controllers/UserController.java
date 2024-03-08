@@ -3,6 +3,7 @@ package com.thuongmoon.movieservice.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thuongmoon.movieservice.dto.UserDto;
 import com.thuongmoon.movieservice.response.ResponseMessage;
+import com.thuongmoon.movieservice.response.ResponsePagination;
 import com.thuongmoon.movieservice.services.UserService;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ public class UserController {
 	private final UserService userService;
 	
 	@GetMapping
-	public ResponseEntity<UserDto> getUserByUsername(@NonNull HttpServletRequest request) {
+	public ResponseEntity<UserDto> getUserInfo() {
 		return userService.getUserInfo();
 	}
 
@@ -26,42 +27,13 @@ public class UserController {
 	public ResponseEntity<ResponseMessage> updateUserInfo(@RequestPart(value = "avatar", required = false)MultipartFile avatar, @RequestPart("userInfo") String userInfo) throws JsonProcessingException {
 		return userService.updateUser(avatar, userInfo);
 	}
-	
-//	@PutMapping
-//	public ResponseEntity<AuthenticationResponse> updateUser(@NonNull HttpServletRequest request,
-//			@RequestPart("newUsername") String newUsername,
-//			@RequestPart("newEmail") String newEmail,
-//			@RequestPart("newPhoneNumber") String newPhoneNumber) {
-//		String username = userService.getUsernameFromToken(request);
-//		return ResponseEntity.ok(userService.updateUser(username, newUsername, newEmail, newPhoneNumber));
-//	}
-//
-//	@PostMapping("/avatar")
-//	public ResponseEntity<ResponseMessage> updateAvatarImage(@RequestPart("file") MultipartFile file, @NonNull HttpServletRequest request) {
-//		final String authHeader = request.getHeader("Authorization");
-//		final String jwt;
-//		final String username;
-//		jwt = authHeader.substring(7);
-//		username = jwtService.extractUsername(jwt);
-//		String fileName = file.getOriginalFilename();
-//		int dotIndex = fileName.lastIndexOf(".");
-//		String name = fileName.substring(0, dotIndex);
-//		String extension = fileName.substring(dotIndex);
-//		String newFileName = name + username + extension;
-//		String message = "";
-//		Path imagePath = Paths.get("uploads/images/avatars");
-//		try {
-//			if(!userService.updateAvatar(username, newFileName))
-//			{
-//				message = "Something went wrong!!!";
-//				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
-//			}
-//			storageService.saveFileWithPath(imagePath, file, newFileName);
-//			message = "Uploaded the file successfully: " + file.getOriginalFilename();
-//			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-//		} catch (Exception e) {
-//			message = "Could not upload the file: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
-//			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
-//		}
-//	}
+
+	@GetMapping("/search")
+	public ResponseEntity<ResponsePagination> findPaginationUser(
+			@RequestHeader(value = "role", required = true) String role,
+			@RequestParam(required = false) String usernameLike,
+			@RequestParam(required = false, defaultValue = "6") int size,
+			@RequestParam(required = false, defaultValue = "1") int cPage) {
+		return userService.fetchPaginationMovies(role, usernameLike, size, cPage);
+	}
 }

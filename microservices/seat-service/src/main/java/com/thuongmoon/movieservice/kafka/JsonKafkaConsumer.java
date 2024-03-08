@@ -1,15 +1,21 @@
 package com.thuongmoon.movieservice.kafka;
 
+import com.thuongmoon.movieservice.models.SeatStatus;
 import com.thuongmoon.movieservice.request.ChoosingSeatRequest;
 import com.thuongmoon.movieservice.request.GenerateSeatStatusRequest;
+import com.thuongmoon.movieservice.request.ListSeatRequest;
+import com.thuongmoon.movieservice.response.ListSeatResponse;
 import com.thuongmoon.movieservice.services.SeatStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class JsonKafkaConsumer {
@@ -40,5 +46,15 @@ public class JsonKafkaConsumer {
         LOGGER.info(String.format("Received: -> %s", seatStatus.toString()));
         seatStatusService.updateSeatStatus(seatStatus);
         sendDataToWebSocket("/topic/seat-state", seatStatus);
+    }
+
+    @KafkaListener(topics = "cart_send",  groupId = "movie_booking_project")
+    @SendTo("cart_reply")
+    public ListSeatResponse consumeCart(@Payload ListSeatRequest request) {
+        LOGGER.info(String.format("Received: -> %s", request.toString()));
+        List<SeatStatus> listSeats = seatStatusService.findAllSeatByIds(request.getSeatIds());
+        ListSeatResponse seatResponse = new ListSeatResponse();
+        seatResponse.setSeats(listSeats);
+        return seatResponse;
     }
 }

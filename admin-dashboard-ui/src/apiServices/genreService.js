@@ -38,7 +38,6 @@ export const editGenre = async (id, newName) => {
 };
 
 export const getAllGenres = async (q = '', size = 8, cPage = 1) => {
-    const token = localStorage.getItem('token');
     try {
         const res = await movieRequest.get('/genre', {
             params: {
@@ -46,7 +45,6 @@ export const getAllGenres = async (q = '', size = 8, cPage = 1) => {
                 size,
                 cPage,
             },
-            headers: { Authorization: 'Bearer ' + token },
         });
         return res;
     } catch (error) {

@@ -17,6 +17,6 @@ public class UserDto {
 	private String username;
 	private String email;
 	private String avatar;
-	private String phone;
+	private String phoneNumber;
 	private Collection<? extends GrantedAuthority> authorities;
 }

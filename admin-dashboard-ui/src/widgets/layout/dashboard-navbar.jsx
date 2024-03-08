@@ -40,7 +40,7 @@ export function DashboardNavbar() {
     const { pathname } = useLocation();
     const [layout, page] = pathname.split('/').filter((el) => el !== '');
     const { userInfo, loading, error } = useFetchUserInfo();
-    console.log(userInfo);
+    // console.log(userInfo);
     // console.log(error);
     // console.log(currentUser);
 

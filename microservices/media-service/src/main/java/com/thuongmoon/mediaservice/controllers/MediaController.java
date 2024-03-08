@@ -18,7 +18,7 @@ import java.util.List;
 
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.MULTIPART_FORM_DATA;
 
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/media")
 @RestController
 @RequiredArgsConstructor
 public class MediaController {

@@ -22,7 +22,7 @@ function SeatSection({ className }) {
 
     useEffect(() => {
         const fetchListSeats = async () => {
-            const res = await seatService.getListSeatStatusByScreeningId(activeScreening);
+            const res = await seatService.getListSeatStatusByScreeningId(activeScreening.id);
             setListSeats(res);
         };
 
@@ -47,9 +47,9 @@ function SeatSection({ className }) {
     useEffect(() => {
         if (myStompClient !== null) {
             myStompClient.subscribe('/topic/seat-state', (message) => {
-                console.log(listSeats);
-                console.log(message.body);
-                console.log('call sub 1 lan');
+                // console.log(listSeats);
+                // console.log(message.body);
+                // console.log('call sub 1 lan');
                 const seatInfo = JSON.parse(message.body);
                 setListSeats((prevListSeats) => {
                     let listSeatUpdated = prevListSeats.map((seat) => {
@@ -69,6 +69,31 @@ function SeatSection({ className }) {
         }
     }, [listSeats]);
     //sock.readyState
+    console.log(listSeatSelected);
+    useEffect(() => {
+        const refreshSState = async () => {
+            if (listSeatSelected?.length !== 0) {
+                const listSeatIds = listSeatSelected.map((seat) => seat.id);
+                // console.log(listSeatIds);
+                await seatService.refreshSeatState(listSeatIds);
+            }
+        };
+        const handleBeforeUnload = (event) => {
+            refreshSState();
+
+            event.preventDefault();
+            event.returnValue = '';
+            // alert('Confirm refresh');
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        // Cleanup the event listener when the component is unmounted
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [listSeatSelected]);
 
     const handleChooseSeat = useCallback(
         (seatId, seatStatus) => {

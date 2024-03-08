@@ -13,95 +13,8 @@ import { useSelector } from 'react-redux';
 function Profile() {
     const userInfo = useSelector((state) => state.user);
     console.log(userInfo);
-    // const [isEdit, setIsEdit] = useState(false);
-    // const [isEditImage] = useState(false);
-    // const { userInfo, loading, error } = useFetchUserInfo();
     const [activeMenu, setActiveMenu] = useState(() => DropdownMenuProfileData[0].name);
     const [activeTagMenu, setActiveTagMenu] = useState(() => DropdownMenuProfileData[0].menu[0].value);
-    // useEffect(() => {
-    //     setUserDetail((prev) => ({
-    //         ...prev,
-    //         ...userInfo,
-    //     }));
-    // }, [userInfo]);
-
-    // const handleSubmit = useCallback(
-    //     (isEdit) => {
-    //         if (!isEdit) {
-    //             // check mail valid
-    //             if (isValidEmail(userDetail.email) === false) {
-    //                 setUserDetail((prev) => ({
-    //                     ...prev,
-    //                     emailErrorMessage: 'This email is not valid!',
-    //                 }));
-    //                 return;
-    //             } else {
-    //                 setUserDetail((prev) => ({
-    //                     ...prev,
-    //                     emailErrorMessage: '',
-    //                 }));
-    //             }
-
-    //             // check phone valid
-    //             if (isVietnamesePhoneNumber(userDetail.phone) === false) {
-    //                 setUserDetail((prev) => ({
-    //                     ...prev,
-    //                     phoneErrorMessage: 'This phone number is not valid!',
-    //                 }));
-    //                 return;
-    //             } else {
-    //                 setUserDetail((prev) => ({
-    //                     ...prev,
-    //                     phoneErrorMessage: '',
-    //                 }));
-    //             }
-    //             const id = toast.loading('Please wait...');
-    //             // if both is validation continue
-    //             if (isValidEmail(userDetail.email) && isVietnamesePhoneNumber(userDetail.phone)) {
-    //                 const fetchApi = async () => {
-    //                     const token = localStorage.getItem('token');
-    //                     const formData = new FormData();
-    //                     formData.append('newUsername', userDetail.username);
-    //                     formData.append('newEmail', userDetail.email);
-    //                     formData.append('newPhoneNumber', userDetail.phone);
-    //                     const result = await userService.updateUserInfo(token, formData);
-    //                     //console.log(result);
-    //                     if (result.message === 'success') {
-    //                         localStorage.setItem('token', result.token);
-    //                         //console.log(result.token);
-    //                         const newUserInfo = await userService.getCurrentUser(result.token);
-    //                         setUserDetail((prev) => ({
-    //                             ...prev,
-    //                             ...newUserInfo,
-    //                         }));
-    //                     }
-    //                     //console.log(result);
-    //                 };
-
-    //                 fetchApi();
-    //                 setUserDetail((prev) => ({
-    //                     ...prev,
-    //                     emailErrorMessage: '',
-    //                     phoneErrorMessage: '',
-    //                 }));
-    //                 setIsEdit(isEdit);
-    //             }
-    //             setTimeout(() => {
-    //                 toast.update(id, {
-    //                     render: 'Update successfully!',
-    //                     type: 'success',
-    //                     closeOnClick: true,
-    //                     isLoading: false,
-    //                     autoClose: 2000,
-    //                 });
-    //             }, 1000);
-    //         } else {
-    //             setIsEdit(isEdit);
-    //         }
-    //     },
-    //     [userDetail],
-    // );
-    // console.log(userInfo);
 
     const handleChooseMenu = (menuName) => {
         setActiveMenu(menuName);
@@ -110,10 +23,6 @@ function Profile() {
     const handleSelectMenu = (menuTagName) => {
         setActiveTagMenu(menuTagName);
     };
-
-    // console.log(activeTagMenu);
-
-    // console.log(activeTagMenu);
 
     return (
         <div className="bg-white w-full h-full py-10 px-10 flex flex-col xl:flex-row xl:px-60 xl:bg-gray-100">
