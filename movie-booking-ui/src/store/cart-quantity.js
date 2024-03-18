@@ -4,10 +4,9 @@ import axios from 'axios';
 export const fetchQuantityCart = createAsyncThunk('quantityCart/fetch', async () => {
     const token = localStorage.getItem('token');
     //console.log('asdfasd', q, size, cpage, genres, type, manufacturers);
-    const response = await axios.get('http://localhost:8081/api/v1/cart/quantity', {
+    const response = await axios.get('http://localhost:8272/api/v1/reservation/quantity', {
         headers: { Authorization: 'Bearer ' + token },
     });
-    //console.log(response);
     return response.data;
 });
 

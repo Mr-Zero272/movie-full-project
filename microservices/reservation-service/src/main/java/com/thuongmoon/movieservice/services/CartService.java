@@ -13,4 +13,6 @@ public interface CartService {
     ResponseEntity<CartDto> getAllTicketsByUsername(String username) throws ExecutionException, InterruptedException;
 
     ResponseEntity<ResponseMessage> deleteTicketInCart(String username, String ticketId) throws ExecutionException, InterruptedException;
+
+    ResponseEntity<Integer> getTicketQuantity(String username);
 }

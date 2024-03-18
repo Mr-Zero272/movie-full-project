@@ -35,12 +35,6 @@ public class JsonKafkaProducer {
     }
 
     public void sendSeatStatusInfo(ChoosingSeatRequest request) {
-        if (request.getStatus().equals("available")) {
-            request.setStatus("choosing");
-        } else {
-            request.setStatus("available");
-        }
-
         Message<ChoosingSeatRequest> message = MessageBuilder
                 .withPayload(request)
                 .setHeader(KafkaHeaders.TOPIC, "choosing_seat")

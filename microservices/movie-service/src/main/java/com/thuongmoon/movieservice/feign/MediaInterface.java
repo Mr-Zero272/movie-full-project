@@ -16,7 +16,7 @@ import static org.apache.tomcat.util.http.fileupload.FileUploadBase.MULTIPART_FO
 
 @FeignClient("MEDIA-SERVICE")
 public interface MediaInterface {
-    @PostMapping(value = "api/v1/images", consumes = MULTIPART_FORM_DATA, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "api/v1/media/images", consumes = MULTIPART_FORM_DATA, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseMessage> addFiles(
             @RequestPart("files") MultipartFile[] files, @RequestPart("type") String type);
 

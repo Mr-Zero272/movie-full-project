@@ -5,6 +5,7 @@ import com.thuongmoon.movieservice.request.ChoosingSeatRequest;
 import com.thuongmoon.movieservice.request.GenerateSeatStatusRequest;
 import com.thuongmoon.movieservice.request.ListSeatRequest;
 import com.thuongmoon.movieservice.response.ListSeatResponse;
+import com.thuongmoon.movieservice.response.PaymentStatusResponse;
 import com.thuongmoon.movieservice.services.SeatStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +46,13 @@ public class JsonKafkaConsumer {
     public void consumeSeat(@Payload ChoosingSeatRequest seatStatus) {
         LOGGER.info(String.format("Received: -> %s", seatStatus.toString()));
         seatStatusService.updateSeatStatus(seatStatus);
-        sendDataToWebSocket("/topic/seat-state", seatStatus);
     }
+    @KafkaListener(topics = "payment_status",  groupId = "movie_booking_project")
+    public void consumePaymentStatus(@Payload PaymentStatusResponse response) {
+        LOGGER.info(String.format("Received: -> %s", response.toString()));
+        sendDataToWebSocket("/topic/payment-status", response);
+    }
+
 
     @KafkaListener(topics = "cart_send",  groupId = "movie_booking_project")
     @SendTo("cart_reply")

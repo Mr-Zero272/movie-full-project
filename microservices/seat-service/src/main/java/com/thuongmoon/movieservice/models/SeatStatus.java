@@ -25,6 +25,7 @@ public class SeatStatus implements Serializable {
 
 	private String status;
 	private int price;
+	private String whoChoose;
 
 	private String screeningId;
 	@DocumentReference

@@ -1,9 +1,22 @@
 import PropTypes from 'prop-types';
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/solid';
+import { AdjustmentsHorizontalIcon, PencilIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import { useDebounce, useNotify } from '../../hooks';
 import { TrashIcon } from '@heroicons/react/24/outline';
-import { Dialog, Card, CardBody, Typography, CardFooter, Button, IconButton } from '@material-tailwind/react';
+import {
+    Tooltip,
+    Dialog,
+    Card,
+    CardBody,
+    Typography,
+    CardFooter,
+    Button,
+    IconButton,
+    Select,
+    Option,
+} from '@material-tailwind/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 const deF = (e) => {};
 
@@ -59,6 +72,7 @@ function NormalTable({
     onPrevPage = deF,
     onSearch = deF,
     onCheck = deF,
+    onSelectSize = deF,
     onDelete = deF,
 }) {
     const [paginationInfo, setPaginationInfo] = useState(pagination);
@@ -82,6 +96,10 @@ function NormalTable({
     };
 
     useEffect(() => {
+        setPaginationInfo(pagination);
+    }, [pagination]);
+
+    useEffect(() => {
         onSearch(debounce);
     }, [debounce]);
 
@@ -95,6 +113,15 @@ function NormalTable({
         } else {
             notify('This is the last page!', 'error!');
         }
+    };
+
+    const handleSelectSize = (size) => {
+        setPaginationInfo((prev) => ({
+            ...prev,
+            size: size,
+            currentPage: 1,
+        }));
+        onSelectSize(size);
     };
 
     const handlePrevPage = () => {
@@ -139,28 +166,37 @@ function NormalTable({
         });
     };
 
-    console.log(paginationInfo);
     return (
         <div className="p-3 relative overflow-x-auto shadow-md bg-white sm:rounded-lg">
             <DeleteDialog ids={listItemChecked} isModalOpen={isOpen} onToggle={handleToggleDeleteDialog} />
             <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
-                <div className="">
-                    <button
-                        type="button"
-                        className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                    >
-                        Sort
-                        <AdjustmentsHorizontalIcon className="w-3.5 h-3.5 ms-2" />
-                    </button>
-                    <Button
-                        className="inline-flex items-center gap-2"
-                        color="red"
-                        disabled={listItemChecked?.length === 0}
-                        onClick={handleToggleDeleteDialog}
-                    >
-                        <TrashIcon className="w-3.5 h-3.5 me-2" />
-                        Delete
-                    </Button>
+                <div className="flex">
+                    <div>
+                        <button
+                            type="button"
+                            className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                        >
+                            Sort
+                            <AdjustmentsHorizontalIcon className="w-3.5 h-3.5 ms-2" />
+                        </button>
+                        <Button
+                            className="inline-flex items-center gap-2"
+                            color="red"
+                            disabled={listItemChecked?.length === 0}
+                            onClick={handleToggleDeleteDialog}
+                        >
+                            <TrashIcon className="w-3.5 h-3.5 me-2" />
+                            Delete
+                        </Button>
+                    </div>
+                    <div className="ms-3 w-30">
+                        <Select value={paginationInfo.size + ''} label="Select size" onChange={handleSelectSize}>
+                            <Option value="7">7</Option>
+                            <Option value="14">14</Option>
+                            <Option value="20">20</Option>
+                            <Option value="40">40</Option>
+                        </Select>
+                    </div>
                 </div>
                 <label htmlFor="table-search" className="sr-only">
                     Search
@@ -249,12 +285,11 @@ function NormalTable({
                                     </td>
                                 ))}
                                 <td className="px-6 py-4">
-                                    <a
-                                        href="#"
-                                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                                    >
-                                        Edit
-                                    </a>
+                                    <Tooltip content="Edit">
+                                        <IconButton variant="text">
+                                            <PencilIcon className="h-4 w-4" />
+                                        </IconButton>
+                                    </Tooltip>
                                 </td>
                             </tr>
                         ))}
@@ -264,23 +299,25 @@ function NormalTable({
                 <div className="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500">
                     Page {pagination.currentPage} of {pagination.totalPage}
                 </div>
-                <div className="flex">
-                    <Button
-                        variant="outlined"
-                        size="sm"
-                        disabled={pagination.currentPage === 1}
-                        onClick={handlePrevPage}
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        size="sm"
-                        disabled={pagination.currentPage === pagination.totalPage}
-                        onClick={handleNextPage}
-                    >
-                        Next
-                    </Button>
+                <div className="flex items-center gap-x-3">
+                    <div>
+                        <IconButton
+                            variant="outlined"
+                            size="sm"
+                            disabled={pagination.currentPage === 1}
+                            onClick={handlePrevPage}
+                        >
+                            <FontAwesomeIcon icon={faChevronLeft} />
+                        </IconButton>
+                        <IconButton
+                            variant="outlined"
+                            size="sm"
+                            disabled={pagination.currentPage === pagination.totalPage}
+                            onClick={handleNextPage}
+                        >
+                            <FontAwesomeIcon icon={faChevronRight} />
+                        </IconButton>
+                    </div>
                 </div>
             </div>
         </div>

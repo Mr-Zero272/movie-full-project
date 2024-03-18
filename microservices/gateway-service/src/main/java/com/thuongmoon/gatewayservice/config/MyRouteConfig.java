@@ -38,7 +38,7 @@ public class MyRouteConfig {
                 .route("movie-service4", predicateSpec ->
                         predicateSpec.path("/api/v1/movie/genre/**")
                                 .filters(f -> f
-                                        .rewritePath("/api/v1/movie/genre/(?<segment>.*)", "/${segment}")
+                                        .rewritePath("/api/v1/movie/genre/search/(?<segment>.*)", "/${segment}")
                                         .rewritePath("/api/v1/movie/genre/all", "//all"))
                                 .uri("lb://movie-service"))
                 .route("movie-service5", predicateSpec ->
@@ -61,8 +61,7 @@ public class MyRouteConfig {
                                 .uri("lb://movie-service"))
                 .route("auth-service1", predicateSpec ->
                         predicateSpec.path("/api/v1/auth/**")
-                                .filters(f ->
-                                        f.rewritePath("/api/v1/auth/user", "//user")
+                                .filters(f -> f.rewritePath("/api/v1/auth/user/(?<segment>.*)", "/${segment}")
                                                 .rewritePath("/api/v1/auth/user/search//(?<segment>.*)", "/${segment}")
                                                 .filter(authenticationFilter))
                                 .uri("lb://auth-service"))
@@ -70,14 +69,15 @@ public class MyRouteConfig {
                         predicateSpec.path("/api/v1/auditorium/**")
                                 .filters(f ->
                                         f.rewritePath("/api/v1/auditorium/seat-status//(?<segment>.*)", "/seat-status/${segment}")
-                                                .rewritePath("/api/v1/auditorium/seat-status/refresh-state", "//seat-status/refresh-state"))
+                                                )
                                 .uri("lb://seat-service"))
                 .route("reservation-service", predicateSpec ->
                         predicateSpec.path("/api/v1/reservation/**")
                                 .filters(f ->
-                                        f.rewritePath("/api/v1/reservation/order", "//order")
-                                                .rewritePath("/api/v1/reservation/order/payment//(?<segment>.*)", "//order/payment/${segment}")
-                                                .rewritePath("/api/v1/reservation/order/payment", "//order/payment")
+                                        f.rewritePath("/api/v1/reservation/order//(?<segment>.*)", "/order/${segment}")
+                                                .rewritePath("/api/v1/reservation/payment//(?<segment>.*)", "/payment/${segment}")
+//                                                .rewritePath("/api/v1/reservation/order/payment", "//payment")
+//                                                .rewritePath("/api/v1/reservation/payment", "//payment")
                                                 .filter(authenticationFilter))
                                 .uri("lb://reservation-service"))
                 .build();

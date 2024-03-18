@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import AsyncSelect from 'react-select/async';
 import {
     Input,
-    Textarea,
     Typography,
-    Rating,
     Button,
     Tabs,
     TabsHeader,
@@ -12,18 +10,22 @@ import {
     TabsBody,
     TabPanel,
     Chip,
+    Checkbox,
 } from '@material-tailwind/react';
 
-import { useDropzone } from 'react-dropzone';
 import { genreService, movieService } from '@/apiServices';
 import { format } from 'date-fns';
-import { manageActions } from '@/store/manage-slice';
 import CustomLabel from '../CustomLabel';
 import { movieAddFormValidation } from '@/data';
+import MyCustomInput from '../MyCustomInput';
+import RatingStar from '../RatingStar';
+import { useNotify } from '@/hooks';
+import { Link } from 'react-router-dom';
+
+const movieFields = ['title', 'director', 'description', 'manufacturer', 'duration_min', 'releaseDate', 'rating'];
 
 export function MovieAddForm() {
-    const dispatch = useDispatch();
-    const [genreData, setGenreData] = useState([]);
+    const notify = useNotify();
     const [movieTrailer, setMovieTrailer] = useState(null);
     const [actors, setActors] = useState([]);
     const [actor, setActor] = useState({ fullName: '', characterName: '', avatar: '', file: '' });
@@ -35,24 +37,25 @@ export function MovieAddForm() {
         verticalImage: '',
         horizontalImage: '',
         manufacturer: '',
-        duration_min: 90,
+        duration_min: '90',
         releaseDate: '',
         rating: 1,
-        userId: '',
-        genres: [],
+        whoAdd: '',
     });
     const [specificRequireType, setSpecificRequireType] = useState({ typeName: '', nscreenings: 1 });
     const [requirement, setRequirement] = useState({
         screeningsPerWeek: 7,
         totalWeekScheduling: 1,
         specificRequireTypes: [],
+        requirementValid: true,
+        requirementErrorMessage: '',
     });
-    const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
     const [errorMessages, setErrorMessages] = useState({
         titleErrorMessage: '',
         directorErrorMessage: '',
         descriptionErrorMessage: '',
         manufacturerErrorMessage: '',
+        duration_minErrorMessage: '',
         releaseDateErrorMessage: '',
         movieImagesErrorMessage: '',
         movieTrailerErrorMessage: '',
@@ -63,25 +66,36 @@ export function MovieAddForm() {
         totalWeekSchedulingErrorMessage: '',
         typeNameErrorMessage: '',
         nscreeningsErrorMessage: '',
+        listActorErrorMessage: '',
+        listCinemaTypeErrorMessage: '',
+        termsErrorMessage: '',
     });
+    const [isCheckTermsAndCondition, setIsCheckTermsAndCondition] = useState(false);
     const subRef = useRef(null);
     const requireRef = useRef(null);
     const basicRef = useRef(null);
     const avatarInputRef = useRef(null);
+    const [listSelectedGenres, setListSelectedGenres] = useState(() => ({
+        genresValid: true,
+        genresErrorMessage: '',
+        genres: [],
+    }));
+    const [listImages, setListImages] = useState(() => ({ imagesValid: true, imagesErrorMessage: '', images: [] }));
 
-    // get genre data
     useEffect(() => {
-        const fetchGenreData = async () => {
-            const result = await genreService.getAllGenresWithoutPagination();
-            setMovieInfo((prev) => ({
-                ...prev,
-                genres: result.map((genre) => genre.id),
-            }));
-            setGenreData(result);
+        return () => {
+            if (listImages.images?.length !== 0) {
+                listImages.images.forEach((image) => {
+                    URL.revokeObjectURL(image.preview);
+                });
+            }
         };
+    }, [listImages.images]);
 
-        fetchGenreData();
-    }, []);
+    // check terms and conditions
+    const handleCheckTermsAndCondition = () => {
+        setIsCheckTermsAndCondition((prev) => !prev);
+    };
 
     // handle changeTab
     const handleChangeTab = (tabIndex) => {
@@ -97,21 +111,43 @@ export function MovieAddForm() {
     };
 
     //handle choose genre
-    const handleChooseGenre = (genreId) => {
-        setGenreData((prev) => {
-            let updateData = prev.filter((genre) => genre.id !== genreId);
-            return updateData;
-        });
-        setMovieInfo((prev) => ({
-            ...prev,
-            genres: prev.genres.filter((id) => id !== genreId),
-        }));
+    const loadGenreOptions = async (inputValue) => {
+        return await genreService.searchWithTransformData(inputValue, 6, 1);
+    };
+
+    const handleChangeChooseGenre = (genreInfo) => {
+        if (genreInfo?.length === 0) {
+            setListSelectedGenres((prev) => ({
+                ...prev,
+                genres: genreInfo,
+                genresValid: false,
+                genreIdsErrorMessage: 'This field is required!',
+            }));
+        } else {
+            setListSelectedGenres((prev) => ({
+                ...prev,
+                genres: genreInfo,
+                genresValid: true,
+                genreIdsErrorMessage: '',
+            }));
+        }
     };
 
     //handle input movie info change
-    const handleInputChange = (e) => {
+    const handleInputChange = (e, isValid) => {
         // rating case
-        if (e === 1 || e === 2 || e === 3 || e === 4 || e === 5) {
+        if (
+            e === 1 ||
+            e === 2 ||
+            e === 3 ||
+            e === 4 ||
+            e === 5 ||
+            e === 6 ||
+            e === 7 ||
+            e === 8 ||
+            e === 9 ||
+            e === 10
+        ) {
             setMovieInfo((prev) => ({
                 ...prev,
                 rating: e,
@@ -125,12 +161,31 @@ export function MovieAddForm() {
         }));
     };
 
-    // handle files
-    const files = acceptedFiles.map((file) => (
-        <li key={file.path}>
-            {file.path} - {file.size} bytes
-        </li>
-    ));
+    const handleChooseImages = (e) => {
+        if (e.target.files?.length === 0) {
+            setListImages((prev) => ({
+                ...prev,
+                images: [],
+                imagesValid: false,
+                imagesErrorMessage: 'This filed is required!',
+            }));
+        } else {
+            const imagesChosen = [];
+            for (let i = 0; i < e.target.files?.length; i++) {
+                imagesChosen.push(e.target.files[i]);
+            }
+            imagesChosen.map((image) => {
+                image.preview = URL.createObjectURL(image);
+                return image;
+            });
+            setListImages((prev) => ({
+                ...prev,
+                images: imagesChosen,
+                imagesValid: true,
+                imagesErrorMessage: '',
+            }));
+        }
+    };
 
     //handle choose trailer
     const handleChooseTrailer = (e) => {
@@ -310,7 +365,7 @@ export function MovieAddForm() {
         });
 
         if (
-            specificRequireType.nscreenings > requirement.screeningsPerWeek ||
+            specificRequireType.nscreenings > +requirement.screeningsPerWeek ||
             numScreenings + +specificRequireType.nscreenings > requirement.screeningsPerWeek
         ) {
             setErrorMessages((prev) => ({
@@ -355,8 +410,7 @@ export function MovieAddForm() {
             duration_min: 90,
             releaseDate: '',
             rating: 1,
-            userId: '',
-            genres: [],
+            whoAdd: '',
         });
         setActors([]);
         setActor({ fullName: '', characterName: '', avatar: '', file: '' });
@@ -365,14 +419,15 @@ export function MovieAddForm() {
             screeningsPerWeek: 7,
             totalWeekScheduling: 1,
             specificRequireTypes: [],
+            requirementValid: true,
+            requirementErrorMessage: '',
         });
-
-        const result = await genreService.getAllGenresWithoutPagination();
-        setMovieInfo((prev) => ({
-            ...prev,
-            genres: result.map((genre) => genre.id),
+        setListImages({ imagesValid: true, imagesErrorMessage: '', images: [] });
+        setListSelectedGenres(() => ({
+            genresValid: true,
+            genresErrorMessage: '',
+            genres: [],
         }));
-        setGenreData(result);
     };
 
     // handle submit
@@ -429,7 +484,7 @@ export function MovieAddForm() {
         }
 
         // check image field
-        if (acceptedFiles?.length === 0 || acceptedFiles?.length !== 4) {
+        if (listImages.images?.length === 0 || listImages.images?.length !== 4) {
             setErrorMessages((prev) => ({
                 ...prev,
                 movieImagesErrorMessage: 'You need four images!',
@@ -440,6 +495,31 @@ export function MovieAddForm() {
                 ...prev,
                 movieImagesErrorMessage: '',
             }));
+        }
+
+        let includesHImage = false;
+        let includesVImage = false;
+        for (let i = 0; i < listImages.images?.length; i++) {
+            if (listImages.images[i].name.includes('h_m')) {
+                includesHImage = true;
+            }
+
+            if (listImages.images[i].name.includes('v_m')) {
+                includesVImage = true;
+            }
+        }
+
+        if (includesHImage && includesVImage) {
+            setErrorMessages((prev) => ({
+                ...prev,
+                movieImagesErrorMessage: '',
+            }));
+        } else {
+            setErrorMessages((prev) => ({
+                ...prev,
+                movieImagesErrorMessage: 'You need at least one vertical images and one horizontal images!',
+            }));
+            countError++;
         }
 
         // check trailer field
@@ -456,13 +536,86 @@ export function MovieAddForm() {
             }));
         }
 
-        // console.log(countError);
+        if (listSelectedGenres.genres?.length < 3) {
+            setListSelectedGenres((prev) => ({
+                ...prev,
+                genresValid: false,
+                genresErrorMessage: 'You need at least three genres!',
+            }));
+            countError++;
+        } else {
+            setListSelectedGenres((prev) => ({
+                ...prev,
+                genresValid: true,
+                genresErrorMessage: '',
+            }));
+        }
+
+        // check list avatar
+        if (actors.length < 3) {
+            setErrorMessages((prev) => ({
+                ...prev,
+                listActorErrorMessage: 'You need at least 3 actors!',
+            }));
+            countError++;
+        } else {
+            setErrorMessages((prev) => ({
+                ...prev,
+                listActorErrorMessage: '',
+            }));
+        }
+
+        let numScreenings = 0;
+
+        requirement.specificRequireTypes.forEach((type) => {
+            numScreenings += +type.nscreenings;
+        });
+
+        // console.log(numScreenings);
+        // console.log(requirement.screeningsPerWeek);
+
+        if (requirement.specificRequireTypes.length === 0) {
+            setErrorMessages((prev) => ({
+                ...prev,
+                listCinemaTypeErrorMessage: 'You need at least 1 cinema type!',
+            }));
+            countError++;
+        } else if (+requirement.screeningsPerWeek - numScreenings !== 0) {
+            setErrorMessages((prev) => ({
+                ...prev,
+                listCinemaTypeErrorMessage: 'Screening per week need to equals total screenings!',
+            }));
+            countError++;
+        } else {
+            setErrorMessages((prev) => ({
+                ...prev,
+                listCinemaTypeErrorMessage: '',
+            }));
+        }
+
+        if (!isCheckTermsAndCondition) {
+            setErrorMessages((prev) => ({
+                ...prev,
+                termsErrorMessage: 'Accept our terms and conditions here!',
+            }));
+            countError++;
+        } else {
+            setErrorMessages((prev) => ({
+                ...prev,
+                termsErrorMessage: '',
+            }));
+        }
         // if have error break;
         if (countError !== 0) {
             return;
         }
 
         const formData = new FormData();
+        // genre
+        let listGenres = listSelectedGenres.genres.map((genre) => genre.value);
+        movieInfo.genres = listGenres;
+
+        // actors
         const cast = actors.map((actor) => ({
             fullName: actor.fullName,
             characterName: actor.characterName,
@@ -470,18 +623,22 @@ export function MovieAddForm() {
         }));
         const actorImages = actors.map((actor) => actor.file);
         movieInfo.cast = cast;
+
+        // release date
         const rDate = new Date(movieInfo.releaseDate);
         // console.log(format(rDate, 'yyyy-MM-dd HH:mm'));
         movieInfo.releaseDate = format(rDate, 'yyyy-MM-dd HH:mm');
-        const randomRating = Math.floor(Math.random() * 9) + 1;
-        movieInfo.rating = movieInfo.rating * 18 + randomRating;
+        // const randomRating = Math.floor(Math.random() * 9) + 1;
+
+        delete requirement.requirementValid;
+        delete requirement.requirementErrorMessage;
         let submitData = {
             movie: movieInfo,
             requirement: requirement,
         };
         // console.log(movieInfo);
         formData.append('movieInfo', JSON.stringify(submitData));
-        acceptedFiles.forEach((mi) => {
+        listImages.images.forEach((mi) => {
             formData.append('movieImages', mi);
         });
         actorImages.forEach((ai) => {
@@ -491,17 +648,21 @@ export function MovieAddForm() {
         formData.append('movieTrailer', movieTrailer);
         const token = localStorage.getItem('token');
         const resp = await movieService.addMovie(formData, token);
-        // console.log(actorImages);
+        console.log(resp);
         // console.log(acceptedFiles);
         // console.log(submitData);
-        dispatch(manageActions.notify({ type: 'success', message: resp.message, from: 'movie' }));
+        if (resp && resp.state === 'success') {
+            notify(resp.message, 'success');
+        } else {
+            notify('Something went wrong!', 'error');
+        }
         resetAllState();
         basicRef.current.click();
     };
 
     // console block
-    // console.log(errorMessages);
-    // console.log(requirement);
+    // console.log(listSelectedGenres.genres);
+    console.log(isCheckTermsAndCondition);
 
     return (
         <Tabs value="basic">
@@ -522,158 +683,95 @@ export function MovieAddForm() {
                 </div>
             </TabsHeader>
 
-            <div className="flex h-full">
+            <div className="flex h-[1400px] md:h-[1200px] xl:h-[1000px]">
                 <div className="hidden md:block md:flex-none md:w-1/3 h-full">
                     <img
-                        className="rounded-s-lg object-cover object-center h-auto"
+                        className="rounded-s-lg object-center h-full"
                         src="https://i.pinimg.com/originals/fe/a1/85/fea185a6621475e2bbdb65c24af318cd.jpg"
                         alt="left-image"
                     />
                 </div>
-                <div className="w-full md:flex-initial md:w-2/3 pl-6 p-4">
+                <div className="w-full md:flex-initial md:w-2/3 pl-6 p-4 h-full">
                     <TabsBody
+                        className="h-full"
                         animate={{
                             initial: { y: 250 },
                             mount: { y: 0 },
                             unmount: { y: 250 },
                         }}
                     >
-                        <TabPanel value="basic">
+                        <TabPanel value="basic" className="h-full">
                             <form className="mt-5 mb-2 w-full">
                                 <div className="md:flex md:gap-6">
                                     <div className="md:w-1/2">
-                                        <CustomLabel
+                                        <MyCustomInput
                                             label="Title"
-                                            errorMessage={
-                                                errorMessages.titleErrorMessage !== '' &&
-                                                errorMessages.titleErrorMessage
-                                            }
-                                        />
-                                        <Input
-                                            size="lg"
                                             name="title"
                                             value={movieInfo.title}
                                             placeholder="Movie title..."
-                                            className={`${
-                                                errorMessages.titleErrorMessage !== ''
-                                                    ? '!border-t-red-400 focus:!border-t-red-600'
-                                                    : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
-                                            }`}
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
-                                            }}
-                                            error={errorMessages.titleErrorMessage !== ''}
+                                            validation={{ patternRegex: '', errorMessage: '', maxLength: 100 }}
+                                            error={errorMessages.titleErrorMessage}
                                             onChange={handleInputChange}
                                         />
                                     </div>
                                     <div className="md:w-1/2">
-                                        <CustomLabel
+                                        <MyCustomInput
                                             label="Director"
-                                            errorMessage={
-                                                errorMessages.directorErrorMessage !== '' &&
-                                                errorMessages.directorErrorMessage
-                                            }
-                                        />
-                                        <Input
-                                            size="lg"
                                             name="director"
                                             value={movieInfo.director}
-                                            placeholder="Movie director..."
-                                            className={`${
-                                                errorMessages.directorErrorMessage !== ''
-                                                    ? '!border-t-red-400 focus:!border-t-red-600'
-                                                    : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
-                                            }`}
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
-                                            }}
-                                            error={errorMessages.directorErrorMessage !== ''}
+                                            placeholder="Director name..."
+                                            validation={{ patternRegex: '', errorMessage: '', maxLength: 30 }}
+                                            error={errorMessages.directorErrorMessage}
                                             onChange={handleInputChange}
                                         />
                                     </div>
                                 </div>
-                                <CustomLabel
+                                <MyCustomInput
+                                    type="textarea"
                                     label="Description"
-                                    className="mt-3"
-                                    errorMessage={
-                                        errorMessages.descriptionErrorMessage !== '' &&
-                                        errorMessages.descriptionErrorMessage
-                                    }
-                                />
-                                <Textarea
                                     name="description"
                                     value={movieInfo.description}
-                                    className={`${
-                                        errorMessages.descriptionErrorMessage !== ''
-                                            ? '!border-t-red-400 focus:!border-t-red-600'
-                                            : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
-                                    }`}
                                     placeholder="Description..."
-                                    labelProps={{
-                                        className: 'before:content-none after:content-none',
-                                    }}
-                                    error={errorMessages.descriptionErrorMessage !== ''}
+                                    validation={{ patternRegex: '', errorMessage: '', maxLength: 1500 }}
+                                    error={errorMessages.descriptionErrorMessage}
                                     onChange={handleInputChange}
                                 />
                                 <div className="2xl:flex 2xl:gap-6 mt-3">
                                     <div className="2xl:w-1/3">
-                                        <CustomLabel
+                                        <MyCustomInput
                                             label="Manufacturer"
-                                            errorMessage={
-                                                errorMessages.manufacturerErrorMessage !== '' &&
-                                                errorMessages.manufacturerErrorMessage
-                                            }
-                                            displayErrorMessage={false}
-                                        />
-                                        <Input
-                                            size="lg"
-                                            value={movieInfo.manufacturer}
                                             name="manufacturer"
+                                            value={movieInfo.manufacturer}
                                             placeholder="Manufacturer..."
-                                            className={`${
-                                                errorMessages.manufacturerErrorMessage !== ''
-                                                    ? '!border-t-red-400 focus:!border-t-red-600'
-                                                    : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
-                                            }`}
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
-                                            }}
-                                            error={errorMessages.manufacturerErrorMessage !== ''}
+                                            validation={{ patternRegex: '', errorMessage: '', maxLength: 1500 }}
+                                            error={errorMessages.manufacturerErrorMessage}
                                             onChange={handleInputChange}
                                         />
                                     </div>
                                     <div className="2xl:w-1/3">
-                                        <CustomLabel label="Duration (min)" />
-                                        <Input
+                                        <MyCustomInput
                                             type="number"
-                                            min="1"
-                                            max="999"
-                                            size="lg"
+                                            label="Duration (min)"
                                             name="duration_min"
                                             value={movieInfo.duration_min}
-                                            placeholder="Duration..."
-                                            className="!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1"
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
+                                            placeholder="1 to 999 minutes..."
+                                            validation={{
+                                                patternRegex: /^(?:[1-9]|[1-9][0-9]|[1-9][0-9][0-9])$/,
+                                                errorMessage: '',
+                                                maxLength: 1500,
                                             }}
+                                            error={errorMessages.duration_minErrorMessage}
                                             onChange={handleInputChange}
                                         />
                                     </div>
                                     <div className="2xl:w-1/3">
-                                        <CustomLabel
-                                            label="Release date"
-                                            errorMessage={
-                                                errorMessages.releaseDateErrorMessage !== '' &&
-                                                errorMessages.releaseDateErrorMessage
-                                            }
-                                            displayErrorMessage={false}
-                                        />
+                                        <CustomLabel label="Release date" />
                                         <Input
                                             type="date"
                                             size="lg"
                                             name="releaseDate"
                                             value={movieInfo.releaseDate}
-                                            className={`${
+                                            className={`bg-white ${
                                                 errorMessages.releaseDateErrorMessage !== ''
                                                     ? '!border-t-red-400 focus:!border-t-red-600'
                                                     : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
@@ -684,6 +782,9 @@ export function MovieAddForm() {
                                             error={errorMessages.releaseDateErrorMessage !== ''}
                                             onChange={handleInputChange}
                                         />
+                                        <div className="ms-1 text-sm text-red-500 italic">
+                                            {errorMessages.releaseDateErrorMessage}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -691,28 +792,25 @@ export function MovieAddForm() {
                                     <Typography variant="h6" color="blue-gray" className="mt-3">
                                         Rating
                                     </Typography>
-                                    <Rating
-                                        unratedColor="amber"
-                                        title="rating"
-                                        value={movieInfo.rating}
-                                        onChange={handleInputChange}
-                                        ratedColor="amber"
-                                    />
+                                    <RatingStar stars={movieInfo.rating} totalStars={10} onChange={handleInputChange} />
                                 </div>
 
-                                <div className="flex flex-wrap gap-3 mt-4">
+                                <div className="mb-5">
                                     <Typography variant="h6" color="blue-gray" className="mt-3">
                                         Genres:
                                     </Typography>
-                                    {genreData?.length !== 0 &&
-                                        genreData.map((genre) => (
-                                            <Chip
-                                                key={genre.id}
-                                                className="w-auto h-8"
-                                                value={genre.name}
-                                                onClose={() => handleChooseGenre(genre.id)}
-                                            />
-                                        ))}
+                                    <AsyncSelect
+                                        className="h-auto"
+                                        isMulti
+                                        onChange={handleChangeChooseGenre}
+                                        value={listSelectedGenres.genres}
+                                        cacheOptions
+                                        loadOptions={loadGenreOptions}
+                                        defaultOptions
+                                    />
+                                    <div className="ms-1 text-sm text-red-500 italic">
+                                        {listSelectedGenres.genresErrorMessage}
+                                    </div>
                                 </div>
 
                                 <Button className="mt-5" variant="outlined" onClick={() => handleChangeTab(2)}>
@@ -722,35 +820,39 @@ export function MovieAddForm() {
                         </TabPanel>
                         <TabPanel value="sub">
                             <form className="mt-5 mb-2 w-full">
-                                <CustomLabel
-                                    label="Images"
-                                    errorMessage={
-                                        errorMessages.movieImagesErrorMessage !== '' &&
-                                        errorMessages.movieImagesErrorMessage
-                                    }
+                                <CustomLabel label="Images" />
+                                <div className="my-5 flex gap-x-5 overflow-x-auto">
+                                    {listImages.images?.length !== 0 &&
+                                        listImages.images.map((image, index) => (
+                                            <img
+                                                key={index}
+                                                className="h-96 w-60 object-contain rounded-xl border-2 drop-shadow-md"
+                                                src={image.preview}
+                                                alt={'image preview' + index}
+                                            />
+                                        ))}
+                                </div>
+                                <Input
+                                    type="file"
+                                    size="lg"
+                                    name="movieTrailer"
+                                    accept="image/*"
+                                    multiple
+                                    className={`${
+                                        errorMessages.movieImagesErrorMessage !== ''
+                                            ? '!border-t-red-400 focus:!border-t-red-600'
+                                            : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
+                                    }`}
+                                    labelProps={{
+                                        className: 'before:content-none after:content-none',
+                                    }}
+                                    error={errorMessages.movieImagesErrorMessage !== ''}
+                                    onChange={handleChooseImages}
                                 />
-                                <section
-                                    className={`border-2 rounded-md border-gray-400 p-3 mt-1 ${
-                                        errorMessages.movieImagesErrorMessage !== '' && 'border-red-400'
-                                    } `}
-                                >
-                                    <div {...getRootProps({ className: 'dropzone h-24' })}>
-                                        <input {...getInputProps()} name="movieImages" className="" />
-                                        <p>Drag 'n' drop some files here, or click to select files</p>
-                                    </div>
-                                    <aside>
-                                        <h4>Files</h4>
-                                        <ul>{files}</ul>
-                                    </aside>
-                                </section>
-                                <CustomLabel
-                                    label="Trailer"
-                                    className="mt-3"
-                                    errorMessage={
-                                        errorMessages.movieTrailerErrorMessage !== '' &&
-                                        errorMessages.movieTrailerErrorMessage
-                                    }
-                                />
+                                <div className="ms-1 text-sm text-red-500 italic">
+                                    {errorMessages.movieImagesErrorMessage}
+                                </div>
+                                <CustomLabel label="Trailer" className="mt-3" />
                                 <Input
                                     type="file"
                                     size="lg"
@@ -767,7 +869,9 @@ export function MovieAddForm() {
                                     error={errorMessages.movieTrailerErrorMessage !== ''}
                                     onChange={handleChooseTrailer}
                                 />
-
+                                <div className="ms-1 text-sm text-red-500 italic">
+                                    {errorMessages.movieTrailerErrorMessage}
+                                </div>
                                 <div className="flex flex-wrap gap-3 mt-4">
                                     <Typography variant="h6" color="blue-gray" className="mt-3">
                                         Actors:
@@ -784,76 +888,51 @@ export function MovieAddForm() {
                                             />
                                         ))}
                                 </div>
-
+                                <div className="ms-1 text-sm text-red-500 italic">
+                                    {errorMessages.listActorErrorMessage}
+                                </div>
                                 <div className="2xl:flex 2xl:gap-6 mt-3">
                                     <div className="2xl:w-1/3">
-                                        <CustomLabel
+                                        <MyCustomInput
                                             label="Actor name"
-                                            errorMessage={
-                                                errorMessages.fullNameErrorMessage !== '' &&
-                                                errorMessages.fullNameErrorMessage
-                                            }
-                                            displayErrorMessage={false}
-                                        />
-                                        <Input
-                                            size="lg"
                                             name="fullName"
-                                            placeholder="Actor name..."
                                             value={actor.fullName}
-                                            className={`${
-                                                errorMessages.fullNameErrorMessage !== ''
-                                                    ? '!border-t-red-400 focus:!border-t-red-600'
-                                                    : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
-                                            }`}
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
+                                            placeholder="Actor name.."
+                                            validation={{
+                                                patternRegex: '',
+                                                errorMessage: '',
+                                                maxLength: 30,
                                             }}
-                                            error={errorMessages.fullNameErrorMessage !== ''}
+                                            error={errorMessages.fullNameErrorMessage}
                                             onChange={handleActorInfoChange}
                                         />
                                     </div>
                                     <div className="2xl:w-1/3">
-                                        <CustomLabel
+                                        <MyCustomInput
                                             label="Character name"
-                                            errorMessage={
-                                                errorMessages.characterNameErrorMessage !== '' &&
-                                                errorMessages.characterNameErrorMessage
-                                            }
-                                            displayErrorMessage={false}
-                                        />
-                                        <Input
-                                            size="lg"
                                             name="characterName"
                                             value={actor.characterName}
                                             placeholder="Character name..."
-                                            className={`${
-                                                errorMessages.characterNameErrorMessage !== ''
-                                                    ? '!border-t-red-400 focus:!border-t-red-600'
-                                                    : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
-                                            }`}
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
+                                            validation={{
+                                                patternRegex: '',
+                                                errorMessage: '',
+                                                maxLength: 30,
                                             }}
-                                            error={errorMessages.characterNameErrorMessage !== ''}
+                                            error={errorMessages.characterNameErrorMessage}
                                             onChange={handleActorInfoChange}
                                         />
                                     </div>
                                     <div className="2xl:w-1/3">
-                                        <CustomLabel
-                                            label="Actor avatar"
-                                            errorMessage={
-                                                errorMessages.avatarErrorMessage !== '' &&
-                                                errorMessages.avatarErrorMessage
-                                            }
-                                            displayErrorMessage={false}
-                                        />
+                                        <label className="block mb-2 text-md font-medium text-gray-900 dark:text-white">
+                                            Actor avatar
+                                        </label>
                                         <Input
                                             ref={avatarInputRef}
                                             type="file"
                                             size="lg"
                                             name="avatar"
                                             accept="image/*"
-                                            className={`${
+                                            className={`mb-2 ${
                                                 errorMessages.avatarErrorMessage !== ''
                                                     ? '!border-t-red-400 focus:!border-t-red-600'
                                                     : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
@@ -864,6 +943,9 @@ export function MovieAddForm() {
                                             error={errorMessages.avatarErrorMessage !== ''}
                                             onChange={handleActorInfoChange}
                                         />
+                                        <div className="ms-1 text-sm text-red-500 italic">
+                                            {errorMessages.avatarErrorMessage}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -884,36 +966,34 @@ export function MovieAddForm() {
                             <form className="mt-5 mb-2 w-full">
                                 <div className="md:flex md:gap-6">
                                     <div className="md:w-1/2">
-                                        <CustomLabel label="Screenings Per Week" />
-                                        <Input
+                                        <MyCustomInput
                                             type="number"
-                                            min="7"
-                                            max="999"
-                                            size="lg"
+                                            label="Screenings Per Week"
                                             name="screeningsPerWeek"
                                             value={requirement.screeningsPerWeek}
                                             placeholder="1..."
-                                            className="!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1"
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
+                                            validation={{
+                                                patternRegex: /^(?:[1-9]|[1-9][0-9]|[1-9][0-9][0-9])$/,
+                                                errorMessage: 'From 1 to 999!',
+                                                maxLength: 30,
                                             }}
+                                            // error={errorMessages.characterNameErrorMessage}
                                             onChange={handleChangeRequirement}
                                         />
                                     </div>
                                     <div className="md:w-1/2">
-                                        <CustomLabel label="Total Week Scheduling" />
-                                        <Input
+                                        <MyCustomInput
                                             type="number"
-                                            min="1"
-                                            max="4"
-                                            size="lg"
+                                            label="Total Week Scheduling"
                                             name="totalWeekScheduling"
                                             value={requirement.totalWeekScheduling}
                                             placeholder="1..."
-                                            className="!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1"
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
+                                            validation={{
+                                                patternRegex: /^(?:[1-9]|[1-9][0-9]|[1-9][0-9][0-9])$/,
+                                                errorMessage: 'From 1 to 999!',
+                                                maxLength: 30,
                                             }}
+                                            // error={errorMessages.characterNameErrorMessage}
                                             onChange={handleChangeRequirement}
                                         />
                                     </div>
@@ -933,58 +1013,38 @@ export function MovieAddForm() {
                                             />
                                         ))}
                                 </div>
+                                <div className="ms-1 text-sm text-red-500 italic">
+                                    {errorMessages.listCinemaTypeErrorMessage}
+                                </div>
                                 <div className="md:flex md:gap-6">
                                     <div className="md:w-1/2">
-                                        <CustomLabel
+                                        <MyCustomInput
                                             label="Type Name"
-                                            errorMessage={
-                                                errorMessages.typeNameErrorMessage !== '' &&
-                                                errorMessages.typeNameErrorMessage
-                                            }
-                                            displayErrorMessage={false}
-                                        />
-                                        <Input
-                                            size="lg"
                                             name="typeName"
                                             value={specificRequireType.typeName}
                                             placeholder="Type Name..."
-                                            className={`${
-                                                errorMessages.typeNameErrorMessage !== ''
-                                                    ? '!border-t-red-400 focus:!border-t-red-600'
-                                                    : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
-                                            }`}
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
+                                            validation={{
+                                                patternRegex: '',
+                                                errorMessage: '',
+                                                maxLength: 30,
                                             }}
-                                            error={errorMessages.typeNameErrorMessage !== ''}
+                                            error={errorMessages.typeNameErrorMessage}
                                             onChange={handleChangeSpecificRequireType}
                                         />
                                     </div>
                                     <div className="md:w-1/2">
-                                        <CustomLabel
-                                            label="Total Screenings"
-                                            errorMessage={
-                                                errorMessages.nscreeningsErrorMessage !== '' &&
-                                                errorMessages.nscreeningsErrorMessage
-                                            }
-                                            displayErrorMessage={false}
-                                        />
-                                        <Input
+                                        <MyCustomInput
                                             type="number"
-                                            min={1}
-                                            size="lg"
+                                            label="Total Screenings"
                                             name="nscreenings"
                                             value={specificRequireType.nscreenings}
                                             placeholder="1..."
-                                            className={`${
-                                                errorMessages.nscreeningsErrorMessage !== ''
-                                                    ? '!border-t-red-400 focus:!border-t-red-600'
-                                                    : '!border-t-blue-gray-200 focus:!border-t-gray-900 mt-1'
-                                            }`}
-                                            labelProps={{
-                                                className: 'before:content-none after:content-none',
+                                            validation={{
+                                                patternRegex: /^(?:[1-9]|[1-9][0-9]|[1-9][0-9][0-9])$/,
+                                                errorMessage: 'From 1 to 999!',
+                                                maxLength: 30,
                                             }}
-                                            error={errorMessages.nscreeningsErrorMessage !== ''}
+                                            error={errorMessages.nscreeningsErrorMessage}
                                             onChange={handleChangeSpecificRequireType}
                                         />
                                     </div>
@@ -997,9 +1057,34 @@ export function MovieAddForm() {
                                 <Button className="mt-5" variant="outlined" onClick={() => handleChangeTab(2)}>
                                     Prev
                                 </Button>
-                                <Button className="mt-5 ml-3" color="green" onClick={handleSubmit}>
-                                    Submit
-                                </Button>
+                                <div className="flex flex-col">
+                                    <Checkbox
+                                        label={
+                                            <Typography
+                                                variant="small"
+                                                color="gray"
+                                                className="flex items-center font-normal"
+                                            >
+                                                I agree the
+                                                <Link
+                                                    href="/terms"
+                                                    className="font-medium transition-colors hover:text-gray-900"
+                                                >
+                                                    &nbsp;Terms and Conditions
+                                                </Link>
+                                            </Typography>
+                                        }
+                                        containerProps={{ className: '-ml-2.5' }}
+                                        checked={isCheckTermsAndCondition}
+                                        onChange={handleCheckTermsAndCondition}
+                                    />
+                                    <div className="ms-1 text-sm text-red-500 italic">
+                                        {errorMessages.termsErrorMessage}
+                                    </div>
+                                    <Button className="mt-5 ml-3" color="green" onClick={handleSubmit}>
+                                        Submit
+                                    </Button>
+                                </div>
                             </form>
                         </TabPanel>
                     </TabsBody>

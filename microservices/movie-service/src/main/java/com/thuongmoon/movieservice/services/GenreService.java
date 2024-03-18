@@ -33,23 +33,22 @@ public class GenreService {
         return new ResponseEntity<>(genreDao.findAll(), HttpStatus.OK);
     }
     public ResponseEntity<ResponsePagination> fetchPaginationGenres(String q, int size, int cPage) {
-        ResponsePagination responsePagination = new ResponsePagination();
-        Pagination pagination = new Pagination();
-        Page<Genre> page;
-        Pageable pageable = PageRequest.of(cPage - 1, size);
-        if (q != null || q.isEmpty() || q.isBlank()) {
-            page = genreDao.findAllByName(pageable, q);
-        } else {
-            page = genreDao.findAll(pageable);
+        if ( q == null || q.isEmpty()) {
+            q = "";
         }
-        pagination.setSize(page.getSize());
-        pagination.setTotalPage(page.getTotalPages());
-        pagination.setCurrentPage(page.getNumber() + 1);
-        pagination.setTotalResult((int) page.getTotalElements());
-
-        responsePagination.setPagination(pagination);
-        responsePagination.setData(page.getContent());
-        return new ResponseEntity<>(responsePagination, HttpStatus.OK);
+        Pageable pageable = PageRequest.of(cPage - 1, size);
+        Page<Genre> page = genreDao.findByNameLikeIgnoreCase(pageable, q);
+        Pagination pagination = Pagination.builder()
+                .currentPage(cPage)
+                .size(size)
+                .totalPage(page.getTotalPages())
+                .totalResult((int) page.getTotalElements())
+                .build();
+        ResponsePagination paginationResponse = ResponsePagination.builder()
+                .data(page.getContent())
+                .pagination(pagination)
+                .build();
+        return new ResponseEntity<>(paginationResponse, HttpStatus.OK);
     }
 
     @Transactional

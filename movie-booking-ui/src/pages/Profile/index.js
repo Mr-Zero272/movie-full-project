@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 
 function Profile() {
     const userInfo = useSelector((state) => state.user);
-    console.log(userInfo);
     const [activeMenu, setActiveMenu] = useState(() => DropdownMenuProfileData[0].name);
     const [activeTagMenu, setActiveTagMenu] = useState(() => DropdownMenuProfileData[0].menu[0].value);
 

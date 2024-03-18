@@ -22,9 +22,9 @@ public class GenreController {
         return genreService.fetchAllGenres();
     }
 
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<ResponsePagination> findPaginationGenre(
-            @RequestParam(required = false) String q,
+            @RequestParam(required = false, defaultValue = "") String q,
             @RequestParam(required = false, defaultValue = "6") int size,
             @RequestParam(required = false, defaultValue = "1") int cPage) {
         return genreService.fetchPaginationGenres(q, size, cPage);

@@ -39,7 +39,7 @@ export const editGenre = async (id, newName) => {
 
 export const getAllGenres = async (q = '', size = 8, cPage = 1) => {
     try {
-        const res = await movieRequest.get('/genre', {
+        const res = await movieRequest.get('/genre/search', {
             params: {
                 q,
                 size,
@@ -64,5 +64,28 @@ export const getAllGenresWithoutPagination = async () => {
     } catch (error) {
         console.log('Get all not page genres error!');
         return [];
+    }
+};
+
+export const searchWithTransformData = async (q = '', size = 8, cPage = 1) => {
+    try {
+        const res = await movieRequest.get('/genre/search', {
+            params: { q, size, cPage },
+            transformResponse: [
+                function (data) {
+                    let newData = JSON.parse(data);
+                    let rData = newData.data.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                    }));
+
+                    return rData;
+                },
+            ],
+        });
+        return res;
+    } catch (error) {
+        console.log('Get list genre error!');
+        console.log(error);
     }
 };

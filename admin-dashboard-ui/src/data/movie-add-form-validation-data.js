@@ -1,7 +1,7 @@
 export const movieAddFormValidation = {
     title: {
         blank: false,
-        maxLength: 30,
+        maxLength: 100,
     },
     director: {
         blank: false,

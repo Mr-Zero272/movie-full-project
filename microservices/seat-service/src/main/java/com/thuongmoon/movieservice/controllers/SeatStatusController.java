@@ -4,6 +4,7 @@ import com.thuongmoon.movieservice.dao.SeatDao;
 import com.thuongmoon.movieservice.models.Seat;
 import com.thuongmoon.movieservice.models.SeatStatus;
 import com.thuongmoon.movieservice.request.AddListSeatStatus;
+import com.thuongmoon.movieservice.request.ChoosingSeatRequest;
 import com.thuongmoon.movieservice.request.GenerateSeatStatusRequest;
 import com.thuongmoon.movieservice.response.ResponseMessage;
 import com.thuongmoon.movieservice.services.SeatStatusService;
@@ -25,10 +26,9 @@ public class SeatStatusController {
         return seatStatusService.getListSeatStatusByScreeningId(screeningId);
     }
 
-
     @PostMapping
-    public ResponseEntity<ResponseMessage> creatListSeatStatus(@RequestBody AddListSeatStatus request) {
-        return null;
+    public ResponseEntity<List<String>> checkoutSeat(@RequestBody List<ChoosingSeatRequest> request) {
+        return seatStatusService.checkoutSeat(request);
     }
 
     @PostMapping("/generate")

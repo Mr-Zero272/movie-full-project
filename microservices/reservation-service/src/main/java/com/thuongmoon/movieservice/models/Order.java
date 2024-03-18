@@ -27,13 +27,13 @@ public class Order implements Serializable {
     private String id;
     private Long total;
     private Long serviceFree;
-    private LocalDateTime creatAt;
+    private LocalDateTime createdAt;
     private int totalTickets;
 
     private String username;
     @DocumentReference
-    private PaymentDetail paymentDetailId;
-    private List<SeatStatus> listTickets = new ArrayList<>();
+    private PaymentDetail paymentDetail;
+    private List<TicketInfo> listTickets = new ArrayList<>();
 
     @Override
     public int hashCode() {

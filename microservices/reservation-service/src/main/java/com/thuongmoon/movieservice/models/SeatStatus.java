@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -24,6 +25,8 @@ public class SeatStatus implements Serializable {
 	private int price;
 
 	private String screeningId;
+	private String movieTitle;
+	private LocalDateTime screeningStart;
 	@DocumentReference
 	private Seat seat;
 

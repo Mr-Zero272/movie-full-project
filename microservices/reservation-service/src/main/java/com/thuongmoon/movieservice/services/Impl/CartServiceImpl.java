@@ -5,6 +5,7 @@ import com.thuongmoon.movieservice.dto.CartDto;
 import com.thuongmoon.movieservice.kafka.KafkaService;
 import com.thuongmoon.movieservice.models.Cart;
 import com.thuongmoon.movieservice.models.SeatStatus;
+import com.thuongmoon.movieservice.models.TicketInfo;
 import com.thuongmoon.movieservice.request.AddToCartRequest;
 import com.thuongmoon.movieservice.request.ListSeatRequest;
 import com.thuongmoon.movieservice.response.ListSeatResponse;
@@ -43,19 +44,19 @@ public class CartServiceImpl implements CartService {
     public ResponseEntity<ResponseMessage> addToCart(String username, AddToCartRequest request) {
         ResponseMessage responseMessage = new ResponseMessage();
         Optional<Cart> cartOptional = cartDao.findByUsernameAndActiveTrue(username);
-        responseMessage.setMessage("Add " + request.getSeatIds().size() + " tickets successfully!!");
+        responseMessage.setMessage("Add " + request.getTicketInfos().size() + " tickets successfully!!");
         if (cartOptional.isEmpty()) {
             Cart newCart = Cart.builder()
-                    .totalTicket(request.getSeatIds().size())
+                    .totalTicket(request.getTicketInfos().size())
                     .lastUpdate(LocalDateTime.now())
                     .active(true)
                     .username(username)
-                    .listTickets(request.getSeatIds())
+                    .listTickets(request.getTicketInfos())
                     .build();
             cartDao.save(newCart);
         } else {
-            List<String> listOldTickets = cartOptional.get().getListTickets();
-            listOldTickets.addAll(request.getSeatIds());
+            List<TicketInfo> listOldTickets = cartOptional.get().getListTickets();
+            listOldTickets.addAll(request.getTicketInfos());
             cartOptional.get().setListTickets(listOldTickets);
             cartOptional.get().setTotalTicket(listOldTickets.size());
             cartDao.save(cartOptional.get());
@@ -67,23 +68,30 @@ public class CartServiceImpl implements CartService {
     public ResponseEntity<CartDto> getAllTicketsByUsername(String username) throws ExecutionException, InterruptedException {
         Optional<Cart> cartOptional = cartDao.findByUsernameAndActiveTrue(username);
         if (cartOptional.isPresent()) {
+            List<String> seatIds = cartOptional.get().getListTickets().stream().map(TicketInfo::getSeatId).toList();
             ListSeatRequest listSeatRequest = new ListSeatRequest();
-            listSeatRequest.setSeatIds(cartOptional.get().getListTickets());
+            listSeatRequest.setSeatIds(seatIds);
             Message<ListSeatRequest> message = MessageBuilder.withPayload(listSeatRequest).setHeader(KafkaHeaders.TOPIC, "cart_send").build();
             RequestReplyMessageFuture<String, ListSeatRequest> replyFuture =
                     replyingKafkaTemplate.sendAndReceive(message);
 
             Message<ListSeatResponse> responseFromTopic = (Message<ListSeatResponse>) replyFuture.get();
 
+            List<SeatStatus> seatStatuses = responseFromTopic.getPayload().getSeats();
+            for (int i = 0; i < cartOptional.get().getTotalTicket(); i++) {
+                seatStatuses.get(i).setMovieTitle(cartOptional.get().getListTickets().get(i).getMovieTitle());
+                seatStatuses.get(i).setScreeningStart(cartOptional.get().getListTickets().get(i).getScreeningStart());
+            }
+
             CartDto cartDto = CartDto.builder()
                     .id(cartOptional.get().getId())
                     .totalTicket(cartOptional.get().getTotalTicket())
                     .lastUpdate(cartOptional.get().getLastUpdate())
-                    .listTickets(responseFromTopic.getPayload().getSeats())
+                    .listTickets(seatStatuses)
                     .active(cartOptional.get().isActive()).build();
             return new ResponseEntity<>(cartDto, HttpStatus.OK);
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @Override
@@ -92,13 +100,17 @@ public class CartServiceImpl implements CartService {
         ResponseMessage responseMessage = new ResponseMessage();
         Optional<Cart> cartOptional = cartDao.findByUsernameAndActiveTrue(username);
         if (cartOptional.isPresent()) {
-            List<String> listOldTickets = cartOptional.get().getListTickets();
-            List<String> listNewTickets = listOldTickets.stream().filter(ticket -> !ticket.equals(ticketId)).toList();
+            List<TicketInfo> listOldTickets = cartOptional.get().getListTickets();
+            List<TicketInfo> listNewTickets = listOldTickets.stream().filter(ticket -> !ticket.getSeatId().equals(ticketId)).toList();
             cartOptional.get().setListTickets(listNewTickets);
             cartOptional.get().setTotalTicket(cartOptional.get().getTotalTicket() - 1);
             cartOptional.get().setLastUpdate(LocalDateTime.now());
             Cart cartSaved = cartDao.save(cartOptional.get());
-            List<SeatStatus> seatStatuses = kafkaService.getListSeat(cartSaved.getListTickets());
+            List<String> seatIds = cartOptional.get().getListTickets().stream().map(TicketInfo::getSeatId).toList();
+            List<SeatStatus> seatStatuses = kafkaService.getListSeat(seatIds);
+            for (int i = 0; i < listNewTickets.size(); i++) {
+                seatStatuses.get(i).setMovieTitle(listOldTickets.get(i).getMovieTitle());
+            }
             CartDto cartDto = CartDto.builder()
                     .id(cartOptional.get().getId())
                     .totalTicket(cartSaved.getTotalTicket())
@@ -113,5 +125,13 @@ public class CartServiceImpl implements CartService {
             responseMessage.setRspCode("400");
         }
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Integer> getTicketQuantity(String username) {
+        Optional<Cart> cartOptional = cartDao.findByUsernameAndActiveTrue(username);
+        int quantity = 0;
+        quantity = cartOptional.map(Cart::getTotalTicket).orElse(0);
+        return new ResponseEntity<>(quantity, HttpStatus.OK);
     }
 }

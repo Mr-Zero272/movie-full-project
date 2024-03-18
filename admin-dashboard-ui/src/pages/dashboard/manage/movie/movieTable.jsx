@@ -29,7 +29,7 @@ function MovieTable() {
 
         fetchGenreLists(searchValue, paginationInfo.size, paginationInfo.currentPage);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [paginationInfo.currentPage, searchValue]);
+    }, [paginationInfo.currentPage, searchValue, paginationInfo.size]);
 
     const handleNextPage = useCallback((nextPage) => {
         console.log(nextPage);
@@ -43,6 +43,14 @@ function MovieTable() {
         setPaginationInfo((prev) => ({
             ...prev,
             currentPage: prevPage,
+        }));
+    }, []);
+
+    const handleSelectSize = useCallback((size) => {
+        setPaginationInfo((prev) => ({
+            ...prev,
+            size: size,
+            currentPage: 1,
         }));
     }, []);
 
@@ -63,6 +71,7 @@ function MovieTable() {
                     pagination={paginationInfo}
                     onNextPage={handleNextPage}
                     onPrevPage={handlePrevPage}
+                    onSelectSize={handleSelectSize}
                     onSearch={handleSearchValueChange}
                 />
             ) : (

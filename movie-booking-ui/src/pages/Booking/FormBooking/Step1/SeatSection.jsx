@@ -14,6 +14,7 @@ const cx = classNames.bind(styles);
 function SeatSection({ className }) {
     const activeScreening = useSelector((state) => state.addToCart.activeScreening);
     const listSeatSelected = useSelector((state) => state.addToCart.listSeatSelected);
+    const username = useSelector((state) => state.user.username);
     const [listSeats, setListSeats] = useState([]);
     const [myStompClient, setMyStompClient] = useState(null);
     const filterSeatByRow = (listSeats, row) => {
@@ -47,9 +48,9 @@ function SeatSection({ className }) {
     useEffect(() => {
         if (myStompClient !== null) {
             myStompClient.subscribe('/topic/seat-state', (message) => {
-                // console.log(listSeats);
-                // console.log(message.body);
-                // console.log('call sub 1 lan');
+                console.log(listSeats);
+                console.log(message.body);
+                console.log('call sub 1 lan');
                 const seatInfo = JSON.parse(message.body);
                 setListSeats((prevListSeats) => {
                     let listSeatUpdated = prevListSeats.map((seat) => {
@@ -69,7 +70,6 @@ function SeatSection({ className }) {
         }
     }, [listSeats]);
     //sock.readyState
-    console.log(listSeatSelected);
     useEffect(() => {
         const refreshSState = async () => {
             if (listSeatSelected?.length !== 0) {
@@ -98,14 +98,16 @@ function SeatSection({ className }) {
     const handleChooseSeat = useCallback(
         (seatId, seatStatus) => {
             if (seatStatus === 'booked') return;
+            console.log(!listSeatSelected.some((seat) => seat.id === seatId && seatStatus === 'choosing'));
+            if (!listSeatSelected.some((seat) => seat.id === seatId) && seatStatus === 'choosing') return;
             if (myStompClient !== null) {
                 myStompClient.publish({
                     destination: '/app/choosing-seat-ws',
-                    body: JSON.stringify({ id: seatId, status: seatStatus }),
+                    body: JSON.stringify({ id: seatId, status: seatStatus, username: username }),
                 });
             }
         },
-        [myStompClient],
+        [myStompClient, listSeatSelected],
     );
 
     return (

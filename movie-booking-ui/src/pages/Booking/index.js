@@ -12,6 +12,7 @@ import NavStepper from '~/components/NavStepper';
 import { Step1, Step2, Step3 } from './FormBooking';
 import { addToCartActions, fetchInfoAddToCart } from '~/store/add-to-cart-slice';
 import useNotify from '~/hooks/useNotify';
+import Loading from '~/components/Loading';
 
 const getUniqueArray = (array) => {
     var uniqueArray = array.filter(
@@ -31,11 +32,11 @@ function Booking() {
     let [searchParams, setSearchParams] = useSearchParams();
     const tab = searchParams.get('tab');
     const screeningIds = searchParams.get('screeningIds');
+    const seatIds = searchParams.get('seatIds');
     // console.log(tab);
     const dispatch = useDispatch();
     const [activeStep, setActiveStep] = useState(+tab);
     const checkoutInfo = useSelector((state) => state.addToCart);
-    const [userInfo, setUserInfo] = useState({ username: '', email: '' });
     let sliderRef = useRef(null);
 
     const notify = useNotify();
@@ -43,13 +44,10 @@ function Booking() {
     useEffect(() => {
         const listScreenings = screeningIds.split(',');
         const screeningId = listScreenings[0];
-        console.log(screeningId);
         dispatch(fetchInfoAddToCart(screeningId));
         dispatch(addToCartActions.setListScreening(listScreenings));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    console.log(checkoutInfo);
 
     const handleActiveStep = useCallback(
         (stepIndex) => {
@@ -71,18 +69,13 @@ function Booking() {
                     notify('You must complete payment to go to the next step!!', 'error');
                     return;
                 }
-
-                if (userInfo.username === '' || userInfo.email === '') {
-                    notify('You cannot leave either or both of the username and email fields blank.', 'error');
-                    return;
-                }
             }
             sliderRef.current.slickGoTo(stepIndex - 1);
-            setSearchParams({ screeningIds: screeningIds, tab: stepIndex });
+            setSearchParams({ seatIds: seatIds, screeningIds: screeningIds, tab: stepIndex });
             setActiveStep(stepIndex);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [checkoutInfo.listSeatSelected, checkoutInfo.paymentStatus, userInfo.username, userInfo.email],
+        [checkoutInfo.listSeatSelected, checkoutInfo.paymentStatus],
     );
 
     var settings = {
@@ -150,34 +143,32 @@ function Booking() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [checkoutInfo]);
 
-    // for step 2
-    const handleChangeInput = useCallback((e) => {
-        setUserInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    }, []);
-
     return (
-        <div className="p-7 flex md:px-10 md:py-5">
-            <div className="hidden xl:mr-7 xl:block xl:w-[20%]">
-                <MovieItemWithDesc
-                    {...checkoutInfo.movieInfo}
-                    arrows={true}
-                    onNext={handleNextBooking}
-                    onPrev={handlePrevBooking}
-                />
-            </div>
-            <div className="w-full xl:w-[80%] xl:pl-4">
-                <div className="">
-                    <NavStepper items={NAV_PURCHASE_TICKET} activeStep={activeStep} onClick={handleActiveStep} />
+        <>
+            {checkoutInfo.loading && <Loading title="Payment..." />}
+            <div className="p-7 flex md:px-10 md:py-5">
+                <div className="hidden xl:mr-7 xl:block xl:w-[20%]">
+                    <MovieItemWithDesc
+                        {...checkoutInfo.movieInfo}
+                        arrows={true}
+                        onNext={handleNextBooking}
+                        onPrev={handlePrevBooking}
+                    />
                 </div>
-                <div className="">
-                    <Slider {...settings} ref={sliderRef}>
-                        <Step1 nextBtn onNextStep={handleActiveStep} />
-                        <Step2 onNextStep={handleActiveStep} onChangeInfo={handleChangeInput} />
-                        <Step3 userInfo={userInfo} />
-                    </Slider>
+                <div className="w-full xl:w-[80%] xl:pl-4">
+                    <div className="">
+                        <NavStepper items={NAV_PURCHASE_TICKET} activeStep={activeStep} onClick={handleActiveStep} />
+                    </div>
+                    <div className="">
+                        <Slider {...settings} ref={sliderRef}>
+                            <Step1 nextBtn onNextStep={handleActiveStep} />
+                            <Step2 onNextStep={handleActiveStep} />
+                            <Step3 />
+                        </Slider>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

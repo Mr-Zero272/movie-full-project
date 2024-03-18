@@ -22,7 +22,7 @@ const notify = (message, type = 'success') => {
 };
 
 const validation = {
-    phone: {
+    phoneNumber: {
         patternRegex: /(84|0[3|5|7|8|9])+([0-9]{8})\b/,
         errorMessage: 'Invalid phone number!',
         maxLength: 10,
@@ -42,11 +42,11 @@ function ProfileDetail() {
         username: '',
         avatar: '',
         lastUpdate: '',
-        phone: '',
+        phoneNumber: '',
         email: '',
         role: '',
         emailFieldValid: true,
-        phoneFieldValid: true,
+        phoneNumberFieldValid: true,
     }));
     const fileInputRef = useRef(null);
     const { token, isTokenValid } = useToken();
@@ -100,7 +100,7 @@ function ProfileDetail() {
                 username: userDetail.username,
                 avatar: '',
                 email: userDetail.email,
-                phone: userDetail.phone,
+                phone: userDetail.phoneNumber,
             };
 
             if (newAvatar !== null) {
@@ -118,7 +118,7 @@ function ProfileDetail() {
                             status: 'online',
                             username: res.data.username,
                             avatar: res.data.avatar,
-                            phone: res.data.phone,
+                            phoneNumber: res.data.phoneNumber,
                             email: res.data.email,
                             role: res.data.authorities[0].authority,
                         }),
@@ -168,9 +168,9 @@ function ProfileDetail() {
                             <div className="w-1/4 text-right">Phone number: </div>
                             <FormInputText3
                                 className="w-3/4 ml-7"
-                                name="phone"
-                                value={userDetail.phone}
-                                validation={validation.phone}
+                                name="phoneNumber"
+                                value={userDetail.phoneNumber}
+                                validation={validation.phoneNumber}
                                 onValueChange={onValueChange}
                             />
                         </li>

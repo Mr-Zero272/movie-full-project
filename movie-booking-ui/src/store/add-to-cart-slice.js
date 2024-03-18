@@ -46,15 +46,23 @@ const addToCartSlice = createSlice({
         movieInfo: {},
         listSeatSelected: [],
         totalPayment: 0,
-        paymentStatus: false,
-        invoiceId: '',
+        paymentInfo: {
+            invoiceId: '',
+            status: '',
+            provider: '',
+        },
     },
     reducers: {
+        setLoading(state, action) {
+            return {
+                ...state,
+                loading: action.payload,
+            };
+        },
         setPaymentStatus(state, action) {
             return {
                 ...state,
-                paymentStatus: action.payload.status,
-                invoiceId: action.payload.invoiceId,
+                paymentInfo: action.payload,
             };
         },
         setTotalPayment(state, action) {
@@ -75,15 +83,20 @@ const addToCartSlice = createSlice({
         refreshState(state) {
             return {
                 loading: false,
-                activeMovie: 1,
+                activeMovie: null,
                 listScreeningsAreActive: [],
                 activeDate: '2023-10-13T09:00:00', // tren day df la ''
-                activeShowtime: 0, // mac dinh de la 0 di :v
+                activeScreening: 0, // mac dinh de la 0 di :v
                 activeAuditorium: 0,
                 screenings: [],
                 movieInfo: {},
                 listSeatSelected: [],
-                paymentStatus: false,
+                totalPayment: 0,
+                paymentInfo: {
+                    invoiceId: '',
+                    status: '',
+                    provider: '',
+                },
             };
         },
         setListScreeningsAreActive(state, action) {
@@ -129,8 +142,8 @@ const addToCartSlice = createSlice({
                 totalPayment: totalPayment,
             };
         },
-        chooseSeatsWhenCheckout(state, action) {
-            const tempListSeatSelected = addToDistinctArray(state.listSeatSelected, action.payload.newSeat);
+        setListSelected(state, action) {
+            const tempListSeatSelected = action.payload;
             let totalPayment = tempListSeatSelected.reduce((accumulator, currentValue) => {
                 return accumulator + currentValue.price;
             }, 0);

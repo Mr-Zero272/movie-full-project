@@ -27,7 +27,7 @@ public class MovieDto {
     private int duration_min;
     private String releaseDate;
     private int rating;
-    private String userId;
+    private String whoAdd;
 
     private List<Actor> cast = new ArrayList<>();
     private List<Review> reviews = new ArrayList<>();

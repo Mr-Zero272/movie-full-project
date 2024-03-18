@@ -13,7 +13,7 @@ public class WebsocketController {
 
     @MessageMapping("/choosing-seat-ws")
 //    @SendTo("/topic/seat-state")
-    public void testWebsocket(ChoosingSeatRequest request) {
+    public void choosingSeat(ChoosingSeatRequest request) {
         jsonKafkaProducer.sendSeatStatusInfo(request);
     }
 }

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faRegularStar } from '@fortawesome/free-regular-svg-icons';
-import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
@@ -19,21 +18,10 @@ import StatisticalCol from './StatisticalCol';
 import Comment from '~/components/Comment';
 import RatingStar from '~/components/RatingStar';
 import { reviewService } from '~/apiServices';
-import useToken from '~/hooks/useToken';
 import MovieScheduleItem2 from '~/components/MovieItem/MovieScheduleItem2';
+import { useNotify, useToken } from '~/hooks';
 
 const cx = classNames.bind(styles);
-
-const notify = (message, type = 'success') => {
-    toast(message, {
-        type: type,
-        style: { fontSize: '1.4rem' },
-        position: toast.POSITION.TOP_RIGHT,
-        closeOnClick: true,
-        autoClose: 1500,
-        className: 'foo-bar',
-    });
-};
 
 function Detail() {
     const [movieInfo, setMovieInfo] = useState(null);
@@ -44,7 +32,9 @@ function Detail() {
     const { movieId } = useParams('movieId');
     const userInfo = useSelector((state) => state.user);
     const reviewSectionRef = useRef(null);
+    const notify = useNotify();
     const { isTokenValid, token } = useToken();
+    // console.log(userInfo);
     useEffect(() => {
         const fetchApi = async () => {
             const result = await searchService.getMovieInfo(movieId);
@@ -60,7 +50,7 @@ function Detail() {
         };
 
         fetchApi();
-    }, [movieId]);
+    }, []);
 
     const handleReviewChange = (e) => {
         if (e === 1 || e === 2 || e === 3 || e === 4 || e === 5) {
@@ -82,30 +72,24 @@ function Detail() {
             notify('You need to login to write review!', 'error');
             return;
         }
-
         if (reviewInfo.comment === '') {
             notify('This comment filed is blank!!!s', 'error');
             return;
         }
-
         const addNewReview = async () => {
             if (isTokenValid) {
                 const res = await reviewService.addNewComment(movieId, reviewInfo.rating, reviewInfo.comment, token);
-
                 setReviewInfo(() => ({
                     rating: 1,
                     comment: '',
                 }));
                 // console.log(newReviews);
-
                 notify(res, 'success');
             } else {
                 notify('Token is invalid!', 'error');
             }
         };
-
         const totalCurrentReviews = movieInfo.reviews?.length;
-
         const fetchReviews = async () => {
             const newReviews = await reviewService.getAllReviewsByMovieId(movieId);
             if (newReviews.data?.length > totalCurrentReviews) {
@@ -117,7 +101,6 @@ function Detail() {
                 setTimeout(fetchReviews, 1500);
             }
         };
-
         addNewReview();
         fetchReviews();
     };
@@ -140,7 +123,6 @@ function Detail() {
                     ...prev,
                     reviews: rsp.data,
                 }));
-
                 Swal.fire('Delete!', '', 'success');
             }
         });

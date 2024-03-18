@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 // user
 const requestUser = axios.create({
     baseURL: 'http://localhost:8272/api/v1/user',
@@ -64,6 +65,28 @@ export const postAuth = async (path, data = {}, options = {}) => {
 
 export const updateUser = async (path, data = {}, options = {}) => {
     const response = await requestAuth.put(path, data, options);
+
+    return response.data;
+};
+
+const orderRequest = axios.create({
+    baseURL: 'http://localhost:8272/api/v1/reservation/order',
+});
+
+export const getOrderRequest = async (path, options = {}) => {
+    const response = await orderRequest.get(path, options);
+
+    return response.data;
+};
+
+export const postOrderRequest = async (path, data = {}, options = {}) => {
+    const response = await orderRequest.post(path, data, options);
+
+    return response.data;
+};
+
+export const updateOrderRequest = async (path, data = {}, options = {}) => {
+    const response = await orderRequest.put(path, data, options);
 
     return response.data;
 };

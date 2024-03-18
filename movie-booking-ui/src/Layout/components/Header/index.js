@@ -97,13 +97,13 @@ function Header({ onToggleMenu }) {
                             role: userInfo.authorities[0].authority,
                         }),
                     );
+                    dispatch(fetchQuantityCart());
                 }
             } else {
                 dispatch(userActions.logout());
                 localStorage.setItem('token', '');
             }
         }
-
         // return () => {
         //     dispatch(userActions.clearUserInfo());
         // };
@@ -125,20 +125,6 @@ function Header({ onToggleMenu }) {
                 throw new Error('Something went wrong!!!');
         }
     };
-
-    // const handleErrorImage = () => {
-    //     dispatch(userActions.haveChange());
-    //     if (currentUser.avatar === '' || currentUser.avatar === undefined) {
-    //         dispatch(userActions.setAvatar('no_image.png'));
-    //         imageRef.current.src = require('~/assets/images/no_image.png');
-    //     } else {
-    //         imageRef.current.src = currentUser.avatar;
-    //     }
-    // };
-    // useEffect(() => {
-    //     imageRef.src = baseUrl.image + currentUser.avatar + '?type=avatar';
-    //     console.log(currentUser.avatar);
-    // }, [currentUser.avatar]);
 
     return (
         <header className={cx('container')}>

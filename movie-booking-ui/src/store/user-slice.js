@@ -6,7 +6,7 @@ const userSlice = createSlice({
         username: '',
         avatar: '',
         lastUpdate: '',
-        phone: '',
+        phoneNumber: '',
         email: '',
         role: '',
     },
@@ -50,7 +50,7 @@ const userSlice = createSlice({
                 status: action.payload.status,
                 username: action.payload.username,
                 avatar: action.payload.avatar,
-                phone: action.payload.phone,
+                phoneNumber: action.payload.phoneNumber,
                 email: action.payload.email,
                 role: action.payload.role,
             };

@@ -1,27 +1,15 @@
 import * as request from '~/utils/request';
-
-export const getAllSeat = async (screeningId = 1, auditoriumId = 1) => {
-    try {
-        const res = await request.getCart('/seats', {
-            params: {
-                screeningId,
-                auditoriumId,
-            },
-        });
-        return res.data;
-    } catch (error) {
-        alert(error);
-    }
-};
+import { movieApiRequest } from '~/utils/requests';
 
 export const getAllTicketInActiveCart = async (token = '') => {
     try {
-        const res = await request.getCart('', {
+        const res = await movieApiRequest.getRequest('/reservation', {
             headers: { Authorization: 'Bearer ' + token },
         });
-        return res.data;
+        return res;
     } catch (error) {
-        alert(error);
+        console.log('Get ticket error!');
+        console.log(error);
     }
 };
 
@@ -54,43 +42,22 @@ export const getListBookedTicketsByUser = async (token = '') => {
     }
 };
 
-export const getListTicketsBeforeBook = async (ids) => {
+export const checkout = async (token = '', invoiceId = '', totalTickets = '', listTickets = []) => {
     //console.log(ids);
     try {
-        const res = await request.getCart('/tickets', {
-            params: {
-                ids,
-            },
-            paramsSerializer: (params) => {
-                return Object.keys(params)
-                    .map((key) => `${key}=${params[key].join(',')}`)
-                    .join('&');
-            },
-        });
-        return res.data;
-    } catch (error) {
-        alert(error);
-    }
-};
-
-export const checkout = async (token = '', ids = [], invoiceId = '', nameInTicket = '', emailInTicket = '') => {
-    //console.log(ids);
-    try {
-        const res = await request.checkout(
-            '/checkout',
+        const res = await request.postOrderRequest(
+            '',
             {
-                ids,
                 invoiceId,
-                nameInTicket,
-                emailInTicket,
+                totalTickets,
+                listTickets,
             },
-            {
-                headers: { Authorization: 'Bearer ' + token },
-            },
+            { headers: { Authorization: 'Bearer ' + token } },
         );
         return res;
     } catch (error) {
-        alert(error);
+        console.log('Checkout error!');
+        console.log(error);
     }
 };
 
@@ -109,18 +76,18 @@ export const deleteTicketById = async (token = '', ids = []) => {
     }
 };
 
-export const createOrderPayment = async (token = '', invoiceId = '', paid = false) => {
+export const createNewZaloPayOrder = async (app_trans_id, amount, description, redirectUrl) => {
     //console.log(ids);
     try {
-        const res = await request.createOrderPayment(
-            '/payment',
+        const res = await request.postOrderRequest(
+            '/creat-zalopay-payment',
             {
-                paid,
-                invoiceId,
+                app_trans_id,
+                amount,
+                description,
+                redirectUrl,
             },
-            {
-                headers: { Authorization: 'Bearer ' + token },
-            },
+            {},
         );
         return res;
     } catch (error) {
@@ -128,15 +95,19 @@ export const createOrderPayment = async (token = '', invoiceId = '', paid = fals
     }
 };
 
-export const isThisInvoiceExists = async (token, invoiceId = '') => {
+export const createNewPayment = async (amount, provider, invoiceId, status, token) => {
     //console.log(ids);
     try {
-        const res = await request.checkInvoiceExists('/payment', {
-            params: {
+        const res = await request.postOrderRequest(
+            '/payment',
+            {
+                amount,
+                provider,
                 invoiceId,
+                status,
             },
-            headers: { Authorization: 'Bearer ' + token },
-        });
+            { headers: { Authorization: 'Bearer ' + token } },
+        );
         return res;
     } catch (error) {
         alert(error);

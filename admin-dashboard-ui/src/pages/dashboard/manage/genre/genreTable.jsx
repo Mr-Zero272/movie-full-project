@@ -1,6 +1,6 @@
 import { genreService } from '@/apiServices';
 import NormalTable from '@/components/CustomTable/NormalTable';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 const tableLabels = ['id', 'name', 'lastUpdate', 'action'];
@@ -30,7 +30,15 @@ function GenreTable() {
 
         fetchGenreLists(searchValue, paginationInfo.size, paginationInfo.currentPage);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [paginationInfo.currentPage, searchValue]);
+    }, [paginationInfo.currentPage, searchValue, paginationInfo.size]);
+
+    const handleSelectSize = useCallback((size) => {
+        setPaginationInfo((prev) => ({
+            ...prev,
+            size: size,
+            currentPage: 1,
+        }));
+    }, []);
 
     const handleNextPage = (nextPage) => {
         setPaginationInfo((prev) => ({
@@ -64,6 +72,7 @@ function GenreTable() {
                     onNextPage={handleNextPage}
                     onPrevPage={handlePrevPage}
                     onSearch={handleSearchValueChange}
+                    onSelectSize={handleSelectSize}
                 />
             ) : (
                 <Skeleton height={600} />

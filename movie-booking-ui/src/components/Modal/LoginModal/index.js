@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Modal from '..';
 import styles from './LoginModal.module.scss';
@@ -57,6 +57,7 @@ const MENU_FORM_ITEMS = [
     },
 ];
 function LoginModal() {
+    const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState(null);
     const [userLoginInfo, setUserLoginInfo] = useState(() => ({
         username: {
@@ -130,6 +131,7 @@ function LoginModal() {
             } else {
                 setErrorMessage('');
                 localStorage.setItem('token', result.token);
+                // navigate('/');
                 window.location = '/';
             }
         };

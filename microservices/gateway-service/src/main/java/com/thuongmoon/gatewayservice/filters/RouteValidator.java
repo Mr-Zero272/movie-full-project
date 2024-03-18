@@ -22,6 +22,7 @@ public class RouteValidator {
             "/api/v1/movie/screening/search",
             "/api/v1/images/**",
             "/api/v1/videos/**",
+            "/api/v1/reservation/order/creat-zalopay-payment",
             "/eureka"
     );
 

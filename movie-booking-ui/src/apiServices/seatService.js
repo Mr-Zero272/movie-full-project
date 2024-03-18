@@ -19,3 +19,13 @@ export const refreshSeatState = async (listSeatIds) => {
         console.log(error);
     }
 };
+
+export const checkoutSeat = async (listSeatInfos) => {
+    try {
+        const res = await auditoriumRequest.postRequest(`/seat-status`, listSeatInfos);
+        return res;
+    } catch (error) {
+        alert('Check out seat status error!');
+        console.log(error);
+    }
+};

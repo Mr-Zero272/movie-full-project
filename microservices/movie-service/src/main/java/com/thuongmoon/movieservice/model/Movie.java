@@ -39,6 +39,7 @@ public class Movie implements Serializable {
 	private int duration_min;
 	private LocalDateTime releaseDate;
 	private int rating;
+	private String state;
 
 	@DocumentReference
 	private Requirement requirement;

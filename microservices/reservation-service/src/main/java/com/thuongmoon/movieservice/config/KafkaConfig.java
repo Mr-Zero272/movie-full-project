@@ -1,7 +1,9 @@
 package com.thuongmoon.movieservice.config;
 
+import com.thuongmoon.movieservice.request.ChoosingSeatRequest;
 import com.thuongmoon.movieservice.request.ListSeatRequest;
 import com.thuongmoon.movieservice.response.ListSeatResponse;
+import com.thuongmoon.movieservice.response.PaymentStatusResponse;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -24,6 +26,24 @@ import java.util.Map;
 public class KafkaConfig {
     @Bean
     public ProducerFactory<String, ListSeatRequest> producerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+    @Bean
+    public ProducerFactory<String, PaymentStatusResponse> producerFactory2() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+    @Bean
+    public ProducerFactory<String, ChoosingSeatRequest> producerFactory3() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -59,6 +79,20 @@ public class KafkaConfig {
     @Bean
     public KafkaTemplate<String, ListSeatRequest> kafkaTemplate(
             ProducerFactory<String, ListSeatRequest> pf
+    ) {
+        return new KafkaTemplate<>(pf);
+    }
+
+    @Bean
+    public KafkaTemplate<String, PaymentStatusResponse> kafkaTemplate2(
+            ProducerFactory<String, PaymentStatusResponse> pf
+    ) {
+        return new KafkaTemplate<>(pf);
+    }
+
+    @Bean
+    public KafkaTemplate<String, ChoosingSeatRequest> kafkaTemplate3(
+            ProducerFactory<String, ChoosingSeatRequest> pf
     ) {
         return new KafkaTemplate<>(pf);
     }

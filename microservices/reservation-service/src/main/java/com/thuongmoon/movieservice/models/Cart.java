@@ -27,7 +27,7 @@ public class Cart implements Serializable {
     private LocalDateTime lastUpdate;
     private boolean active;
     private String username;
-    private List<String> listTickets = new ArrayList<>();
+    private List<TicketInfo> listTickets = new ArrayList<>();
 
     @Override
     public boolean equals(Object obj) {

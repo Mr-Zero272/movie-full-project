@@ -9,22 +9,11 @@ import RatingStar from '../RatingStar';
 import { format } from 'date-fns';
 import IconButton from './IconButton';
 import { reviewService } from '~/apiServices';
-import useToken from '~/hooks/useToken';
-import { toast } from 'react-toastify';
-
-const notify = (message, type = 'success') => {
-    toast(message, {
-        type: type,
-        style: { fontSize: '1.4rem' },
-        position: toast.POSITION.TOP_RIGHT,
-        closeOnClick: true,
-        autoClose: 1500,
-        className: 'foo-bar',
-    });
-};
+import { useNotify, useToken } from '~/hooks';
 
 function Comment({ id, author, avatar, rating, comment, publishAt, totalLoves, whoLoves, onDelete, ...rest }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const notify = useNotify;
     const [isEdit, setIsEdit] = useState(false);
     const [reviewInfo, setReviewInfo] = useState(() => ({
         id,
@@ -143,6 +132,8 @@ function Comment({ id, author, avatar, rating, comment, publishAt, totalLoves, w
             reportCall();
         }
     };
+
+    console.log(userInfo);
 
     const handleLoveClick = () => {
         const doLove = async () => {

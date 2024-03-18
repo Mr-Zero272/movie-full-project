@@ -28,7 +28,12 @@ public class CartController {
     }
 
     @DeleteMapping("/{ticketId}")
-    public ResponseEntity<ResponseMessage> deleteTicketInCart(@RequestHeader("username") String username, @PathVariable("ticketId") String ticketId) {
+    public ResponseEntity<ResponseMessage> deleteTicketInCart(@RequestHeader("username") String username, @PathVariable("ticketId") String ticketId) throws ExecutionException, InterruptedException {
         return cartService.deleteTicketInCart(username, ticketId);
+    }
+
+    @GetMapping("/quantity")
+    public ResponseEntity<Integer> getQuantityInCart(@RequestHeader("username") String username) throws ExecutionException, InterruptedException {
+        return cartService.getTicketQuantity(username);
     }
 }

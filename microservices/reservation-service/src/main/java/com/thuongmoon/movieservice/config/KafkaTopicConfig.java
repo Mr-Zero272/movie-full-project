@@ -18,5 +18,11 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("cart_send")
                 .build();
     }
+    @Bean
+    public NewTopic paymentTopic() {
+        return TopicBuilder.name("payment_status")
+                .build();
+    }
+
 
 }

@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import jwtDecode from 'jwt-decode';
 
 function useToken() {
-    const [isTokenValid, setIsTokenValid] = useState(true);
-    const [token, setToken] = useState(() => localStorage.getItem('token'));
+    let isTokenValid = true;
+    let [token, setToken] = useState(() => localStorage.getItem('token'));
+
+    useEffect(() => {
+        setToken(() => localStorage.getItem('token'));
+    }, [token]);
 
     const isExpired = (d1) => {
         const today = new Date();
@@ -11,14 +15,13 @@ function useToken() {
     };
 
     if (token === '' || token === null) {
-        localStorage.setItem('token', '');
-        setIsTokenValid(false);
+        // localStorage.setItem('token', '');
+        isTokenValid = false;
     } else {
         const tokenDecode = jwtDecode(token);
         if (isExpired(new Date(tokenDecode.exp * 1000))) {
-            setToken('');
-            setIsTokenValid(false);
-            localStorage.setItem('token', '');
+            isTokenValid = false;
+            // localStorage.setItem('token', '');
         }
     }
     return { isTokenValid, token };

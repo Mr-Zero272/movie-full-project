@@ -28,6 +28,7 @@ const publicRoutes = [
     { path: '/register', component: Register, layout: null },
     { path: '/notify', component: Notify },
     { path: '/admin', component: Dashboard, layout: AdminDefaultLayout },
+    { path: '/payment', component: Payment, layout: HeaderOnly },
 ];
 
 const privateRoutes = [
@@ -35,7 +36,6 @@ const privateRoutes = [
     { path: '/cart', component: AddToCart, layout: HeaderOnly },
     { path: '/ticket', component: Ticket },
     { path: '/profile', component: Profile },
-    { path: '/payment', component: Payment, layout: HeaderOnly },
 ];
 
 export { publicRoutes, privateRoutes };

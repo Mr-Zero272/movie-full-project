@@ -1,6 +1,7 @@
 package com.thuongmoon.movieservice.dto;
 
 import com.thuongmoon.movieservice.models.PaymentDetail;
+import com.thuongmoon.movieservice.models.SeatStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,12 +23,12 @@ public class OrderDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id;
-    private int total;
-    private LocalDateTime creatAt;
+    private Long total;
+    private LocalDateTime createdAt;
 
     private String username;
-    private PaymentDetail paymentDetailId;
-    private List<String> listTickets = new ArrayList<>();
+    private PaymentDetail paymentDetail;
+    private List<SeatStatus> listTickets = new ArrayList<>();
 
     @Override
     public int hashCode() {

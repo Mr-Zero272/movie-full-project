@@ -6,39 +6,62 @@ import { toast } from 'react-toastify';
 import classNames from 'classnames/bind';
 
 import styles from './Step3.module.scss';
-import Ticket from '~/components/Ticket';
 import FormInputText2 from '~/components/Form/FormInput/FormInputText2';
 import Button from '~/components/Button';
-import * as cartService from '~/apiServices/cartService';
+import { cartService } from '~/apiServices';
+import MovieTicket from '~/components/MovieTicket';
+import { useNotify, useToken } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
-const notify = (message, type = 'success') => {
-    toast(message, {
-        type: type,
-        style: { fontSize: '1.4rem' },
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-        className: 'foo-bar',
-    });
+const data = {
+    id: '65e9ea2de32b451d1940e0be',
+    totalTicket: 2,
+    lastUpdate: '2024-03-07T23:24:13.857',
+    active: true,
+    listTickets: [
+        {
+            id: '65db4ab5741cea1ff49567fb',
+            status: 'choosing',
+            price: 122000,
+            screeningId: '65db4ab4b8ac5b02730defaa',
+            seat: {
+                id: '65db3b5ec1fbbf69922c6eca',
+                rowSeat: 'A',
+                numberSeat: 1,
+                auditorium: {
+                    id: '65db3b5ec1fbbf69922c6ec9',
+                    name: 'Alpha',
+                    lastUpdated: '2024-03-04T00:00:00',
+                },
+            },
+        },
+        {
+            id: '65db4ab5741cea1ff49567fc',
+            status: 'choosing',
+            price: 122000,
+            screeningId: '65db4ab4b8ac5b02730defaa',
+            seat: {
+                id: '65db3b5ec1fbbf69922c6ecb',
+                rowSeat: 'A',
+                numberSeat: 2,
+                auditorium: {
+                    id: '65db3b5ec1fbbf69922c6ec9',
+                    name: 'Alpha',
+                    lastUpdated: '2024-03-04T00:00:00',
+                },
+            },
+        },
+    ],
 };
 
 function Step3({ userInfo }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const notify = useNotify();
     const addToCartInfo = useSelector((state) => state.addToCart);
     const [email, setEmail] = useState({ email: '' });
-    const [listTicket, setListTicket] = useState([]);
-    useEffect(() => {
-        const fetchApi = async () => {
-            const ids = addToCartInfo.listSeatSelected.map((item) => item.seatId);
-            const result = await cartService.getListTicketsBeforeBook(ids);
-
-            //console.log(result);
-            setListTicket(result);
-        };
-        fetchApi();
-    }, [addToCartInfo.listSeatSelected]);
+    const { token, isTokenValid } = useToken();
 
     const handleChangeInput = (e) => {
         setEmail((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -71,16 +94,18 @@ function Step3({ userInfo }) {
 
     const handleSubmit = () => {
         const callApi = async () => {
-            const token = localStorage.getItem('token');
-            const listSeatSelected = addToCartInfo.listSeatSelected.filter((e) => e.seatId !== 0);
-            const ids = listSeatSelected.map((e) => e.seatId);
-            const nameInTicket = userInfo.username;
-            const emailInTicket = userInfo.email;
+            const listTickets = addToCartInfo.listSeatSelected.map((seat) => {
+                return {
+                    seatId: seat.id,
+                    movieTitle: seat.movieTitle,
+                    screeningStart: seat.screeningStart,
+                };
+            });
             //console.log(ids);
-            const invoiceId = addToCartInfo.invoiceId;
-            const result = await cartService.checkout(token, ids, invoiceId, nameInTicket, emailInTicket);
-            //console.log(result);
-            if (result && result.message === 'success') {
+            const invoiceId = addToCartInfo.paymentInfo.invoiceId;
+            const result = await cartService.checkout(token, invoiceId, listTickets?.length, listTickets);
+            console.log(result);
+            if (result && result.state === 'success') {
                 notify('Complete checkout! Thank for you order WUW!', 'success');
                 dispatch(fetchQuantityCart());
                 navigate('/ticket?_type=ticket&tab=2');
@@ -96,26 +121,9 @@ function Step3({ userInfo }) {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('list-tickets')}>
-                {listTicket.map((item) => {
-                    const date = new Date(item.seatStatus.screening.screening_start);
-                    const hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
-                    const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
-
-                    return (
-                        <Ticket
-                            key={item.seatStatus.seat.id}
-                            rowSeat={item.seatStatus.seat.rowSeat}
-                            numberSeat={item.seatStatus.seat.numberSeat}
-                            date={date.getDate()}
-                            month={date.toLocaleDateString('en-us', { month: 'short' })}
-                            type={item.seatStatus.screening.type}
-                            movieName={item.movieName}
-                            userInfo={userInfo}
-                            imgUrl={'http://localhost:8081/movie/images/' + item.imageHorizonName}
-                            startTime={hours + ':' + minutes}
-                        />
-                    );
-                })}
+                {addToCartInfo.listSeatSelected.map((seatInfo) => (
+                    <MovieTicket key={seatInfo.id} {...seatInfo} />
+                ))}
             </div>
             <div className={cx('left-side')}>
                 <div className={cx('send-email')}>

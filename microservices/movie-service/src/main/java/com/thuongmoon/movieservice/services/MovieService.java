@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,18 +66,34 @@ public class MovieService {
             Optional<Genre> genreE = genreDao.findById(genreId);
             genreE.ifPresent(genres::add);
         });
+
+        String verticalImage = "";
+        String horizontalImage = "";
+
+        for (int i = 0; i < movieImages.length; i++) {
+            if (movieImages[i].getOriginalFilename().contains("v_m")) {
+                verticalImage = movieImages[i].getOriginalFilename();
+            }
+
+            if (movieImages[i].getOriginalFilename().contains("h_m")) {
+                horizontalImage = movieImages[i].getOriginalFilename();
+            }
+        }
+
+
         Movie newMovie = Movie.builder()
                 .title(request.getMovie().getTitle())
                 .director(request.getMovie().getDirector())
                 .description(request.getMovie().getDescription())
                 .trailer(movieTrailer.getOriginalFilename())
-                .verticalImage(movieImages[3].getOriginalFilename())
-                .horizontalImage(movieImages[0].getOriginalFilename())
+                .verticalImage(verticalImage)
+                .horizontalImage(horizontalImage)
                 .manufacturer(request.getMovie().getManufacturer())
                 .duration_min(request.getMovie().getDuration_min())
                 .releaseDate(dateTimeTransfer.transperStrToLocalDateTime(request.getMovie().getReleaseDate()))
                 .rating(request.getMovie().getRating())
                 .whoAdd(username)
+                .state("Coming soon")
                 .cast(request.getMovie().getCast())
                 .reviews(request.getMovie().getReviews())
                 .galleries(galleries)
