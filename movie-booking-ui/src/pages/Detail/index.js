@@ -40,16 +40,10 @@ function Detail() {
             const result = await searchService.getMovieInfo(movieId);
             // console.log(result);
             setMovieInfo(result);
-            // setListTypes((prev) => {
-            //     let newArray = [];
-            //     newArray = types.data.map((item) => item);
-            //     //console.log(newArray);
-            //     return newArray;
-            // });
-            //console.log(types.data.types);
         };
 
         fetchApi();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleReviewChange = (e) => {

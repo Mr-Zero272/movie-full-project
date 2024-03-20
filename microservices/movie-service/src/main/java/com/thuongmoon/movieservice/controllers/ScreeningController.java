@@ -2,6 +2,7 @@ package com.thuongmoon.movieservice.controllers;
 
 import com.mongodb.client.DistinctIterable;
 import com.thuongmoon.movieservice.model.Screening;
+import com.thuongmoon.movieservice.response.ResponsePagination;
 import com.thuongmoon.movieservice.services.ScreeningService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,12 @@ public class ScreeningController {
     @GetMapping("/{screeningId}")
     public ResponseEntity<Screening> fetchScreeningById(@PathVariable(value = "screeningId", required = true) String screeningId) {
         return screeningService.fetchScreeningById(screeningId);
+    }
+
+    @GetMapping("/date")
+    public ResponseEntity<ResponsePagination> getAllScreeningGreaterThanDate(@RequestParam("date") LocalDateTime date,
+                                                                             @RequestParam(value = "size", required = false, defaultValue = "7") int size,
+                                                                             @RequestParam(value ="cPage", required = false, defaultValue = "1") int cPage) {
+        return screeningService.fetchAllScreeningGreaterThanDate(date, size, cPage);
     }
 }

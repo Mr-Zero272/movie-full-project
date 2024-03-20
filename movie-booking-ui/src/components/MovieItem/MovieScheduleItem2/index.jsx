@@ -15,11 +15,13 @@ function MovieScheduleItem2({ movieId }) {
     const [screeningTypes, setScreeningTypes] = useState();
     const notify = useNotify();
     const [screeningInfoFetch, setScreeningInfoFetch] = useState(() => {
-        const ADate = searchParams.get('date');
-        if (ADate !== null) {
-            return { type: '', date: ADate, movieId: movieId };
+        let type = searchParams.get('type');
+        if (type === null) type = '';
+        let date = searchParams.get('date');
+        if (date === null) {
+            date = format(new Date(), 'yyyy-MM-dd') + 'T00:00:00';
         }
-        return { type: '', date: format(new Date(), 'yyyy-MM-dd') + 'T00:00:00', movieId: movieId };
+        return { type: type, date: date, movieId: movieId };
     });
     const [listScreenings, setListScreenings] = useState();
     const [activeScreening, setActiveScreening] = useState();

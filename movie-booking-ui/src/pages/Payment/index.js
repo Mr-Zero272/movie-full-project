@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -51,7 +51,7 @@ function Payment() {
     const location = window.location.href;
     const navigate = useNavigate();
     const today = new Date();
-    const { isTokenValid, token } = useToken();
+    const { token } = useToken();
     const [paymentInfo, setPaymentInfo] = useState({
         username: maskPrivateString('username'),
         phone: maskPrivateString('0999999999'),
@@ -80,12 +80,12 @@ function Payment() {
                 'Pay for service in MoonMovie',
                 location,
             );
-            console.log(res);
+            // console.log(res);
             window.open(res.data.order_url, '_self');
         };
 
         const createNewPayment = async (status) => {
-            const res = await cartService.createNewPayment(amount, provider, invoiceId, status, token);
+            await cartService.createNewPayment(amount, provider, invoiceId, status, token);
 
             setTimeout(() => {
                 window.close();

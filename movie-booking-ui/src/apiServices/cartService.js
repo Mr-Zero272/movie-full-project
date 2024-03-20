@@ -31,14 +31,16 @@ export const addListTicketToCart = async (token = '', ids = []) => {
     }
 };
 
-export const getListBookedTicketsByUser = async (token = '') => {
+export const getAllOrders = async (token = '') => {
+    //console.log(ids);
     try {
-        const res = await request.getCart('/checkout', {
+        const res = await movieApiRequest.getRequest('/reservation/order', {
             headers: { Authorization: 'Bearer ' + token },
         });
-        return res.data;
+        return res;
     } catch (error) {
-        alert(error);
+        console.log('Get all orders error!');
+        console.log(error);
     }
 };
 

@@ -1,9 +1,15 @@
 package com.thuongmoon.movieservice.services;
 
 import com.thuongmoon.movieservice.dao.ScreeningDao;
+import com.thuongmoon.movieservice.dto.Pagination;
+import com.thuongmoon.movieservice.model.Genre;
 import com.thuongmoon.movieservice.model.Screening;
+import com.thuongmoon.movieservice.response.ResponsePagination;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,5 +56,21 @@ public class ScreeningService {
     public ResponseEntity<Screening> fetchScreeningById(String screeningId) {
         Optional<Screening> screening = screeningDao.findById(screeningId);
         return screening.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.OK));
+    }
+
+    public ResponseEntity<ResponsePagination> fetchAllScreeningGreaterThanDate(LocalDateTime date, int size, int cPage) {
+        Pageable pageable = PageRequest.of(cPage - 1, size);
+        Page<Screening> page = screeningDao.findAllByScreeningStartGreaterThanEqual(pageable, date);
+        Pagination pagination = Pagination.builder()
+                .currentPage(cPage)
+                .size(size)
+                .totalPage(page.getTotalPages())
+                .totalResult((int) page.getTotalElements())
+                .build();
+        ResponsePagination paginationResponse = ResponsePagination.builder()
+                .data(page.getContent())
+                .pagination(pagination)
+                .build();
+        return new ResponseEntity<>(paginationResponse, HttpStatus.OK);
     }
 }

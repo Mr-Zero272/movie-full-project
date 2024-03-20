@@ -64,13 +64,6 @@ public class OrderServiceImpl implements OrderService {
         put("endpoint", "https://sb-openapi.zalopay.vn/v2/create");
     }};
 
-    public static String getCurrentTimeString(String format) {
-        Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT+7"));
-        SimpleDateFormat fmt = new SimpleDateFormat(format);
-        fmt.setCalendar(cal);
-        return fmt.format(cal.getTimeInMillis());
-    }
-
     @Override
     @Transactional
     public ResponseEntity<ResponseMessage> addNewPayment(String username, AddNewPaymentRequest request) {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Tab } from '@headlessui/react';
@@ -10,14 +10,15 @@ import CartItem from './CartItem';
 import { cartService, seatService } from '~/apiServices';
 import { useFormatVndCurrency, useNotify, useToken } from '~/hooks';
 import { addToCartActions } from '~/store/add-to-cart-slice';
+import Orders from './Orders';
 
 function Ticket() {
-    let [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const tab = searchParams.get('tab');
     const VND = useFormatVndCurrency();
     const userInfo = useSelector((state) => state.user);
     const cartStateInfo = useSelector((state) => state.addToCart);
-    const [activeStep, setActiveStep] = useState(+tab);
+    const [activeTab, setActiveTab] = useState(+tab);
     const [cartInfo, setCartInfo] = useState();
     const [checkAll, setCheckAll] = useState(false);
     const { isTokenValid, token } = useToken();
@@ -40,6 +41,12 @@ function Ticket() {
         fetchTickets();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        const _type = searchParams.get('_type');
+        setSearchParams({ _type, tab: activeTab });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab]);
 
     useEffect(() => {
         if (cartInfo) {
@@ -104,7 +111,7 @@ function Ticket() {
             <div className="flex flex-col justify-between mb-48 min-h-[600px]">
                 <div className="sticky top-32 z-20 flex pr-3 w-72 mt-2">
                     <div>
-                        <img className="w-20 h-20 object-cover rounded-full" src={userInfo.avatar} />
+                        <img className="w-20 h-20 object-cover rounded-full" src={userInfo.avatar} alt="avatar" />
                     </div>
 
                     <div className="ml-7">
@@ -129,42 +136,44 @@ function Ticket() {
                         </div>
                     </div>
                 </div>
-                <div className="sticky top-96 z-20">
-                    <div className="flex items-center justify-center border-r border-dashed mb-5">
-                        <input
-                            type="checkbox"
-                            className="cursor-pointer size-7 text-primary-normal bg-primary-normal border-red-300 rounded"
-                            checked={checkAll}
-                            onChange={handleCheckAllTicket}
-                        />
-                        <label className="ms-3 text-gray-500 text-md">Checkout All</label>
+                {activeTab === 1 && (
+                    <div className="sticky top-96 z-20">
+                        <div className="flex items-center justify-center border-r border-dashed mb-5">
+                            <input
+                                type="checkbox"
+                                className="cursor-pointer size-7 text-primary-normal bg-primary-normal border-red-300 rounded"
+                                checked={checkAll}
+                                onChange={handleCheckAllTicket}
+                            />
+                            <label className="ms-3 text-gray-500 text-md">Checkout All</label>
+                        </div>
+                        <div className="flex items-center justify-center flex-col border-r border-dashed mb-5">
+                            <p className="text-gray-500">Total</p>
+                            <p className="font-semibold text-3xl">{VND.format(cartStateInfo.totalPayment)}</p>
+                        </div>
+                        <div className="flex items-center justify-center">
+                            <button
+                                type="button"
+                                className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-md px-5 py-2.5 text-center me-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
+                                onClick={handleCheckout}
+                            >
+                                Check out
+                            </button>
+                            <button
+                                type="button"
+                                className={classNames(
+                                    'text-white font-medium rounded-lg text-md px-5 py-2.5 text-center',
+                                    cartStateInfo.listSeatSelected?.length === 0
+                                        ? 'bg-red-300 dark:bg-red-500 cursor-not-allowed'
+                                        : 'bg-red-500 dark:bg-red-700 cursor-pointer ',
+                                )}
+                                disabled={cartStateInfo.listSeatSelected?.length === 0}
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex items-center justify-center flex-col border-r border-dashed mb-5">
-                        <p className="text-gray-500">Total</p>
-                        <p className="font-semibold text-3xl">{VND.format(cartStateInfo.totalPayment)}</p>
-                    </div>
-                    <div className="flex items-center justify-center">
-                        <button
-                            type="button"
-                            className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-md px-5 py-2.5 text-center me-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
-                            onClick={handleCheckout}
-                        >
-                            Check out
-                        </button>
-                        <button
-                            type="button"
-                            className={classNames(
-                                'text-white font-medium rounded-lg text-md px-5 py-2.5 text-center',
-                                cartStateInfo.listSeatSelected?.length === 0
-                                    ? 'bg-red-300 dark:bg-red-500 cursor-not-allowed'
-                                    : 'bg-red-500 dark:bg-red-700 cursor-pointer ',
-                            )}
-                            disabled={cartStateInfo.listSeatSelected?.length === 0}
-                        >
-                            Delete
-                        </button>
-                    </div>
-                </div>
+                )}
             </div>
 
             <div className="ms-10 flex-1">
@@ -180,6 +189,7 @@ function Ticket() {
                                             : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group',
                                     )
                                 }
+                                onClick={() => setActiveTab(1)}
                             >
                                 <FontAwesomeIcon className="size-7 me-3" icon={faCartFlatbed} />
                                 Cart
@@ -193,47 +203,52 @@ function Ticket() {
                                             : 'border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group',
                                     )
                                 }
+                                onClick={() => setActiveTab(2)}
                             >
                                 <FontAwesomeIcon className="size-7 me-3" icon={faVideo} />
-                                Ticket
+                                Orders
                             </Tab>
                         </Tab.List>
-                        <div className="md:hidden flex items-center gap-x-16">
-                            <div className="flex items-center justify-center border-r border-dashed mb-5">
-                                <input
-                                    type="checkbox"
-                                    className="cursor-pointer size-7 text-primary-normal bg-primary-normal border-red-300 rounded"
-                                    checked={checkAll}
-                                    onChange={handleCheckAllTicket}
-                                />
-                                <label className="ms-3 text-gray-500 text-md">Checkout All</label>
+                        {activeTab === 1 && (
+                            <div className="md:hidden flex items-center gap-x-16">
+                                <div className="flex items-center justify-center border-r border-dashed mb-5">
+                                    <input
+                                        type="checkbox"
+                                        className="cursor-pointer size-7 text-primary-normal bg-primary-normal border-red-300 rounded"
+                                        checked={checkAll}
+                                        onChange={handleCheckAllTicket}
+                                    />
+                                    <label className="ms-3 text-gray-500 text-md">Checkout All</label>
+                                </div>
+                                <div className="flex items-center justify-center border-r border-dashed mb-5">
+                                    <p className="text-gray-500">Total:</p>
+                                    <p className="ms-3 font-semibold text-3xl">
+                                        {VND.format(cartStateInfo.totalPayment)}
+                                    </p>
+                                </div>
+                                <div className="flex items-center justify-center">
+                                    <button
+                                        type="button"
+                                        className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-md px-5 py-2.5 text-center me-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
+                                        onClick={handleCheckout}
+                                    >
+                                        Check out
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={classNames(
+                                            'text-white font-medium rounded-lg text-md px-5 py-2.5 text-center',
+                                            cartStateInfo.listSeatSelected?.length === 0
+                                                ? 'bg-red-300 dark:bg-red-500 cursor-not-allowed'
+                                                : 'bg-red-500 dark:bg-red-700 cursor-pointer ',
+                                        )}
+                                        disabled={cartStateInfo.listSeatSelected?.length === 0}
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
-                            <div className="flex items-center justify-center border-r border-dashed mb-5">
-                                <p className="text-gray-500">Total:</p>
-                                <p className="ms-3 font-semibold text-3xl">{VND.format(cartStateInfo.totalPayment)}</p>
-                            </div>
-                            <div className="flex items-center justify-center">
-                                <button
-                                    type="button"
-                                    className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-md px-5 py-2.5 text-center me-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
-                                    onClick={handleCheckout}
-                                >
-                                    Check out
-                                </button>
-                                <button
-                                    type="button"
-                                    className={classNames(
-                                        'text-white font-medium rounded-lg text-md px-5 py-2.5 text-center',
-                                        cartStateInfo.listSeatSelected?.length === 0
-                                            ? 'bg-red-300 dark:bg-red-500 cursor-not-allowed'
-                                            : 'bg-red-500 dark:bg-red-700 cursor-pointer ',
-                                    )}
-                                    disabled={cartStateInfo.listSeatSelected?.length === 0}
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
+                        )}
                     </div>
                     <Tab.Panels className="mt-2">
                         <Tab.Panel
@@ -258,7 +273,7 @@ function Ticket() {
                                 'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none',
                             )}
                         >
-                            <div>Tickets</div>
+                            <Orders />
                         </Tab.Panel>
                     </Tab.Panels>
                 </Tab.Group>

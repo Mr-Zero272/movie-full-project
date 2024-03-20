@@ -25,10 +25,9 @@ public class MediaController {
     private final FilesStorageService filesStorageService;
 
     @GetMapping("/images/{imageName}")
-    public @ResponseBody ResponseEntity<Resource> downloadImageFromFileSystem(@PathVariable("imageName") String imageName, @RequestParam(required = false, defaultValue = "") String type) throws IOException {
-        //String imagePath = "D:\\HockyI_nam4\\Nien_luan_co_so\\csdl_booking_movie\\images\\movies\\" + imageName;
-        //byte[] image = Files.readAllBytes(new File(imagePath).toPath());
-        System.out.println(imageName);
+    public @ResponseBody ResponseEntity<Resource> downloadImageFromFileSystem(@PathVariable("imageName") String imageName,
+                                                                              @RequestParam(required = false, defaultValue = "") String type) throws IOException {
+//        System.out.println(imageName);
         Path imagePath;
         if (type.equals("avatar")) {
             imagePath = Paths.get("uploads/images/avatars");
@@ -45,9 +44,6 @@ public class MediaController {
 
     @GetMapping("/videos/{videoName}")
     public @ResponseBody ResponseEntity<Resource> getVideoFromFileSystem(@PathVariable("videoName") String videoName) throws IOException {
-        //Path videoPath = Paths.get("uploads/videos/trailer");
-//		String videoPath = "D:\\HockyI_nam4\\Nien_luan_co_so\\csdl_booking_movie\\videos\\trailer\\" + videoName;
-//		byte[] video = Files.readAllBytes(new File(videoPath).toPath());
         Path imagePath = Paths.get("uploads/videos/trailer");
         Resource video = filesStorageService.loadFileWithPath(imagePath, videoName);
 

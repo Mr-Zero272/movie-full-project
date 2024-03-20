@@ -1,5 +1,8 @@
+import { format } from 'date-fns';
 import * as request from '~/utils/request';
 import { auditoriumRequest } from '~/utils/requests';
+import { movieApiRequest } from '~/utils/requests';
+
 export const getAllScreeningTypes = async () => {
     try {
         const res = await request.get(`/screening/type`);
@@ -42,6 +45,24 @@ export const getAllAuditorium = async (screeningId) => {
         return res;
     } catch (error) {
         alert('Get all auditorium error!');
+        console.log(error);
+    }
+};
+
+export const getAllScreeningByGreaterThanCurrentDate = async (size, cPage) => {
+    const today = new Date();
+    const todayFormat = format(today, "yyyy-MM-dd'T'HH:mm:ss");
+    try {
+        const res = await movieApiRequest.getRequest(`/movie/screening/date`, {
+            params: {
+                date: todayFormat,
+                size,
+                cPage,
+            },
+        });
+        return res;
+    } catch (error) {
+        console.log('Get all screening by date error!');
         console.log(error);
     }
 };

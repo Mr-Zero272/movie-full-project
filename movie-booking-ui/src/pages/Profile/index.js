@@ -1,10 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useState } from 'react';
 
-import ProfileInputText from './ProfileInputText';
-import TitleHeadingPage from '~/components/TitleHeadingPage';
-import Button from '~/components/Button';
-import useFetchUserInfo from '~/hooks/useFetchUserInfo';
 import DropdownMenu from '~/components/DropdownMenu/DropdownMenu';
 import { DropdownMenuProfileData } from '~/Data';
 import ProfileDetail from './ProfileDetail';
@@ -28,7 +23,7 @@ function Profile() {
             <div className="flex flex-col mt-6 p-10 border-b xl:w-1/5 sm:flex-row xl:flex-col xl:mt-0">
                 <div className="flex pr-3 w-72">
                     <div>
-                        <img className="w-20 h-20 object-cover rounded-full" src={userInfo.avatar} />
+                        <img className="w-20 h-20 object-cover rounded-full" src={userInfo.avatar} alt="avatar" />
                     </div>
 
                     <div className="ml-7">
