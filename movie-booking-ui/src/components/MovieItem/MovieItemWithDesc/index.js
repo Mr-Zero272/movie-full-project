@@ -8,7 +8,6 @@ import baseUrl from '~/config/baseUrl';
 import Skeleton from 'react-loading-skeleton';
 
 const cx = classNames.bind(styles);
-const defaultData = { genres: [{ id: '', name: '' }] };
 function MovieItemWithDesc({
     id,
     title,

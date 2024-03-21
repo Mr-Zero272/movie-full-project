@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { faArrowRightLong, faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { format } from 'date-fns';
@@ -9,10 +9,14 @@ import { screeningService } from '~/apiServices';
 import MyCustomDatePicker from '~/components/MyCustomDatePicker';
 import ScreeningItem from './ScreeningItem';
 import useNotify from '~/hooks/useNotify';
+import { useDispatch } from 'react-redux';
+import { addToCartActions } from '~/store/add-to-cart-slice';
 
 function MovieScheduleItem2({ movieId }) {
     const [searchParams] = useSearchParams();
     const [screeningTypes, setScreeningTypes] = useState();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const notify = useNotify();
     const [screeningInfoFetch, setScreeningInfoFetch] = useState(() => {
         let type = searchParams.get('type');
@@ -29,7 +33,7 @@ function MovieScheduleItem2({ movieId }) {
         const fetchApi = async () => {
             const res = await screeningService.getAllScreeningTypes();
             setScreeningTypes(res);
-            if (res) {
+            if (res && screeningInfoFetch.type === '') {
                 setScreeningInfoFetch((prev) => ({
                     ...prev,
                     type: res[0],
@@ -38,6 +42,7 @@ function MovieScheduleItem2({ movieId }) {
         };
 
         fetchApi();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -72,11 +77,15 @@ function MovieScheduleItem2({ movieId }) {
         setActiveScreening(screening);
     };
 
+    // console.log(screeningInfoFetch);
+
     const handleAddToCart = () => {
         if (activeScreening === '' || activeScreening === undefined) {
             notify('You need to choose screening first!!', 'error');
             return;
         }
+        dispatch(addToCartActions.refreshState());
+        navigate(`/cart?screeningIds=${activeScreening}`);
     };
 
     const handleBookingNow = () => {
@@ -84,6 +93,8 @@ function MovieScheduleItem2({ movieId }) {
             notify('You need to choose screening first!!', 'error');
             return;
         }
+        dispatch(addToCartActions.refreshState());
+        navigate(`/booking?screeningIds=${activeScreening}&tab=1`);
     };
 
     return (

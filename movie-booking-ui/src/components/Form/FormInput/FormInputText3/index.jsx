@@ -1,7 +1,4 @@
 import { useState } from 'react';
-import classNames from 'classnames/bind';
-// import styles from './FormInputText.module.scss';
-import { faLessThanEqual } from '@fortawesome/free-solid-svg-icons';
 
 // const cx = classNames.bind(styles);
 const defFunction = () => {};

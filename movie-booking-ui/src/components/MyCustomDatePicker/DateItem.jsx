@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { useState } from 'react';
 
 function DateItem({ active, date = '2024-02-19T00:00:00', onClick }) {
     // const [_date, setDate] = useState(() => {

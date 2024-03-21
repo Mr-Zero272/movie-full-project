@@ -1,11 +1,9 @@
-import classNames from 'classnames/bind';
-import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { toast } from 'react-toastify';
 
 import { MovieItemWithDesc } from '~/components/MovieItem';
 import NavStepper from '~/components/NavStepper';
@@ -13,19 +11,6 @@ import { Step1, Step2, Step3 } from './FormBooking';
 import { addToCartActions, fetchInfoAddToCart } from '~/store/add-to-cart-slice';
 import useNotify from '~/hooks/useNotify';
 import Loading from '~/components/Loading';
-
-const getUniqueArray = (array) => {
-    var uniqueArray = array.filter(
-        (item, index) =>
-            array.findIndex(
-                (other) =>
-                    other.screeningId === item.screeningId &&
-                    other.auditoriumId === item.auditoriumId &&
-                    other.movieId === item.movieId,
-            ) === index,
-    );
-    return uniqueArray;
-};
 
 const NAV_PURCHASE_TICKET = ['choose seats', 'purchase', 'complete'];
 function Booking() {
@@ -58,14 +43,14 @@ function Booking() {
                 }
             }
 
-            if (stepIndex === 1 && checkoutInfo.paymentStatus) {
+            if (stepIndex === 1 && checkoutInfo.paymentStatus.status === 'paid') {
                 notify('You have already paid so you cannot go back to step 1!!', 'info');
                 return;
             }
 
             if (stepIndex === 3) {
                 //console.log(checkoutInfo.paymentStatus, 'asdfasdf');
-                if (checkoutInfo.paymentStatus === false) {
+                if (checkoutInfo.paymentStatus.status !== 'paid') {
                     notify('You must complete payment to go to the next step!!', 'error');
                     return;
                 }
@@ -92,25 +77,6 @@ function Booking() {
         slidesToScroll: 1,
     };
 
-    let uniqueListScreeningActive = useMemo(() => {
-        return getUniqueArray(checkoutInfo.listScreeningsAreActive);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    //console.log(movieId);
-    //console.log(checkoutInfo);
-    // useEffect(() => {
-    //     //console.log('pagegoi', id);
-    //     dispatch(fetchInfoAddToCart(movieId));
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
-
-    const getCurrentMoviePosition = () => {
-        const currentMoviePosition = uniqueListScreeningActive.findIndex(
-            (ele) => ele.movieId === checkoutInfo.activeMovie,
-        );
-        return currentMoviePosition;
-    };
     const handleNextBooking = useCallback(async () => {
         const currentIndexScreening = checkoutInfo.screenings.findIndex(
             (item) => item === checkoutInfo.activeScreening.id,

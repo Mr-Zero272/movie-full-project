@@ -20,7 +20,6 @@ import Menu from '~/components/Popper/Menu';
 import Search from '../Search';
 import { userActions } from '~/store/user-slice';
 import { fetchQuantityCart } from '~/store/cart-quantity';
-import baseUrl from '~/config/baseUrl';
 import routes from '~/config/routes';
 import useFetchUserInfo from '~/hooks/useFetchUserInfo';
 
@@ -73,7 +72,7 @@ function Header({ onToggleMenu }) {
     const dispatch = useDispatch();
     const quantity = useSelector((state) => state.cartQuantity.quantity);
     const currentUser = useSelector((state) => state.user);
-    const { userInfo, loading, error } = useFetchUserInfo();
+    const { userInfo, error } = useFetchUserInfo();
     //const avatar = useSelector((state) => state.user.avatar);
     const imageRef = useRef();
 
@@ -92,7 +91,7 @@ function Header({ onToggleMenu }) {
                             status: 'online',
                             username: tokenDecode.sub,
                             avatar: userInfo.avatar,
-                            phone: userInfo.phone,
+                            phoneNumber: userInfo.phoneNumber,
                             email: userInfo.email,
                             role: userInfo.authorities[0].authority,
                         }),

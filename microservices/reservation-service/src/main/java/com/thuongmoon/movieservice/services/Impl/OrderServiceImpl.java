@@ -113,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
             responseMessage.setRspCode("400");
         }
         request.getListTickets().forEach(ticket -> {
-            ChoosingSeatRequest choosingSeatRequest = new ChoosingSeatRequest(ticket.getSeatId(), "booked");
+            ChoosingSeatRequest choosingSeatRequest = new ChoosingSeatRequest(ticket.getSeatId(), "booked", username);
             kafkaService.sendSeatStatusInfo(choosingSeatRequest);
         });
         orderDao.save(newOrder);

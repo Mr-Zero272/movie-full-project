@@ -13,21 +13,20 @@ export const getAllTicketInActiveCart = async (token = '') => {
     }
 };
 
-export const addListTicketToCart = async (token = '', ids = []) => {
+export const addListTicketToCart = async (token = '', ticketInfos = []) => {
     //console.log(ids);
     try {
-        const res = await request.addToCart(
-            '',
-            {
-                ids,
-            },
+        const res = await movieApiRequest.postRequest(
+            '/reservation',
+            { ticketInfos },
             {
                 headers: { Authorization: 'Bearer ' + token },
             },
         );
         return res;
     } catch (error) {
-        alert(error);
+        console.log('Add to cart error!');
+        console.log(error);
     }
 };
 
@@ -63,18 +62,16 @@ export const checkout = async (token = '', invoiceId = '', totalTickets = '', li
     }
 };
 
-export const deleteTicketById = async (token = '', ids = []) => {
+export const deleteTicketById = async (token = '', seatId) => {
     //console.log(ids);
     try {
-        const res = await request.deleteTicket('', {
+        const res = await movieApiRequest.deleteRequest(`/reservation/${seatId}`, {
             headers: { Authorization: 'Bearer ' + token },
-            data: {
-                ids,
-            },
         });
         return res;
     } catch (error) {
-        alert(error);
+        console.log('Delete seat error!');
+        console.log(error);
     }
 };
 

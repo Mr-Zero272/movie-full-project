@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Tab } from '@headlessui/react';
@@ -11,6 +11,7 @@ import { cartService, seatService } from '~/apiServices';
 import { useFormatVndCurrency, useNotify, useToken } from '~/hooks';
 import { addToCartActions } from '~/store/add-to-cart-slice';
 import Orders from './Orders';
+import { fetchQuantityCart } from '~/store/cart-quantity';
 
 function Ticket() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -24,23 +25,26 @@ function Ticket() {
     const { isTokenValid, token } = useToken();
     const dispatch = useDispatch();
     const notify = useNotify();
-
     const navigate = useNavigate();
+
     useEffect(() => {
         const fetchTickets = async () => {
+            // const { isValid } = checkTokenValidity();
+            // if (isValid) {
             if (isTokenValid) {
                 const result = await cartService.getAllTicketInActiveCart(token);
                 console.log(result);
                 setCartInfo(result);
-            } else {
-                navigate('/login');
             }
+            // } else {
+            //     navigate('/login');
+            // }
             //console.log(result);
         };
         dispatch(addToCartActions.refreshState());
         fetchTickets();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isTokenValid]);
 
     useEffect(() => {
         const _type = searchParams.get('_type');
@@ -50,7 +54,10 @@ function Ticket() {
 
     useEffect(() => {
         if (cartInfo) {
-            if (cartInfo.listTickets?.length === cartStateInfo.listSeatSelected?.length) {
+            if (
+                cartInfo.listTickets?.length === cartStateInfo.listSeatSelected?.length &&
+                cartStateInfo.listSeatSelected?.length !== 0
+            ) {
                 setCheckAll(true);
             } else {
                 setCheckAll(false);
@@ -66,6 +73,19 @@ function Ticket() {
         }
     };
 
+    const handleDeleteItemInCart = useCallback(() => {
+        const fetchApi = async () => {
+            const result = await cartService.getAllTicketInActiveCart(token);
+            //console.log(result);
+            console.log(result);
+            setCartInfo(result);
+        };
+
+        fetchApi();
+        dispatch(fetchQuantityCart());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const handleCheckout = () => {
         if (cartStateInfo.listSeatSelected?.length === 0) {
             return;
@@ -78,7 +98,7 @@ function Ticket() {
                 username: userInfo.username,
             }));
             const res = await seatService.checkoutSeat(listSeatInfos);
-            console.log(res);
+            // console.log(res);
             if (res) {
                 let tempListSeatSelected = [];
                 if (res?.length !== 0) {
@@ -261,7 +281,9 @@ function Ticket() {
                                 {cartInfo === '' ? (
                                     <p className="text-gray-400">You do not have any ticket in your cart!</p>
                                 ) : cartInfo ? (
-                                    cartInfo.listTickets.map((seat) => <CartItem key={seat.id} cartItemInfo={seat} />)
+                                    cartInfo.listTickets.map((seat) => (
+                                        <CartItem key={seat.id} cartItemInfo={seat} onDelete={handleDeleteItemInCart} />
+                                    ))
                                 ) : (
                                     <Skeleton />
                                 )}

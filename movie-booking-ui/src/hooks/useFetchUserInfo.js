@@ -20,6 +20,7 @@ function useFetchUserInfo() {
         };
 
         fetchUserInfo();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return { userInfo, loading, error };
 }

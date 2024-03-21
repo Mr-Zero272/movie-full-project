@@ -133,7 +133,7 @@ function Comment({ id, author, avatar, rating, comment, publishAt, totalLoves, w
         }
     };
 
-    console.log(userInfo);
+    // console.log(userInfo);
 
     const handleLoveClick = () => {
         const doLove = async () => {

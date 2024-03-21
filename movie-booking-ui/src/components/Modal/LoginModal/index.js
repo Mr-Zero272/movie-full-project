@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Modal from '..';
 import styles from './LoginModal.module.scss';
@@ -57,7 +57,6 @@ const MENU_FORM_ITEMS = [
     },
 ];
 function LoginModal() {
-    const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState(null);
     const [userLoginInfo, setUserLoginInfo] = useState(() => ({
         username: {

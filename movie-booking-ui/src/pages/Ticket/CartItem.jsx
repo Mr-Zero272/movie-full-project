@@ -7,15 +7,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCartActions } from '~/store/add-to-cart-slice';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import { cartService } from '~/apiServices';
 
 const defaultFunction = (e) => {};
-function CartItem({ cartItemInfo, onCheck = defaultFunction }) {
+function CartItem({ cartItemInfo, onCheck = defaultFunction, onDelete = defaultFunction }) {
     const dispatch = useDispatch();
     const listTicketsChecked = useSelector((state) => state.addToCart.listSeatSelected);
     const [checked, setChecked] = useState(() => listTicketsChecked.some((item) => item.id === cartItemInfo.id));
     useEffect(() => {
         setChecked(() => listTicketsChecked.some((item) => item.id === cartItemInfo.id));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listTicketsChecked]);
+
     const handleCheck = () => {
         onCheck(cartItemInfo);
         dispatch(addToCartActions.chooseSeat(cartItemInfo));
@@ -32,21 +35,20 @@ function CartItem({ cartItemInfo, onCheck = defaultFunction }) {
             reverseButtons: true,
         }).then((result) => {
             if (result.isConfirmed) {
-                // const callApi = async () => {
-                //     const token = localStorage.getItem('token');
-                //     const ids = [id];
-                //     const result = await cartService.deleteTicketById(token, ids);
-                //     //console.log(result); {message: 'success'}
-                //     if (result.message && result.message === 'success') {
-                //         onDelete();
-                //         Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
-                //     } else {
-                //         Swal.fire('Opps!', 'Some thing went wrong!', 'warning');
-                //     }
-                // };
+                const callApi = async () => {
+                    const token = localStorage.getItem('token');
+                    const result = await cartService.deleteTicketById(token, id);
+                    //console.log(result); {message: 'success'}
+                    if (result && result.state === 'success') {
+                        Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+                        onDelete();
+                    } else {
+                        Swal.fire('Opps!', 'Some thing went wrong!', 'warning');
+                    }
+                };
 
-                // callApi();
-                Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+                callApi();
+                // Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel
@@ -105,7 +107,10 @@ function CartItem({ cartItemInfo, onCheck = defaultFunction }) {
                     </div>
                 </div>
             </div>
-            <div className="w-1/12 flex items-center justify-center" onClick={handleDeleteTicket}>
+            <div
+                className="w-1/12 flex items-center justify-center"
+                onClick={() => handleDeleteTicket(cartItemInfo.id)}
+            >
                 <FontAwesomeIcon className="size-7 cursor-pointer text-red-400" icon={faTrashAlt} />
             </div>
         </div>

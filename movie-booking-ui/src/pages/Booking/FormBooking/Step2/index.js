@@ -21,17 +21,17 @@ import SeatChosen from './SeatChosen';
 import TitleHeadingPage from '~/components/TitleHeadingPage';
 import { addToCartActions } from '~/store/add-to-cart-slice';
 
-const generateRandomString = (length, key) => {
-    const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' + key;
-    let result = '';
+// const generateRandomString = (length, key) => {
+//     const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' + key;
+//     let result = '';
 
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        result += characters[randomIndex];
-    }
+//     for (let i = 0; i < length; i++) {
+//         const randomIndex = Math.floor(Math.random() * characters.length);
+//         result += characters[randomIndex];
+//     }
 
-    return result;
-};
+//     return result;
+// };
 
 let VND = new Intl.NumberFormat('vi-VN', {
     style: 'currency',

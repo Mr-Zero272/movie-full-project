@@ -58,21 +58,29 @@ public class SeatStatusService {
     public void updateSeatStatus(ChoosingSeatRequest request) {
         Optional<SeatStatus> seatStatus = seatStatusDao.findById(request.getId());
         if (seatStatus.isPresent()) {
-            if (seatStatus.get().getWhoChoose().equals(request.getUsername())) {
-                if (request.getStatus().equals("choosing")) {
-                    seatStatus.get().setStatus("available");
-                    seatStatus.get().setWhoChoose("");
-                    request.setStatus("available");
-                    seatStatusDao.save(seatStatus.get());
-                    sendDataToWebSocket("/topic/seat-state", seatStatus);
-                }
-            } else if (seatStatus.get().getWhoChoose().isEmpty()){
-                if (request.getStatus().equals("available")) {
-                    seatStatus.get().setWhoChoose(request.getUsername());
-                    seatStatus.get().setStatus("choosing");
-                    request.setStatus("choosing");
-                    seatStatusDao.save(seatStatus.get());
-                    sendDataToWebSocket("/topic/seat-state", seatStatus);
+            if (request.getStatus().equals("booked")) {
+                seatStatus.get().setStatus("booked");
+                seatStatus.get().setWhoChoose(request.getUsername());
+                request.setStatus("booked");
+                seatStatusDao.save(seatStatus.get());
+                sendDataToWebSocket("/topic/seat-state", request);
+            } else {
+                if (seatStatus.get().getWhoChoose().equals(request.getUsername())) {
+                    if (request.getStatus().equals("choosing")) {
+                        seatStatus.get().setStatus("available");
+                        seatStatus.get().setWhoChoose("");
+                        request.setStatus("available");
+                        seatStatusDao.save(seatStatus.get());
+                        sendDataToWebSocket("/topic/seat-state", request);
+                    }
+                } else if (seatStatus.get().getWhoChoose().isEmpty()){
+                    if (request.getStatus().equals("available")) {
+                        seatStatus.get().setWhoChoose(request.getUsername());
+                        seatStatus.get().setStatus("choosing");
+                        request.setStatus("choosing");
+                        seatStatusDao.save(seatStatus.get());
+                        sendDataToWebSocket("/topic/seat-state", request);
+                    }
                 }
             }
         }

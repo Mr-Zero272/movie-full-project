@@ -7,6 +7,7 @@ import com.thuongmoon.movieservice.models.Cart;
 import com.thuongmoon.movieservice.models.SeatStatus;
 import com.thuongmoon.movieservice.models.TicketInfo;
 import com.thuongmoon.movieservice.request.AddToCartRequest;
+import com.thuongmoon.movieservice.request.ChoosingSeatRequest;
 import com.thuongmoon.movieservice.request.ListSeatRequest;
 import com.thuongmoon.movieservice.response.ListSeatResponse;
 import com.thuongmoon.movieservice.response.ResponseMessage;
@@ -61,6 +62,11 @@ public class CartServiceImpl implements CartService {
             cartOptional.get().setTotalTicket(listOldTickets.size());
             cartDao.save(cartOptional.get());
         }
+
+        request.getTicketInfos().forEach(ticketInfo -> {
+            ChoosingSeatRequest choosingSeatRequest = new ChoosingSeatRequest(ticketInfo.getSeatId(), "choosing", username);
+            kafkaService.sendSeatStatusInfo(choosingSeatRequest);
+        });
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 

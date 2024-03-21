@@ -9,12 +9,6 @@ export const fetchInfoAddToCart = createAsyncThunk('addToCart/fetch', async (scr
     return response;
 });
 
-const checkActiveDate = (d, chosenDate) => {
-    const d1 = new Date(d);
-    const d2 = new Date(chosenDate);
-    return d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear();
-};
-
 // const getListSeatsSelected = (listSeats) => {
 //     let listSeatsSelected = [];
 //     listSeatsSelected = listSeats.map((item) => {

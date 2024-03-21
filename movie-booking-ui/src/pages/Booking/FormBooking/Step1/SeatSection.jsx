@@ -4,12 +4,8 @@ import Skeleton from 'react-loading-skeleton';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 
-import classNames from 'classnames/bind';
-import styles from './Step1.module.scss';
 import RowOfSeats from './RowOfSeats';
 import { seatService } from '~/apiServices';
-
-const cx = classNames.bind(styles);
 
 function SeatSection({ className }) {
     const activeScreening = useSelector((state) => state.addToCart.activeScreening);
@@ -43,6 +39,7 @@ function SeatSection({ className }) {
                 stompClient.disconnect();
             }
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -68,6 +65,7 @@ function SeatSection({ className }) {
                 // handleEditListSeat(seatInfo.id, seatInfo.status);
             });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listSeats]);
     //sock.readyState
     useEffect(() => {
@@ -107,6 +105,7 @@ function SeatSection({ className }) {
                 });
             }
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [myStompClient, listSeatSelected],
     );
 

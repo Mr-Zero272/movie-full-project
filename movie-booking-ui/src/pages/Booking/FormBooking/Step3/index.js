@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchQuantityCart } from '~/store/cart-quantity';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,54 +14,13 @@ import { useNotify, useToken } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
-const data = {
-    id: '65e9ea2de32b451d1940e0be',
-    totalTicket: 2,
-    lastUpdate: '2024-03-07T23:24:13.857',
-    active: true,
-    listTickets: [
-        {
-            id: '65db4ab5741cea1ff49567fb',
-            status: 'choosing',
-            price: 122000,
-            screeningId: '65db4ab4b8ac5b02730defaa',
-            seat: {
-                id: '65db3b5ec1fbbf69922c6eca',
-                rowSeat: 'A',
-                numberSeat: 1,
-                auditorium: {
-                    id: '65db3b5ec1fbbf69922c6ec9',
-                    name: 'Alpha',
-                    lastUpdated: '2024-03-04T00:00:00',
-                },
-            },
-        },
-        {
-            id: '65db4ab5741cea1ff49567fc',
-            status: 'choosing',
-            price: 122000,
-            screeningId: '65db4ab4b8ac5b02730defaa',
-            seat: {
-                id: '65db3b5ec1fbbf69922c6ecb',
-                rowSeat: 'A',
-                numberSeat: 2,
-                auditorium: {
-                    id: '65db3b5ec1fbbf69922c6ec9',
-                    name: 'Alpha',
-                    lastUpdated: '2024-03-04T00:00:00',
-                },
-            },
-        },
-    ],
-};
-
 function Step3({ userInfo }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const notify = useNotify();
     const addToCartInfo = useSelector((state) => state.addToCart);
     const [email, setEmail] = useState({ email: '' });
-    const { token, isTokenValid } = useToken();
+    const { token } = useToken();
 
     const handleChangeInput = (e) => {
         setEmail((prev) => ({ ...prev, [e.target.name]: e.target.value }));

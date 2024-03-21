@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 
@@ -28,7 +28,7 @@ const validation = {
         maxLength: 10,
     },
     email: {
-        patternRegex: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+        patternRegex: /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/,
         errorMessage: 'Invalid email!',
         maxLength: 30,
     },
@@ -36,7 +36,7 @@ const validation = {
 
 function ProfileDetail() {
     const dispatch = useDispatch();
-    const { userInfo, loading, error } = useFetchUserInfo();
+    const { userInfo } = useFetchUserInfo();
     const [newAvatar, setNewAvatar] = useState(null);
     const [userDetail, setUserDetail] = useState(() => ({
         username: '',
@@ -194,7 +194,7 @@ function ProfileDetail() {
                     </ul>
                 </div>
                 <div className="pb-5 border-b flex flex-col justify-center items-center lg:w-2/5 lg:border-b-0">
-                    <img className="w-40 h-40 object-cover rounded-full mb-10" src={userDetail.avatar} />
+                    <img className="w-40 h-40 object-cover rounded-full mb-10" src={userDetail.avatar} alt="avatar-c" />
                     <Button outline className="mb-5" onClick={handleChooseImage}>
                         Choose Image
                     </Button>

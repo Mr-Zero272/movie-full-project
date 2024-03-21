@@ -1,30 +1,27 @@
-import classNames from 'classnames/bind';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import Skeleton from 'react-loading-skeleton';
 
 import { MovieItemWithDesc } from '~/components/MovieItem';
 import NavStepper from '~/components/NavStepper';
 import { Step1 } from './FormBooking';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { addToCartActions, fetchInfoAddToCart } from '~/store/add-to-cart-slice';
-import * as cartService from '~/apiServices/cartService';
 import { fetchQuantityCart } from '~/store/cart-quantity';
-import { screeningService } from '~/apiServices';
+import { useNotify, useToken } from '~/hooks';
+import { cartService } from '~/apiServices';
 
 const NAV_PURCHASE_TICKET = ['Add to cart'];
 function AddToCart() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const notify = useNotify();
     let [searchParams] = useSearchParams();
-    // const [screeningInfo, setScreeningInfo] = useState(null);
     const addToCartInfo = useSelector((state) => state.addToCart);
-    const movieId = addToCartInfo.activeMovie;
-    //console.log(id);
-    //console.log(addToCartInfo);
+    const { checkTokenValidity } = useToken();
+
     useEffect(() => {
         const listScreenings = searchParams.get('screeningIds').split(',');
         const screeningId = listScreenings[0];
@@ -33,18 +30,22 @@ function AddToCart() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    console.log(addToCartInfo);
-
     const handleSubmit = useCallback(() => {
         if (addToCartInfo.listSeatSelected?.length === 0) {
-            alert('You have choose at least one seat!');
+            notify('You have choose at least one seat!', 'error');
         } else {
             const callApiAddToCart = async () => {
-                const token = localStorage.getItem('token');
-                const ids = addToCartInfo.listSeatSelected.map((item) => {
-                    return item.seatId;
+                const { isValid, token } = checkTokenValidity();
+                if (isValid) {
+                }
+                const ticketInfos = addToCartInfo.listSeatSelected.map((seat) => {
+                    return {
+                        movieTitle: seat.movieTitle,
+                        screeningStart: seat.screeningStart,
+                        seatId: seat.id,
+                    };
                 });
-                const response = await cartService.addListTicketToCart(token, ids);
+                const response = await cartService.addListTicketToCart(token, ticketInfos);
                 if (response && response.message) {
                     const id = toast.loading('Please wait...');
                     setTimeout(() => {
@@ -57,6 +58,8 @@ function AddToCart() {
                         dispatch(fetchQuantityCart());
                         navigate(-1);
                     }, 1000);
+                } else {
+                    notify('Some thing went wrong!, Try again later.', 'error');
                 }
             };
 

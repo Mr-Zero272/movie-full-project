@@ -10,10 +10,8 @@ import { format } from 'date-fns';
 import classNames from 'classnames';
 import MovieTicket from '~/components/MovieTicket';
 import images from '~/assets/images';
-import { useNavigate } from 'react-router-dom';
 
 function Orders() {
-    const navigate = useNavigate();
     const [listOrders, setListOrders] = useState([]);
     const { isTokenValid, token } = useToken();
     const VND = useFormatVndCurrency();
@@ -23,15 +21,13 @@ function Orders() {
                 const res = await cartService.getAllOrders(token);
                 // console.log(res);
                 setListOrders(res);
-            } else {
-                navigate('/login');
             }
             // setListOrders(resultListTickets);
         };
 
         fetchApi();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isTokenValid]);
     return (
         <div>
             <div className="w-full px-4">

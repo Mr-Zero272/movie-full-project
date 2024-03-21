@@ -13,7 +13,7 @@ function DropdownItem({ active, icon, iconColor, title, value, onClick }) {
     }
     return (
         <div className="flex items-center w-72 mb-3 cursor-pointer" onClick={() => onClick(value)}>
-            <div className={'w-1/4 text-3xl' + ' ' + _iconColor}>{icon}</div>
+            <div className={`w-1/4 text-3xl ${_iconColor}`}>{icon}</div>
             <p className={`w-3/4 ${active && 'text-primary-normal'}`}>{title}</p>
         </div>
     );

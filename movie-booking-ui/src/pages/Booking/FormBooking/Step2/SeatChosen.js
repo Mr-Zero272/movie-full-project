@@ -1,16 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilm, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faFilm } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 
 import styles from './Step2.module.scss';
-import { addToCartActions } from '~/store/add-to-cart-slice';
+
 const cx = classNames.bind(styles);
 function SeatChosen({ numberSeat, rowSeat, price }) {
-    const dispatch = useDispatch();
-    const addToCartInfo = useSelector((state) => state.addToCart);
-    //console.log(seatInfo);
-
     return (
         <div className={cx('seat-chosen-wrapper')}>
             <div className={cx('seat-chosen-column')}>
