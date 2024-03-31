@@ -91,4 +91,7 @@ public interface MovieDao extends MongoRepository<Movie, String> {
     @Aggregation({"{$lookup: {from : \"requirement\", localField: \"requirement\", foreignField: \"_id\", as: \"req\"}}",
             "{$match: { \"req.0.totalWeekScheduling\": { $gt: 0 }}}"})
     List<Movie> getMovieToSchedule();
+
+    @Aggregation({"{$count: \"totalMovies\"}"})
+    Integer countAllMovies();
 }

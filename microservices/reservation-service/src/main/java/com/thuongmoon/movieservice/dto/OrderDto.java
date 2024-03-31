@@ -24,6 +24,7 @@ public class OrderDto implements Serializable {
 
     private String id;
     private Long total;
+    private Long serviceFee;
     private LocalDateTime createdAt;
 
     private String username;

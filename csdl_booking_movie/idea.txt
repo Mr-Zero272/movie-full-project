@@ -1,0 +1,6 @@
+Note
+Admin statistical
+Total movies
+Total businesses client (business movie user)
+Total users (normal users)
+Sales in this month

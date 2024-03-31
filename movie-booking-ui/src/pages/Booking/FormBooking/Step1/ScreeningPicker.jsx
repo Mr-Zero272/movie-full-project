@@ -87,7 +87,7 @@ function ScreeningPicker({ movieId, activeDate, onChooseScreening = defaultFunc,
                             key={screening.id}
                             {...screening}
                             active={activeScreening.id === screening.id}
-                            onClick={handleChooseScreening}
+                            onClick={() => handleChooseScreening(screening)}
                         />
                     ))
                 ) : (
@@ -97,5 +97,12 @@ function ScreeningPicker({ movieId, activeDate, onChooseScreening = defaultFunc,
         </div>
     );
 }
+
+ScreeningPicker.prototype = {
+    movieId: PropTypes.string,
+    activeDate: PropTypes.string,
+    onChooseScreening: PropTypes.func,
+    onChooseAuditorium: PropTypes.func,
+};
 
 export default ScreeningPicker;

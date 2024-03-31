@@ -7,13 +7,13 @@ import CustomLabel from '@/components/CustomLabel';
 import { authService } from '@/apiServices';
 const validations = {
     username: {
-        maxLength: 20,
+        maxLength: 50,
     },
     password: {
         patternRegex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
         errorMessage:
             'Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character.',
-        maxLength: 20,
+        maxLength: 50,
     },
 };
 

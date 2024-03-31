@@ -58,6 +58,8 @@ function Step3({ userInfo }) {
                     seatId: seat.id,
                     movieTitle: seat.movieTitle,
                     screeningStart: seat.screeningStart,
+                    provider: seat.provider,
+                    price: seat.price,
                 };
             });
             //console.log(ids);

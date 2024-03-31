@@ -101,12 +101,12 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setListTickets(request.getListTickets());
         if (paymentDetail.isPresent()) {
             newOrder.setTotal(paymentDetail.get().getAmount());
-            newOrder.setServiceFree((long) (paymentDetail.get().getAmount() * 0.05));
+            newOrder.setServiceFee((long) (paymentDetail.get().getAmount() * 0.05));
             newOrder.setPaymentDetail(paymentDetail.get());
             responseMessage.setMessage("Thank for your order!!");
         } else {
             newOrder.setTotal(0L);
-            newOrder.setServiceFree(0L);
+            newOrder.setServiceFee(0L);
             newOrder.setPaymentDetail(null);
             responseMessage.setMessage("This order is not payment yet!!");
             responseMessage.setState("warning");
@@ -117,13 +117,15 @@ public class OrderServiceImpl implements OrderService {
             kafkaService.sendSeatStatusInfo(choosingSeatRequest);
         });
         orderDao.save(newOrder);
-        // check if the user have cart or not
+        // check if the user have cart or not then delete ticket in cart
         if (cartOptional.isPresent()) {
             List<TicketInfo> listOldTicket = cartOptional.get().getListTickets();
             List<TicketInfo> listNewTicket = listOldTicket.stream().filter(ticketInfo ->
                     request.getListTickets().stream()
                             .noneMatch(obj2 -> obj2.getSeatId().equals(ticketInfo.getSeatId()))).toList();
             cartOptional.get().setListTickets(listNewTicket);
+            cartOptional.get().setTotalTicket(listNewTicket.size());
+            cartOptional.get().setLastUpdate(LocalDateTime.now());
             cartDao.save(cartOptional.get());
         }
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);

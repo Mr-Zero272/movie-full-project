@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,6 +35,8 @@ public class User implements Serializable, UserDetails {
 	private String email;
 	private String avatar;
 	private String phoneNumber;
+	private LocalDateTime createdAt;
+	private LocalDateTime modifiedAt;
 
 	private Role role;
 

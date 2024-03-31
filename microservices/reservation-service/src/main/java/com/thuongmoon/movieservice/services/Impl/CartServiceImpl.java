@@ -85,8 +85,9 @@ public class CartServiceImpl implements CartService {
 
             List<SeatStatus> seatStatuses = responseFromTopic.getPayload().getSeats();
             for (int i = 0; i < cartOptional.get().getTotalTicket(); i++) {
-                seatStatuses.get(i).setMovieTitle(cartOptional.get().getListTickets().get(i).getMovieTitle());
-                seatStatuses.get(i).setScreeningStart(cartOptional.get().getListTickets().get(i).getScreeningStart());
+                seatStatuses.get(i).setMovieTitle(cartOptional.get().getListTickets().get(cartOptional.get().getTotalTicket() - 1 - i).getMovieTitle());
+                seatStatuses.get(i).setScreeningStart(cartOptional.get().getListTickets().get(cartOptional.get().getTotalTicket() - 1 - i).getScreeningStart());
+                seatStatuses.get(i).setProvider(cartOptional.get().getListTickets().get(cartOptional.get().getTotalTicket() - 1 - i).getProvider());
             }
 
             CartDto cartDto = CartDto.builder()

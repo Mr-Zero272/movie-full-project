@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <style>
+        .ticket-wrapper {
+            box-sizing: border-box;
+            padding: 1.25rem;
+            margin-top: 1.75rem;
+            margin-bottom: 1.75rem;
+            border-radius: 0.75rem;
+            border-top: 2px solid #00466a;
+            border-bottom: 2px solid #00466a;
+            width: 100%;
+            height: 100%;
+            background: white;
+            /* box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); */
+        }
+
+        .ticket-header {
+            box-sizing: border-box;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            width: 100%;
+            text-align: center;
+        }
+
+        .ticket-body {
+            box-sizing: border-box;
+            border-bottom-width: 1px;
+            border-bottom-style: dashed;
+            width: 100%;
+        }
+
+        .ticket-footer {
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .ele-ticket {
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .ticket-title {
+            font-size: 1.8rem;
+            line-height: 1;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        @media (min-width: 768px) {
+            .ticket-wrapper {
+                display: flex;
+                align-items: center;
+                height: 18rem;
+            }
+
+            .ticket-header {
+                padding: 1.25rem;
+                border-right-width: 1px;
+                border-bottom-width: 0;
+                width: 25%;
+            }
+
+            .ticket-body {
+                /* padding: 1.25rem; */
+                border-right-width: 1px;
+                border-bottom-width: 0;
+                width: 41.666667%;
+            }
+
+            .ticket-footer {
+                /* padding: 1.25rem; */
+                width: 33.333333%;
+            }
+
+            .ele-ticket {
+                font-size: 1.1rem;
+                line-height: 1;
+            }
+
+            .ticket-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div style="font-family: Helvetica, Arial, sans-serif; overflow: auto; line-height: 2">
+    <div style="margin: 0 auto; width: 80%; padding: 10px 0">
+        <div style="border-bottom: 1px solid #eee">
+            <a href="" style="font-size: 1.4em; color: #00466a; text-decoration: none; font-weight: 600"
+            >Moon Movie</a
+            >
+        </div>
+        <p style="font-size: 1.1em">Hi,</p>
+        <p>
+            Thank you for choosing Moon Movie. Below is a list of tickets that you have purchased. You just need
+            to show it to theater staff and you can go in and watch the movie as usual.
+        </p>
+        <div class="ticket-wrapper">
+            <div class="ticket-header">
+                <h3 style="margin-bottom: 0.5rem; font-weight: 500; color: #9ca3af">Title</h3>
+                <h1 class="ticket-title">Love at first sight</h1>
+            </div>
+            <div class="ticket-body">
+                <div style="margin-bottom: 1.25rem; text-align: center">
+                    <div style="display: inline-block; margin: 0 1rem">
+                        <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Date</h3>
+                        <p class="ele-ticket">Feb 24, 2024</p>
+                    </div>
+                    <div style="display: inline-block; margin: 0 1rem">
+                        <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Begins</h3>
+                        <p class="ele-ticket">7:30 AM</p>
+                    </div>
+                </div>
+                <div style="text-align: center">
+                    <div style="display: inline-block; margin: 0 1rem">
+                        <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Hall</h3>
+                        <p class="ele-ticket">Alpha</p>
+                    </div>
+                    <div style="display: inline-block; margin: 0 1rem">
+                        <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Row</h3>
+                        <p class="ele-ticket">C</p>
+                    </div>
+                    <div style="display: inline-block; margin: 0 1rem">
+                        <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Seat</h3>
+                        <p class="ele-ticket">5</p>
+                    </div>
+                </div>
+            </div>
+            <div class="ticket-footer">
+                <div style="text-align: center; margin-bottom: 1.25rem">
+                    <div style="display: inline-block; margin: 0 1rem">
+                        <h3 style="font-weight: 500; color: #9ca3af; line-height: 1">TicketID</h3>
+                        <p style="line-height: 1">Fwfaw2323D</p>
+                    </div>
+                    <div style="display: inline-block; margin: 0 1rem; line-height: 1">
+                        <h3 style="font-weight: 500; color: #9ca3af">Price</h3>
+                        <p style="line-height: 1">122222</p>
+                    </div>
+                </div>
+                <div style="text-align: center; line-height: 1">
+                    <img
+                            style="width: 7rem; height: 7rem; padding: 0; margin: 0; line-height: 1"
+                            src="https://i.pinimg.com/564x/9a/9a/16/9a9a16b12880f1f14dbf3fb2ad64bf95.jpg"
+                            alt="qr-code"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <p style="font-size: 0.9em">Regards,<br />Your Brand</p>
+        <p
+                style="
+                        max-width: 400px;
+                        margin: 0 auto;
+                        margin-top: 90px;
+                        text-align: center;
+                        font-weight: 500;
+                        color: #8c8c8c;
+                    "
+        >
+            Need help? Ask at
+            <a href="mailto:moonmovie@gmail.com" style="color: #499fb6; text-decoration: none"
+            >moonmovie@gmail.com</a
+            >
+            or visit our
+            <a href="" target="_blank" style="color: #499fb6; text-decoration: none">Help Center</a>
+        </p>
+        <hr style="border: none; border-top: 1px solid #eee" />
+        <footer
+                style="
+                        width: 100%;
+                        max-width: 490px;
+                        margin: 20px auto 0;
+                        text-align: center;
+                        border-top: 1px solid #e6ebf1;
+                    "
+        >
+            <p style="margin: 0; margin-top: 40px; font-size: 16px; font-weight: 600; color: #434343">
+                Moon Movie Company
+            </p>
+            <p style="margin: 0; margin-top: 8px; color: #434343">Address 540, City, State.</p>
+            <div style="margin: 0; margin-top: 16px">
+                <a href="" target="_blank" style="display: inline-block">
+                    <img
+                            width="36px"
+                            alt="Facebook"
+                            src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661502815169_682499/email-template-icon-facebook"
+                    />
+                </a>
+                <a href="" target="_blank" style="display: inline-block; margin-left: 8px">
+                    <img
+                            width="36px"
+                            alt="Instagram"
+                            src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661504218208_684135/email-template-icon-instagram"
+                    /></a>
+                <a href="" target="_blank" style="display: inline-block; margin-left: 8px">
+                    <img
+                            width="36px"
+                            alt="Twitter"
+                            src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503043040_372004/email-template-icon-twitter"
+                    />
+                </a>
+                <a href="" target="_blank" style="display: inline-block; margin-left: 8px">
+                    <img
+                            width="36px"
+                            alt="Youtube"
+                            src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503195931_210869/email-template-icon-youtube"
+                    /></a>
+            </div>
+            <p style="margin: 0; margin-top: 16px; color: #434343">
+                Copyright © 2022 Company. All rights reserved.
+            </p>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

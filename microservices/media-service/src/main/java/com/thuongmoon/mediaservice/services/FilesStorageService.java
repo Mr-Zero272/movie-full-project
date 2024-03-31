@@ -200,7 +200,7 @@ public class FilesStorageService {
         Path path = Paths.get("uploads/images/avatars");
         try {
             Files.copy(avatar.getInputStream(), path.resolve(newName));
-            if (!oldName.equals("http://localhost:8272/api/v1/images/no_image.png?type=avatar")) {
+            if (!oldName.equals("http://localhost:8272/api/v1/media/images/no_image.png?type=avatar")) {
                 Path fileDelete = path.resolve(Objects.requireNonNull(oldName));
                 Files.deleteIfExists(fileDelete);
             }

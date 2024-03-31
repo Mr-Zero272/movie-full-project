@@ -43,14 +43,14 @@ function Booking() {
                 }
             }
 
-            if (stepIndex === 1 && checkoutInfo.paymentStatus.status === 'paid') {
+            if (stepIndex === 1 && checkoutInfo.paymentInfo.status === 'paid') {
                 notify('You have already paid so you cannot go back to step 1!!', 'info');
                 return;
             }
 
             if (stepIndex === 3) {
                 //console.log(checkoutInfo.paymentStatus, 'asdfasdf');
-                if (checkoutInfo.paymentStatus.status !== 'paid') {
+                if (checkoutInfo.paymentInfo.status !== 'paid') {
                     notify('You must complete payment to go to the next step!!', 'error');
                     return;
                 }
@@ -60,7 +60,7 @@ function Booking() {
             setActiveStep(stepIndex);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [checkoutInfo.listSeatSelected, checkoutInfo.paymentStatus],
+        [checkoutInfo.listSeatSelected, checkoutInfo.paymentInfo],
     );
 
     var settings = {

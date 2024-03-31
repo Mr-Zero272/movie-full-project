@@ -26,7 +26,7 @@ public class Order implements Serializable {
     @Id
     private String id;
     private Long total;
-    private Long serviceFree;
+    private Long serviceFee;
     private LocalDateTime createdAt;
     private int totalTickets;
 

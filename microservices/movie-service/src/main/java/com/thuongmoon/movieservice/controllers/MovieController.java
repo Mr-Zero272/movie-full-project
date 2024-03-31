@@ -91,4 +91,9 @@ public class MovieController {
     public ResponseEntity<List<String>> getAllManufactures() {
         return movieService.getListManufactures();
     }
+
+    @GetMapping("/totalMovie")
+    public ResponseEntity<Integer> getTotalMovie() {
+        return ResponseEntity.ok(movieService.getTotalMovie());
+    }
 }

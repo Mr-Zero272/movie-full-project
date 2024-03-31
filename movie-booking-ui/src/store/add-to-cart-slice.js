@@ -156,12 +156,12 @@ const addToCartSlice = createSlice({
                 activeDate: action.payload,
             };
         },
-        // setActiveScreening(state, action) {
-        //     return {
-        //         ...state,
-        //         activeScreening: action.payload,
-        //     };
-        // },
+        setActiveScreening(state, action) {
+            return {
+                ...state,
+                activeScreening: action.payload,
+            };
+        },
         setNecessaryInfoAddToCart(state, action) {
             return {
                 ...state,

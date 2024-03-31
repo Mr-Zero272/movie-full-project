@@ -20,6 +20,7 @@ import TimeItem from '~/components/TimeItem';
 import SeatChosen from './SeatChosen';
 import TitleHeadingPage from '~/components/TitleHeadingPage';
 import { addToCartActions } from '~/store/add-to-cart-slice';
+import { useNotify } from '~/hooks';
 
 // const generateRandomString = (length, key) => {
 //     const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' + key;
@@ -78,6 +79,7 @@ function Step2({ onNextStep }) {
         redirectUrl: 'http://localhost:3001/payment',
     }));
     const [selected, setSelected] = useState(plans[0]);
+    const notify = useNotify();
     //console.log(addToCartInfo);
 
     useEffect(() => {
@@ -88,12 +90,15 @@ function Step2({ onNextStep }) {
 
             stompClient.subscribe('/topic/payment-status', (message) => {
                 const paymentInfoReturn = JSON.parse(message.body);
-                console.log(paymentInfoReturn);
                 if (paymentInfoReturn.invoiceId === paymentInfo.app_trans_id) {
                     console.log(paymentInfoReturn);
                     dispatch(addToCartActions.setPaymentStatus(paymentInfoReturn));
                     dispatch(addToCartActions.setLoading(false));
                 }
+                // setTimeout(() => {
+                //     dispatch(addToCartActions.setLoading(false));
+                //     notify('Payment timeout!', 'error');
+                // }, 1000);
             });
         });
 
@@ -137,6 +142,10 @@ function Step2({ onNextStep }) {
     }, [addToCartInfo.activeScreening, addToCartInfo.listSeatSelected]);
 
     const handlePaymentSubmit = () => {
+        if (selected.value !== 'zalopay') {
+            notify('We just support zalopay right now!', 'warning');
+            return;
+        }
         const invoiceId = crateRandomTransId();
         setPaymentInfo((prev) => ({
             ...prev,

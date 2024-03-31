@@ -98,7 +98,7 @@ function Ticket() {
                 username: userInfo.username,
             }));
             const res = await seatService.checkoutSeat(listSeatInfos);
-            // console.log(res);
+            console.log(res);
             if (res) {
                 let tempListSeatSelected = [];
                 if (res?.length !== 0) {
@@ -128,7 +128,7 @@ function Ticket() {
 
     return (
         <div className="w-full px-32 pt-10 flex relative">
-            <div className="flex flex-col justify-between mb-48 min-h-[600px]">
+            <div className="mb-48">
                 <div className="sticky top-32 z-20 flex pr-3 w-72 mt-2">
                     <div>
                         <img className="w-20 h-20 object-cover rounded-full" src={userInfo.avatar} alt="avatar" />
@@ -157,7 +157,7 @@ function Ticket() {
                     </div>
                 </div>
                 {activeTab === 1 && (
-                    <div className="sticky top-96 z-20">
+                    <div className="sticky top-[530px] z-20">
                         <div className="flex items-center justify-center border-r border-dashed mb-5">
                             <input
                                 type="checkbox"
@@ -278,7 +278,7 @@ function Ticket() {
                             )}
                         >
                             <div className="w-full mt-5">
-                                {cartInfo === '' ? (
+                                {cartInfo === '' || (cartInfo && cartInfo.listTickets?.length === 0) ? (
                                     <p className="text-gray-400">You do not have any ticket in your cart!</p>
                                 ) : cartInfo ? (
                                     cartInfo.listTickets.map((seat) => (

@@ -1,6 +1,7 @@
 package com.thuongmoon.movieservice.controllers;
 
 import com.thuongmoon.movieservice.dto.ReviewDto;
+import com.thuongmoon.movieservice.services.Impl.IntermediaryServiceImpl;
 import com.thuongmoon.movieservice.services.IntermediaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -13,7 +13,6 @@ import Button from '~/components/Button';
 import FormInputText2 from '~/components/Form/FormInput/FormInputText2';
 import Loading from '~/components/Loading';
 import { cartService } from '~/apiServices';
-import useToken from '~/hooks/useToken';
 
 let VND = new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -51,7 +50,8 @@ function Payment() {
     const location = window.location.href;
     const navigate = useNavigate();
     const today = new Date();
-    const { token } = useToken();
+    // const { token } = useToken();
+    const token = localStorage.getItem('token');
     const [paymentInfo, setPaymentInfo] = useState({
         username: maskPrivateString('username'),
         phone: maskPrivateString('0999999999'),

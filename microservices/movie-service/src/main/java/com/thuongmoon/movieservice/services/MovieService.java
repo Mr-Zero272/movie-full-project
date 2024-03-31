@@ -44,6 +44,10 @@ public class MovieService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    public int getTotalMovie() {
+        return movieDao.countAllMovies();
+    }
+
     @Transactional
     public ResponseEntity<ResponseMessage> addMovie(MovieAddRequest request, MultipartFile[] movieImages, MultipartFile movieTrailer, MultipartFile[] actorImages, String username) {
         // do I need to handle image or video right there?

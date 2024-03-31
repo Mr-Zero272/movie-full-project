@@ -1,0 +1,90 @@
+[{
+  "_id": {
+    "$oid": "65ae6a4b5cc42c0f95e7cd88"
+  },
+  "username": "leon",
+  "password": "$2a$10$czUGfyuk0pbXF/ltK/RzuOj17cjJdZjIrVeZ4qRG16tGDdMeTr8cO",
+  "email": "leonkenedy@gmail.com",
+  "avatar": "http://localhost:8272/api/v1/media/images/85888689_p0_master1200leon.jpg?type=avatar",
+  "phoneNumber": "0987654321",
+  "role": "MOVIE_BUSINESS",
+  "_class": "com.thuongmoon.authservice.models.User",
+  "createdAt": {
+    "$date": "2024-03-17T11:38:31.753Z"
+  },
+  "modifiedAt": {
+    "$date": "2024-03-18T11:38:31.753Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65af7c2e8945c613416b56f7"
+  },
+  "username": "master",
+  "password": "$2a$10$q01Z6JxDPuETpvvUJPpB/eXty7mHseHF/HkEpaKjw4N/CSTZGWiw6",
+  "email": "master@gmail.com",
+  "avatar": "http://localhost:8272/api/v1/media/images/no_image.png?type=avatar",
+  "phoneNumber": "Please update yourphone number!",
+  "role": "USER",
+  "_class": "com.thuongmoon.authservice.models.User",
+  "createdAt": {
+    "$date": "2024-03-16T11:38:31.753Z"
+  },
+  "modifiedAt": {
+    "$date": "2024-03-18T11:38:31.753Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65d047fad892640c23a72ae9"
+  },
+  "username": "haotran",
+  "password": "$2a$10$.TEti26HL/LhCwodOVLsz.WB5m/EwGuhC4EhpEFc52jXQGKfP8fYq",
+  "email": "haotran@gmail.com",
+  "avatar": "http://localhost:8272/api/v1/media/images/haoav2haotran.jpg?type=avatar",
+  "phoneNumber": "0342123128",
+  "role": "USER",
+  "_class": "com.thuongmoon.movieservice.models.User",
+  "createdAt": {
+    "$date": "2024-03-24T11:38:31.753Z"
+  },
+  "modifiedAt": {
+    "$date": "2024-03-18T11:38:31.753Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65fd2f594182394d4386e5ce"
+  },
+  "username": "thuongb2014795@student.ctu.edu.vn",
+  "password": "$2a$10$X2yTrkHNUrLmpIXyrg6DIOA0pY97YPMS7A6N6RVEPBLjO7IpM4dKi",
+  "email": "thuongb2014795@student.ctu.edu.vn",
+  "avatar": "http://localhost:8272/api/v1/media/images/no_image.png?type=avatar",
+  "phoneNumber": "",
+  "role": "MOVIE_BUSINESS",
+  "_class": "com.thuongmoon.movieservice.models.User",
+  "createdAt": {
+    "$date": "2024-03-19T11:38:31.753Z"
+  },
+  "modifiedAt": {
+    "$date": "2024-03-18T11:38:31.753Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65fef7b711d7703cdc9de61b"
+  },
+  "username": "pitithuong@gmail.com",
+  "password": "$2a$10$ZLNkGreIHTmU0k048sz1Sucnr.ROA7jpg1upoMr9Pn7gYh20yXp5W",
+  "email": "pitithuong@gmail.com",
+  "avatar": "http://localhost:8272/api/v1/media/images/thuongAvatarpitithuong.jpg?type=avatar",
+  "phoneNumber": "",
+  "role": "ADMIN",
+  "_class": "com.thuongmoon.movieservice.models.User",
+  "createdAt": {
+    "$date": "2024-03-20T11:38:31.753Z"
+  },
+  "modifiedAt": {
+    "$date": "2024-03-18T11:38:31.753Z"
+  }
+}]

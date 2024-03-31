@@ -13,4 +13,6 @@ public class TicketInfo {
     private String movieTitle;
     private LocalDateTime screeningStart;
     private String seatId;
+    private int price;
+    private String provider;
 }

@@ -27,6 +27,7 @@ public class SeatStatus implements Serializable {
 	private String screeningId;
 	private String movieTitle;
 	private LocalDateTime screeningStart;
+	private String provider;
 	@DocumentReference
 	private Seat seat;
 

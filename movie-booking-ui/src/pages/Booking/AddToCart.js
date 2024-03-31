@@ -42,6 +42,8 @@ function AddToCart() {
                     return {
                         movieTitle: seat.movieTitle,
                         screeningStart: seat.screeningStart,
+                        price: seat.price,
+                        provider: seat.provider,
                         seatId: seat.id,
                     };
                 });

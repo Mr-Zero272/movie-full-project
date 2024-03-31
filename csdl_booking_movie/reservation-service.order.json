@@ -1,0 +1,89 @@
+[
+  {
+    "total": 182000,
+    "createdAt": {
+      "$date": "2024-02-18T11:38:31.753Z"
+    },
+    "totalTickets": 2,
+    "username": "haotran",
+    "paymentDetail": {
+      "$oid": "65f82572985e7e78c7d22f3b"
+    },
+    "listTickets": [
+      {
+        "movieTitle": "Love at First Sight",
+        "screeningStart": {
+          "$date": "2024-02-26T00:30:00.000Z"
+        },
+        "seatId": "65db4ab5741cea1ff49567fb"
+      },
+      {
+        "movieTitle": "Love at First Sight",
+        "screeningStart": {
+          "$date": "2024-02-26T00:30:00.000Z"
+        },
+        "seatId": "65db4ab5741cea1ff49567fb"
+      }
+    ],
+    "_class": "com.thuongmoon.movieservice.models.Order",
+    "serviceFee": 12100
+  },
+  {
+    "total": 120000,
+    "createdAt": {
+      "$date": "2024-01-18T11:38:31.753Z"
+    },
+    "totalTickets": 1,
+    "username": "haotran",
+    "paymentDetail": {
+      "$oid": "65f82572985e7e78c7d22f3b"
+    },
+    "listTickets": [
+      {
+        "movieTitle": "Love at First Sight",
+        "screeningStart": {
+          "$date": "2024-02-26T00:30:00.000Z"
+        },
+        "seatId": "65db4ab5741cea1ff49567fb"
+      }
+    ],
+    "_class": "com.thuongmoon.movieservice.models.Order",
+    "serviceFee": 6700
+  },
+  {
+    "total": 352000,
+    "createdAt": {
+      "$date": "2024-01-18T11:38:31.753Z"
+    },
+    "totalTickets": 3,
+    "username": "haotran",
+    "paymentDetail": {
+      "$oid": "65f82572985e7e78c7d22f3b"
+    },
+    "listTickets": [
+      {
+        "movieTitle": "Love at First Sight",
+        "screeningStart": {
+          "$date": "2024-02-26T00:30:00.000Z"
+        },
+        "seatId": "65db4ab5741cea1ff49567fb"
+      },
+      {
+        "movieTitle": "Love at First Sight",
+        "screeningStart": {
+          "$date": "2024-02-26T00:30:00.000Z"
+        },
+        "seatId": "65db4ab5741cea1ff49567fb"
+      },
+      {
+        "movieTitle": "Love at First Sight",
+        "screeningStart": {
+          "$date": "2024-02-26T00:30:00.000Z"
+        },
+        "seatId": "65db4ab5741cea1ff49567fb"
+      }
+    ],
+    "_class": "com.thuongmoon.movieservice.models.Order",
+    "serviceFee": 50100
+  }
+]

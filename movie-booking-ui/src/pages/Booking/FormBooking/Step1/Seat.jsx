@@ -15,6 +15,7 @@ function Seat({ seatInfo, available, booked, selected, choosing, className, onCl
         onClick(seatInfo.id, seatInfo.status);
         seatInfo.movieTitle = addToCartInfo.movieInfo.title;
         seatInfo.screeningStart = addToCartInfo.activeScreening.screeningStart;
+        seatInfo.provider = addToCartInfo.movieInfo.whoAdd;
         dispatch(addToCartActions.chooseSeat(seatInfo));
     };
     return (

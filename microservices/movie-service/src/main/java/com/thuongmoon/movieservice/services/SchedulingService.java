@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -38,6 +39,12 @@ public class SchedulingService {
     private JsonKafkaProducer jsonKafkaProducer;
 
     public ResponseEntity<String> doSchedule(LocalDateTime startDate) {
+        Optional<ScheduleState> scheduleStateOptional = scheduleStateDao.findLastEle();
+        if (!scheduleStateOptional.isEmpty()) {
+            if (startDate.isBefore(scheduleStateOptional.get().getLastScheduledTime())) {
+                return new ResponseEntity<>("The start date cannot be smaller than the last scheduled date.", HttpStatus.OK);
+            }
+        }
         int maxScreeningsPerDay = 7;
         // start at 7:00 am
         LocalDateTime startTimeToSchedule = dateTimeTransfer.calculateDatePlusHours(startDate, 7F);
