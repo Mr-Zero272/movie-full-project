@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -102,34 +102,34 @@
             Thank you for choosing Moon Movie. Below is a list of tickets that you have purchased. You just need
             to show it to theater staff and you can go in and watch the movie as usual.
         </p>
-        <div class="ticket-wrapper">
+        <div class="ticket-wrapper" th:each="ticket: ${tickets}">
             <div class="ticket-header">
                 <h3 style="margin-bottom: 0.5rem; font-weight: 500; color: #9ca3af">Title</h3>
-                <h1 class="ticket-title">Love at first sight</h1>
+                <h1 class="ticket-title" th:text="${ticket.title}" >Love at first sight</h1>
             </div>
             <div class="ticket-body">
                 <div style="margin-bottom: 1.25rem; text-align: center">
                     <div style="display: inline-block; margin: 0 1rem">
                         <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Date</h3>
-                        <p class="ele-ticket">Feb 24, 2024</p>
+                        <p class="ele-ticket" th:text="${ticket.dateFormat}">Feb 24, 2024</p>
                     </div>
                     <div style="display: inline-block; margin: 0 1rem">
                         <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Begins</h3>
-                        <p class="ele-ticket">7:30 AM</p>
+                        <p class="ele-ticket" th:text="${ticket.begins}">7:30 AM</p>
                     </div>
                 </div>
                 <div style="text-align: center">
                     <div style="display: inline-block; margin: 0 1rem">
                         <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Hall</h3>
-                        <p class="ele-ticket">Alpha</p>
+                        <p class="ele-ticket" th:text="${ticket.hall}">Alpha</p>
                     </div>
                     <div style="display: inline-block; margin: 0 1rem">
                         <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Row</h3>
-                        <p class="ele-ticket">C</p>
+                        <p class="ele-ticket" th:text="${ticket.row}">C</p>
                     </div>
                     <div style="display: inline-block; margin: 0 1rem">
                         <h3 style="margin-bottom: 0.2rem; font-weight: 500; color: #9ca3af">Seat</h3>
-                        <p class="ele-ticket">5</p>
+                        <p class="ele-ticket" th:text="${ticket.seat}">5</p>
                     </div>
                 </div>
             </div>
@@ -137,11 +137,11 @@
                 <div style="text-align: center; margin-bottom: 1.25rem">
                     <div style="display: inline-block; margin: 0 1rem">
                         <h3 style="font-weight: 500; color: #9ca3af; line-height: 1">TicketID</h3>
-                        <p style="line-height: 1">Fwfaw2323D</p>
+                        <p style="line-height: 1" th:text="${ticket.id}">Fwfaw2323D</p>
                     </div>
                     <div style="display: inline-block; margin: 0 1rem; line-height: 1">
                         <h3 style="font-weight: 500; color: #9ca3af">Price</h3>
-                        <p style="line-height: 1">122222</p>
+                        <p style="line-height: 1" th:text="${ticket.price} + &#8363;">122222 &#8363;</p>
                     </div>
                 </div>
                 <div style="text-align: center; line-height: 1">
@@ -154,7 +154,7 @@
             </div>
         </div>
 
-        <p style="font-size: 0.9em">Regards,<br />Your Brand</p>
+        <p style="font-size: 0.9em">Regards,<br />Moon Movie</p>
         <p
                 style="
                         max-width: 400px;

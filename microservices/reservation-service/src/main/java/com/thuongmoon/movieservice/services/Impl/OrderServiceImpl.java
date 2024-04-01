@@ -3,14 +3,15 @@ package com.thuongmoon.movieservice.services.Impl;
 import com.thuongmoon.movieservice.dao.CartDao;
 import com.thuongmoon.movieservice.dao.OrderDao;
 import com.thuongmoon.movieservice.dao.PaymentDetailDao;
-import com.thuongmoon.movieservice.dto.CartDto;
 import com.thuongmoon.movieservice.dto.OrderDto;
+import com.thuongmoon.movieservice.dto.TicketMailRequest;
 import com.thuongmoon.movieservice.kafka.KafkaService;
 import com.thuongmoon.movieservice.models.*;
 import com.thuongmoon.movieservice.request.*;
 import com.thuongmoon.movieservice.response.ListSeatResponse;
 import com.thuongmoon.movieservice.response.PaymentStatusResponse;
 import com.thuongmoon.movieservice.response.ResponseMessage;
+import com.thuongmoon.movieservice.services.MailService;
 import com.thuongmoon.movieservice.services.OrderService;
 import com.thuongmoon.movieservice.zalocrypto.HMACUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
@@ -32,29 +32,26 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-    @Autowired
-    private OrderDao orderDao;
-    @Autowired
-    private PaymentDetailDao paymentDetailDao;
-    @Autowired
-    private KafkaService kafkaService;
-    @Autowired
-    private CartDao cartDao;
-
+    private final OrderDao orderDao;
+    private final PaymentDetailDao paymentDetailDao;
+    private final KafkaService kafkaService;
+    private final CartDao cartDao;
     private final ReplyingKafkaTemplate<String, ListSeatRequest, ListSeatResponse> replyingKafkaTemplate;
+    private final MailService mailService;
 
 
     private static Map<String, String> config = new HashMap<String, String>() {{
@@ -228,5 +225,21 @@ public class OrderServiceImpl implements OrderService {
             orderDtos.add(orderDto);
         }
         return new ResponseEntity<>(orderDtos, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> sendTicketsToCusByMail(SendTicketsMailRequest request) {
+        ResponseMessage responseMessage = new ResponseMessage();
+        DateTimeFormatter sdfDate = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+        DateTimeFormatter sdfTime = DateTimeFormatter.ofPattern("h:mm a");
+        request.getTickets().forEach(ticket -> {
+            ticket.setDateFormat(sdfDate.format(ticket.getDate()));
+            ticket.setBegins(sdfTime.format(ticket.getDate()));
+        });
+        Context context = new Context();
+        context.setVariable("tickets", request.getTickets());
+        mailService.sendEmailWithHtmlTemplate(request.getMail(), "Thank for your order!", "ticketMail", context);
+        responseMessage.setMessage("Thank for your order!");
+        return ResponseEntity.ok(responseMessage);
     }
 }
