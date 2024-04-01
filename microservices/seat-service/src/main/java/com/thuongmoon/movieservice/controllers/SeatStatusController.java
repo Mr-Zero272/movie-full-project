@@ -1,14 +1,11 @@
 package com.thuongmoon.movieservice.controllers;
 
-import com.thuongmoon.movieservice.dao.SeatDao;
-import com.thuongmoon.movieservice.models.Seat;
 import com.thuongmoon.movieservice.models.SeatStatus;
-import com.thuongmoon.movieservice.request.AddListSeatStatus;
 import com.thuongmoon.movieservice.request.ChoosingSeatRequest;
 import com.thuongmoon.movieservice.request.GenerateSeatStatusRequest;
 import com.thuongmoon.movieservice.response.ResponseMessage;
+import com.thuongmoon.movieservice.services.Impl.SeatStatusServiceImpl;
 import com.thuongmoon.movieservice.services.SeatStatusService;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

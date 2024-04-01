@@ -2,7 +2,7 @@ package com.thuongmoon.movieservice.kafka;
 
 import com.thuongmoon.movieservice.dto.ReviewDto;
 import com.thuongmoon.movieservice.dto.UserUpdateDto;
-import com.thuongmoon.movieservice.services.ReviewService;
+import com.thuongmoon.movieservice.services.Impl.ReviewServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class JsonKafkaConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonKafkaConsumer.class);
     @Autowired
-    private ReviewService reviewService;
+    private ReviewServiceImpl reviewService;
 
 //    private final KafkaTemplate<String, GenerateSeatStatusRequest> kafkaTemplate;
 //    private final SeatStatusService seatStatusService;

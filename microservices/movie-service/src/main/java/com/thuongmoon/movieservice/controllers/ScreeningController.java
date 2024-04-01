@@ -1,8 +1,8 @@
 package com.thuongmoon.movieservice.controllers;
 
-import com.mongodb.client.DistinctIterable;
 import com.thuongmoon.movieservice.model.Screening;
 import com.thuongmoon.movieservice.response.ResponsePagination;
+import com.thuongmoon.movieservice.services.Impl.ScreeningServiceImpl;
 import com.thuongmoon.movieservice.services.ScreeningService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

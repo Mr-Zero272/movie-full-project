@@ -2,6 +2,7 @@ package com.thuongmoon.mediaservice.controllers;
 
 import com.thuongmoon.mediaservice.response.ResponseMessage;
 import com.thuongmoon.mediaservice.services.FilesStorageService;
+import com.thuongmoon.mediaservice.services.Impl.FilesStorageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;

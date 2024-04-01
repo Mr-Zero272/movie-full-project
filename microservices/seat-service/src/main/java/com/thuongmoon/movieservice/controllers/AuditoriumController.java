@@ -4,7 +4,7 @@ import com.thuongmoon.movieservice.models.Auditorium;
 import com.thuongmoon.movieservice.request.AddAuditoriumRequest;
 import com.thuongmoon.movieservice.response.ResponseMessage;
 import com.thuongmoon.movieservice.services.AuditoriumService;
-import org.bson.types.ObjectId;
+import com.thuongmoon.movieservice.services.Impl.AuditoriumServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;

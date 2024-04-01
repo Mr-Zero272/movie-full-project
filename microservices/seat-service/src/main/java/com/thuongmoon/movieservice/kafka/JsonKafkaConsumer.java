@@ -6,7 +6,7 @@ import com.thuongmoon.movieservice.request.GenerateSeatStatusRequest;
 import com.thuongmoon.movieservice.request.ListSeatRequest;
 import com.thuongmoon.movieservice.response.ListSeatResponse;
 import com.thuongmoon.movieservice.response.PaymentStatusResponse;
-import com.thuongmoon.movieservice.services.SeatStatusService;
+import com.thuongmoon.movieservice.services.Impl.SeatStatusServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +29,9 @@ public class JsonKafkaConsumer {
         messagingTemplate.convertAndSend(destination, data);
     }
 //    private final KafkaTemplate<String, GenerateSeatStatusRequest> kafkaTemplate;
-    private final SeatStatusService seatStatusService;
+    private final SeatStatusServiceImpl seatStatusService;
 
-    public JsonKafkaConsumer(SeatStatusService seatStatusService) {
+    public JsonKafkaConsumer(SeatStatusServiceImpl seatStatusService) {
         this.seatStatusService = seatStatusService;
     }
 

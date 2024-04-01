@@ -5,6 +5,7 @@ import com.thuongmoon.movieservice.request.EditGenreRequest;
 import com.thuongmoon.movieservice.response.ResponseMessage;
 import com.thuongmoon.movieservice.response.ResponsePagination;
 import com.thuongmoon.movieservice.services.GenreService;
+import com.thuongmoon.movieservice.services.Impl.GenreServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

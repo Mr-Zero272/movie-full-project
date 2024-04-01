@@ -4,6 +4,7 @@ import com.thuongmoon.movieservice.dto.ReviewDto;
 import com.thuongmoon.movieservice.model.Review;
 import com.thuongmoon.movieservice.request.ReportReviewRequest;
 import com.thuongmoon.movieservice.response.ResponseMessage;
+import com.thuongmoon.movieservice.services.Impl.ReviewServiceImpl;
 import com.thuongmoon.movieservice.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
