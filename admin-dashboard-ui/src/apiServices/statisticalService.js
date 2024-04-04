@@ -106,7 +106,7 @@ export const getReservationStatistical = async (year = 2024, token) => {
                         height: 220,
                         series: [
                             {
-                                name: 'Orders',
+                                name: 'Tickets',
                                 data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
                             },
                         ],
@@ -125,7 +125,7 @@ export const getReservationStatistical = async (year = 2024, token) => {
                             },
                         },
                     };
-                    const dataSeries3 = sData.map((data) => +data.totalOrders);
+                    const dataSeries3 = sData.map((data) => +data.totalTickets);
                     monthlyOrderChart.series[0].data = dataSeries3;
                     monthlyOrderChart.options.xaxis.categories = xaxisCategories;
                     const result1 = {
@@ -137,8 +137,8 @@ export const getReservationStatistical = async (year = 2024, token) => {
                     };
                     const result2 = {
                         color: 'white',
-                        title: 'Monthly Orders',
-                        description: '10% increase in last moth orders',
+                        title: 'Monthly Tickets',
+                        description: '10% increase in last moth tickets',
                         footer: 'updated 3 min ago',
                         chart: monthlyOrderChart,
                     };
@@ -159,7 +159,7 @@ export const getStatisticalDataCard = async (year = 2024, token, role = 'MOVIE_B
             {
                 color: 'gray',
                 icon: BanknotesIcon,
-                title: 'Orders',
+                title: 'Tickets',
                 value: '$53k',
                 footer: {
                     color: 'text-green-500',
@@ -238,15 +238,15 @@ export const getStatisticalDataCard = async (year = 2024, token, role = 'MOVIE_B
                             0,
                         );
                     }
-                    const orders = sData.reduce(
-                        (accumulator, currentValue) => accumulator + currentValue.totalOrders,
+                    const tickets = sData.reduce(
+                        (accumulator, currentValue) => accumulator + currentValue.totalTickets,
                         0,
                     );
-                    return { sales, orders };
+                    return { sales, tickets };
                 },
             ],
         });
-        statisticsCardsData[0].value = res2.orders;
+        statisticsCardsData[0].value = res2.tickets;
         statisticsCardsData[3].value = res2.sales;
         return statisticsCardsData;
     } catch (error) {

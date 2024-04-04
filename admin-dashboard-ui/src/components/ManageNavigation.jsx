@@ -5,9 +5,19 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 function ManageNavigation({ data }) {
     const [animate, setAnimate] = useState('animate-fade-down');
-    const [activePage, setActivePage] = useState(0);
     const navigate = useNavigate();
     const { pathname } = useLocation();
+    // console.log(pathname.slice(pathname.lastIndexOf('/') + 1));
+    const [activePage, setActivePage] = useState(() => {
+        const name = pathname.slice(pathname.lastIndexOf('/') + 1);
+        let indexPath = 0;
+        data.forEach((element, index) => {
+            if (element.name === name) {
+                indexPath = index;
+            }
+        });
+        return indexPath;
+    });
     const cPathName = pathname.slice(0, pathname.lastIndexOf('/'));
 
     const handleUpClick = () => {

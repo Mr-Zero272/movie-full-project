@@ -94,6 +94,8 @@ public class SchedulingServiceImpl implements SchedulingService {
                     continue;
                 }
 
+                // check if one date is scheduled
+                // true => next date
                 if(screeningCount == auditoriumIds.size() * maxScreeningsPerDay) {
                     screeningCount = 0;
                     LocalDateTime nextDay = dateTimeTransfer.getNextDay(auditoriumStates.get(0).getLastScreeningsStartTime());
@@ -106,10 +108,8 @@ public class SchedulingServiceImpl implements SchedulingService {
                     break;
                 }
 
-                // Tạo một đối tượng Random
+                // random from 60 to 200
                 Random random = new Random();
-
-                // Tạo số ngẫu nhiên trong khoảng từ 60 đến 200
                 int randomPrice = random.nextInt(141) + 60;
 
                 Screening screening = Screening.builder()

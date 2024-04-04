@@ -31,3 +31,13 @@ export const searchMovie = async (q, type = '', genreIds = [], manufacturers = [
         console.log(error);
     }
 };
+
+export const getMovieInfo = async (movieId) => {
+    try {
+        const res = await movieRequest.get(`/info/${movieId}`, {});
+        return res;
+    } catch (error) {
+        console.log('Get movie info error!');
+        console.log(error);
+    }
+};

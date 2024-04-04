@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { faStar as faStarFull } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Typography } from '@material-tailwind/react';
 
 const deF = (star) => {};
 function RatingStar({ stars, onChange = deF, totalStars }) {
@@ -29,7 +30,12 @@ function RatingStar({ stars, onChange = deF, totalStars }) {
         }
         return starRender;
     };
-    return <div className="mb-3 text-yellow-600">{renderStars()}</div>;
+    return (
+        <div>
+            <Typography className="text-sm italic">{stars} stars</Typography>
+            <div className="mb-3 text-yellow-600">{renderStars()}</div>
+        </div>
+    );
 }
 
 RatingStar.prototype = {

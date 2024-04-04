@@ -13,6 +13,5 @@ public class Statistical {
     private long totalSum;
     private long serviceFeeSum;
     private int totalTickets;
-    private int totalOrders;
     private int month;
 }

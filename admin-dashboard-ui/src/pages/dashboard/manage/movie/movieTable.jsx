@@ -32,7 +32,7 @@ function MovieTable() {
     }, [paginationInfo.currentPage, searchValue, paginationInfo.size]);
 
     const handleNextPage = useCallback((nextPage) => {
-        console.log(nextPage);
+        // console.log(nextPage);
         setPaginationInfo((prev) => ({
             ...prev,
             currentPage: nextPage,

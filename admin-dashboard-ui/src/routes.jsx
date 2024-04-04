@@ -110,7 +110,7 @@ export const routes = [
                 icon: <CommandLineIcon {...icon} />,
                 name: 'Manage',
                 path: '/manage/*',
-                element: <Manage routes={manageRoutes} />,
+                element: <Manage />,
             },
             {
                 icon: <InformationCircleIcon {...icon} />,

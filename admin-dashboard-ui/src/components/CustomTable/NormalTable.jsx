@@ -17,6 +17,7 @@ import {
 } from '@material-tailwind/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { Link, useLocation } from 'react-router-dom';
 
 const deF = (e) => {};
 
@@ -68,6 +69,9 @@ function NormalTable({
     data,
     pagination,
     sort,
+    deleteBtn = true,
+    addBtn = true,
+    actionCol = true,
     onNextPage = deF,
     onPrevPage = deF,
     onSearch = deF,
@@ -80,13 +84,15 @@ function NormalTable({
     const [isCheckAll, setIsCheckAll] = useState(false);
     const notify = useNotify();
     const [searchValue, setSearchValue] = useState('');
+    const [currentPageClick, setCurrentPageClick] = useState(() => ({ nextPageTotal: 0, prevPageTotal: 0 }));
     const [isOpen, setIsOpen] = useState(false);
-
+    const { pathname } = useLocation();
     const handleToggleDeleteDialog = () => {
         setIsOpen((prev) => !prev);
     };
 
     const debounce = useDebounce(searchValue, 500);
+    const currentPageChange = useDebounce(currentPageClick, 500);
     const handleSearchChange = (e) => {
         setPaginationInfo((prev) => ({
             ...prev,
@@ -95,24 +101,70 @@ function NormalTable({
         setSearchValue(e.target.value);
     };
 
+    // useEffect(() => {
+    //     setPaginationInfo(pagination);
+    // }, [pagination]);
     useEffect(() => {
-        setPaginationInfo(pagination);
-    }, [pagination]);
+        if (paginationInfo.currentPage + currentPageChange.nextPageTotal <= paginationInfo.totalPage) {
+            onNextPage(paginationInfo.currentPage + currentPageChange.nextPageTotal);
+            setPaginationInfo((prev) => ({
+                ...prev,
+                currentPage: prev.currentPage + currentPageChange.nextPageTotal,
+            }));
+            setCurrentPageClick((prev) => ({
+                ...prev,
+                nextPageTotal: 0,
+            }));
+        } else {
+            onNextPage(paginationInfo.totalPage);
+            setPaginationInfo((prev) => ({
+                ...prev,
+                currentPage: paginationInfo.totalPage,
+            }));
+            setCurrentPageClick((prev) => ({
+                ...prev,
+                nextPageTotal: 0,
+            }));
+            // notify('This is the last page!', 'error');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPageChange.nextPageTotal]);
+
+    useEffect(() => {
+        if (paginationInfo.currentPage - currentPageChange.prevPageTotal > 0) {
+            onPrevPage(paginationInfo.currentPage - currentPageChange.prevPageTotal);
+            setPaginationInfo((prev) => ({
+                ...prev,
+                currentPage: prev.currentPage - currentPageChange.prevPageTotal,
+            }));
+            setCurrentPageClick((prev) => ({
+                ...prev,
+                nextPageTotal: 0,
+            }));
+        } else {
+            onPrevPage(1);
+            setPaginationInfo((prev) => ({
+                ...prev,
+                currentPage: 1,
+            }));
+            setCurrentPageClick((prev) => ({
+                ...prev,
+                nextPageTotal: 0,
+            }));
+            // notify('This is the first page!', 'error');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPageChange.prevPageTotal]);
 
     useEffect(() => {
         onSearch(debounce);
     }, [debounce]);
 
     const handleNextPage = () => {
-        if (paginationInfo.currentPage + 1 <= paginationInfo.totalPage) {
-            onNextPage(paginationInfo.currentPage + 1);
-            setPaginationInfo((prev) => ({
-                ...prev,
-                currentPage: prev.currentPage + 1,
-            }));
-        } else {
-            notify('This is the last page!', 'error!');
-        }
+        setCurrentPageClick((prev) => ({
+            ...prev,
+            nextPageTotal: prev.nextPageTotal + 1,
+        }));
     };
 
     const handleSelectSize = (size) => {
@@ -125,15 +177,10 @@ function NormalTable({
     };
 
     const handlePrevPage = () => {
-        if (paginationInfo.currentPage - 1 > 0) {
-            onPrevPage(paginationInfo.currentPage - 1);
-            setPaginationInfo((prev) => ({
-                ...prev,
-                currentPage: prev.currentPage - 1,
-            }));
-        } else {
-            notify('This is the first page!', 'error');
-        }
+        setCurrentPageClick((prev) => ({
+            ...prev,
+            prevPageTotal: prev.prevPageTotal + 1,
+        }));
     };
 
     const handleCheckAll = () => {
@@ -179,15 +226,17 @@ function NormalTable({
                             Sort
                             <AdjustmentsHorizontalIcon className="w-3.5 h-3.5 ms-2" />
                         </button>
-                        <Button
-                            className="inline-flex items-center gap-2"
-                            color="red"
-                            disabled={listItemChecked?.length === 0}
-                            onClick={handleToggleDeleteDialog}
-                        >
-                            <TrashIcon className="w-3.5 h-3.5 me-2" />
-                            Delete
-                        </Button>
+                        {deleteBtn && (
+                            <Button
+                                className="inline-flex items-center gap-2"
+                                color="red"
+                                disabled={listItemChecked?.length === 0}
+                                onClick={handleToggleDeleteDialog}
+                            >
+                                <TrashIcon className="w-3.5 h-3.5 me-2" />
+                                Delete
+                            </Button>
+                        )}
                     </div>
                     <div className="ms-3 w-30">
                         <Select value={paginationInfo.size + ''} label="Select size" onChange={handleSelectSize}>
@@ -279,18 +328,22 @@ function NormalTable({
                                 >
                                     {dataItem[labels[0]]}
                                 </th>
-                                {labels.slice(1, labels?.length - 1).map((label) => (
+                                {labels.slice(1, actionCol ? labels?.length - 1 : labels?.length).map((label) => (
                                     <td key={label} className="px-6 py-4">
                                         {dataItem[label]}
                                     </td>
                                 ))}
-                                <td className="px-6 py-4">
-                                    <Tooltip content="Edit">
-                                        <IconButton variant="text">
-                                            <PencilIcon className="h-4 w-4" />
-                                        </IconButton>
-                                    </Tooltip>
-                                </td>
+                                {actionCol && (
+                                    <td className="px-6 py-4">
+                                        <Link to={pathname + '/edit/' + dataItem.id}>
+                                            <Tooltip content="Edit">
+                                                <IconButton variant="text">
+                                                    <PencilIcon className="h-4 w-4" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Link>
+                                    </td>
+                                )}
                             </tr>
                         ))}
                 </tbody>
