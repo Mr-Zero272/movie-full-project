@@ -94,4 +94,40 @@ public interface MovieDao extends MongoRepository<Movie, String> {
 
     @Aggregation({"{$count: \"totalMovies\"}"})
     Integer countAllMovies();
+
+    @Aggregation({"{$lookup: {from : \"requirement\", localField: \"requirement\", foreignField: \"_id\", as: \"req\"}}",
+            "{$match: {$or: [{'title': { $regex: ?0, $options: 'i' }}, {\"manufacturer\": { $regex: ?0, $options: 'i' }}, {\"director\": { $regex: ?0, $options: 'i' }}], \"req.0.specificRequireTypes\": { $elemMatch: { \"typeName\": { $regex: ?1, $options: 'i' }}}, 'whoAdd': ?2}}",
+            "{$project: { \"galleries\": 0, \"userId\": 0, \"requirement\": 0}}",
+            "{ $skip: ?4}", "{$limit:  ?3}"})
+    List<Movie> getBusinessMoviePaginationWithoutGenres(
+            @Param("q") String q,
+            @Param("type") String type,
+            @Param("whoAdd") String whoAdd,
+            int limit, int skip );
+
+    @Aggregation({"{$lookup: {from : \"requirement\", localField: \"requirement\", foreignField: \"_id\", as: \"req\"}}",
+            "{$match: { $or: [{'title': { $regex: ?0, $options: 'i' }}, {\"manufacturer\": { $regex: ?0, $options: 'i' }}, {\"director\": { $regex: ?0, $options: 'i' }}], \"req.0.specificRequireTypes\": { $elemMatch: { \"typeName\": { $regex: ?1, $options: 'i' }}}, 'whoAdd': ?2}}",
+            "{$project: { \"galleries\": 0, \"userId\": 0, \"requirement\": 0}}",
+            "{$count: \"totalMovies\"}"})
+    Integer countBusinessMoviePaginationWithoutGenres(
+            @Param("q") String q,
+            @Param("type") String type,
+            @Param("whoAdd") String whoAdd);
+
+    @Aggregation({"{$lookup: {from : \"requirement\", localField: \"requirement\", foreignField: \"_id\", as: \"req\"}}",
+            "{$match: {$or: [{'title': { $regex: ?0, $options: 'i' }}, {\"manufacturer\": { $regex: ?0, $options: 'i' }}, {\"director\": { $regex: ?0, $options: 'i' }}], \"req.0.specificRequireTypes\": { $elemMatch: { \"typeName\": { $regex: ?1, $options: 'i' }}}}}",
+            "{$project: { \"galleries\": 0, \"userId\": 0, \"requirement\": 0}}",
+            "{ $skip: ?3}", "{$limit:  ?2}"})
+    List<Movie> getAdminMoviePaginationWithoutGenres(
+            @Param("q") String q,
+            @Param("type") String type,
+            int limit, int skip );
+
+    @Aggregation({"{$lookup: {from : \"requirement\", localField: \"requirement\", foreignField: \"_id\", as: \"req\"}}",
+            "{$match: { $or: [{'title': { $regex: ?0, $options: 'i' }}, {\"manufacturer\": { $regex: ?0, $options: 'i' }}, {\"director\": { $regex: ?0, $options: 'i' }}], \"req.0.specificRequireTypes\": { $elemMatch: { \"typeName\": { $regex: ?1, $options: 'i' }}}}}",
+            "{$project: { \"galleries\": 0, \"userId\": 0, \"requirement\": 0}}",
+            "{$count: \"totalMovies\"}"})
+    Integer countAdminMoviePaginationWithoutGenres(
+            @Param("q") String q,
+            @Param("type") String type);
 }

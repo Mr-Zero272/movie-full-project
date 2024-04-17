@@ -91,4 +91,10 @@ public class GenreServiceImpl implements GenreService {
         }
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Genre> getGenreInfoById(String id) {
+        Genre genre = genreDao.findById(id).orElse(null);
+        return ResponseEntity.ok(genre);
+    }
 }

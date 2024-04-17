@@ -61,7 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             phone = request.getPhoneNumber();
         }
         var user = User.builder().username(request.getUsername()).email(request.getEmail()).avatar(avatar)
-                .phoneNumber(phone).password(passwordEncoder.encode(request.getPassword())).role(Role.USER).build();
+                .phoneNumber(phone).password(passwordEncoder.encode(request.getPassword())).role(Role.USER).createdAt(LocalDateTime.now()).modifiedAt(LocalDateTime.now()).build();
         var jwtToken = jwtService.generateToken(user);
         repository.save(user);
         return AuthenticationResponse.builder().token(jwtToken).message("success").build();

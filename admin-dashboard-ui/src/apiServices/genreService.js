@@ -18,7 +18,6 @@ export const addGenres = async (genres) => {
 };
 
 export const editGenre = async (id, newName) => {
-    console.log(typeof newName);
     const token = localStorage.getItem('token');
     try {
         const res = await movieRequest.put(
@@ -34,6 +33,20 @@ export const editGenre = async (id, newName) => {
         return res;
     } catch (error) {
         console.log('Edit genre error!');
+    }
+};
+
+export const getGenreInfo = async (id) => {
+    try {
+        const res = await movieRequest.get(`/genre/info/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return res;
+    } catch (error) {
+        console.log(error);
+        console.log('Get genre info error!');
     }
 };
 

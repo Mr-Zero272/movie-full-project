@@ -1,15 +1,12 @@
-import { movieService } from '@/apiServices';
+import { auditoriumService } from '@/apiServices';
 import NormalTable from '@/components/CustomTable/NormalTable';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { useSelector } from 'react-redux';
 
-const tableLabelsBusiness = ['title', 'director', 'manufacturer', 'releaseDate', 'action'];
-const tableLabelsAdmin = ['title', 'director', 'manufacturer', 'releaseDate', 'rating'];
+const tableLabels = ['id', 'name', 'lastUpdated', 'action'];
 
-function MovieTable() {
-    const currentUserRole = useSelector((state) => state.user.role);
-    const [listMovies, setListMovies] = useState();
+export function AuditoriumTable() {
+    const [listAuditoriums, setListAuditoriums] = useState();
     const [paginationInfo, setPaginationInfo] = useState(() => ({
         currentPage: 1,
         size: 7,
@@ -19,36 +16,21 @@ function MovieTable() {
     const [searchValue, setSearchValue] = useState('');
 
     useEffect(() => {
-        const fetchGenreLists = async (name, size, cPage) => {
-            const token = localStorage.getItem('token');
-            const res = await movieService.searchMovie(name, size, cPage, token);
+        const fetchGenreLists = async (q, size, cPage) => {
+            const res = await auditoriumService.search(q, size, cPage);
+            // console.log(res);
             if (res) {
                 setPaginationInfo((prev) => ({
                     ...prev,
                     ...res.pagination,
                 }));
-                setListMovies(res.data);
+                setListAuditoriums(res.data);
             }
         };
 
         fetchGenreLists(searchValue, paginationInfo.size, paginationInfo.currentPage);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [paginationInfo.currentPage, searchValue, paginationInfo.size]);
-
-    const handleNextPage = useCallback((nextPage) => {
-        // console.log(nextPage);
-        setPaginationInfo((prev) => ({
-            ...prev,
-            currentPage: nextPage,
-        }));
-    }, []);
-
-    const handlePrevPage = useCallback((prevPage) => {
-        setPaginationInfo((prev) => ({
-            ...prev,
-            currentPage: prevPage,
-        }));
-    }, []);
 
     const handleSelectSize = useCallback((size) => {
         setPaginationInfo((prev) => ({
@@ -58,26 +40,39 @@ function MovieTable() {
         }));
     }, []);
 
-    const handleSearchValueChange = useCallback((value) => {
+    const handleNextPage = (nextPage) => {
+        setPaginationInfo((prev) => ({
+            ...prev,
+            currentPage: nextPage,
+        }));
+    };
+
+    const handlePrevPage = (prevPage) => {
+        setPaginationInfo((prev) => ({
+            ...prev,
+            currentPage: prevPage,
+        }));
+    };
+
+    const handleSearchValueChange = (value) => {
         setPaginationInfo((prev) => ({
             ...prev,
             currentPage: 1,
         }));
         setSearchValue(value);
-    }, []);
+    };
     return (
         <div>
-            {listMovies ? (
+            {listAuditoriums ? (
                 <NormalTable
-                    name="movie"
-                    labels={currentUserRole === 'ADMIN' ? tableLabelsAdmin : tableLabelsBusiness}
-                    data={listMovies}
-                    actionCol={currentUserRole !== 'ADMIN'}
+                    name="auditorium"
+                    labels={tableLabels}
+                    data={listAuditoriums}
                     pagination={paginationInfo}
                     onNextPage={handleNextPage}
                     onPrevPage={handlePrevPage}
-                    onSelectSize={handleSelectSize}
                     onSearch={handleSearchValueChange}
+                    onSelectSize={handleSelectSize}
                 />
             ) : (
                 <Skeleton height={600} />
@@ -86,4 +81,4 @@ function MovieTable() {
     );
 }
 
-export default MovieTable;
+export default AuditoriumTable;

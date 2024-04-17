@@ -1,10 +1,21 @@
 import { authRequest } from '@/utils/request';
-import { chartsConfig } from '@/configs';
 
 export const getUserInfo = async (token) => {
     try {
         const res = await authRequest.get('/user', {
             headers: { Authorization: 'Bearer ' + token },
+        });
+        return res;
+    } catch (error) {
+        console.log('Get user information error!');
+    }
+};
+
+export const search = async (q = '', size = 6, cPage = 1, token) => {
+    try {
+        const res = await authRequest.get('/user/search', {
+            headers: { Authorization: 'Bearer ' + token },
+            params: { q, size, cPage },
         });
         return res;
     } catch (error) {

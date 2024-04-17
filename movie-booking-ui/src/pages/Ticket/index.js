@@ -8,7 +8,7 @@ import { faCartFlatbed, faVideo } from '@fortawesome/free-solid-svg-icons';
 import Skeleton from 'react-loading-skeleton';
 import CartItem from './CartItem';
 import { cartService, seatService } from '~/apiServices';
-import { useFormatVndCurrency, useNotify, useToken } from '~/hooks';
+import { useFormatVndCurrency, useNotify } from '~/hooks';
 import { addToCartActions } from '~/store/add-to-cart-slice';
 import Orders from './Orders';
 import { fetchQuantityCart } from '~/store/cart-quantity';
@@ -22,29 +22,36 @@ function Ticket() {
     const [activeTab, setActiveTab] = useState(+tab);
     const [cartInfo, setCartInfo] = useState();
     const [checkAll, setCheckAll] = useState(false);
-    const { isTokenValid, token } = useToken();
     const dispatch = useDispatch();
     const notify = useNotify();
     const navigate = useNavigate();
-
+    const token = localStorage.getItem('token');
     useEffect(() => {
         const fetchTickets = async () => {
             // const { isValid } = checkTokenValidity();
             // if (isValid) {
-            if (isTokenValid) {
-                const result = await cartService.getAllTicketInActiveCart(token);
-                console.log(result);
-                setCartInfo(result);
-            }
+            const result = await cartService.getAllTicketInActiveCart(token);
+            setCartInfo(result);
+
             // } else {
             //     navigate('/login');
             // }
             //console.log(result);
         };
-        dispatch(addToCartActions.refreshState());
+
+        const refreshState = async () => {
+            if (cartStateInfo.listSeatSelected?.length !== 0) {
+                const listSeatIds = cartStateInfo.listSeatSelected.map((seat) => seat.id);
+                // console.log(listSeatIds);
+                await seatService.refreshSeatState(listSeatIds);
+                dispatch(addToCartActions.refreshState());
+            }
+        };
+
+        refreshState();
         fetchTickets();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isTokenValid]);
+    }, []);
 
     useEffect(() => {
         const _type = searchParams.get('_type');
@@ -76,8 +83,7 @@ function Ticket() {
     const handleDeleteItemInCart = useCallback(() => {
         const fetchApi = async () => {
             const result = await cartService.getAllTicketInActiveCart(token);
-            //console.log(result);
-            console.log(result);
+            // console.log(result);
             setCartInfo(result);
         };
 
@@ -98,7 +104,7 @@ function Ticket() {
                 username: userInfo.username,
             }));
             const res = await seatService.checkoutSeat(listSeatInfos);
-            console.log(res);
+            // console.log(res);
             if (res) {
                 let tempListSeatSelected = [];
                 if (res?.length !== 0) {

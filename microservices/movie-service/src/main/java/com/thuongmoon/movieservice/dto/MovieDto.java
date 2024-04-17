@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieDto {
+    private String id;
     private String title;
     private String director;
     private String description;
@@ -28,6 +29,7 @@ public class MovieDto {
     private String releaseDate;
     private int rating;
     private String whoAdd;
+    private String state;
 
     private List<Actor> cast = new ArrayList<>();
     private List<Review> reviews = new ArrayList<>();

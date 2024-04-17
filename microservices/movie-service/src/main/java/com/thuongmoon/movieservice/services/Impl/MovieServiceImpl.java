@@ -3,13 +3,11 @@ package com.thuongmoon.movieservice.services.Impl;
 import com.thuongmoon.movieservice.dao.GenreDao;
 import com.thuongmoon.movieservice.dao.MovieDao;
 import com.thuongmoon.movieservice.dao.RequirementDao;
+import com.thuongmoon.movieservice.dto.MovieDto;
 import com.thuongmoon.movieservice.dto.Pagination;
 import com.thuongmoon.movieservice.feign.MediaInterface;
 import com.thuongmoon.movieservice.helpers.DateTimeTransfer;
-import com.thuongmoon.movieservice.model.Gallery;
-import com.thuongmoon.movieservice.model.Genre;
-import com.thuongmoon.movieservice.model.Movie;
-import com.thuongmoon.movieservice.model.Requirement;
+import com.thuongmoon.movieservice.model.*;
 import com.thuongmoon.movieservice.request.MovieAddRequest;
 import com.thuongmoon.movieservice.response.ResponseMessage;
 import com.thuongmoon.movieservice.response.ResponsePagination;
@@ -24,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -134,7 +133,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseMessage> editMovie(String movieId, Movie newMovie, List<MultipartFile> movieImages, MultipartFile movieTrailer) {
+    public ResponseEntity<ResponseMessage> editMovie(String movieId, MovieDto newMovie, List<MultipartFile> actorImages, List<MultipartFile> movieImages, MultipartFile movieTrailer) {
         // handle file tuong tu nhu o tren
         // xoa cac file anh cu
         // neu cac file gui toi trong ko can xoa
@@ -142,6 +141,12 @@ public class MovieServiceImpl implements MovieService {
         Optional<Movie> movie = movieDao.findById(movieId);
 
         if (movie.isPresent()) {
+            List<Genre> genres = new ArrayList<>();
+            newMovie.getGenres().forEach(genreId -> {
+                Optional<Genre> genreE = genreDao.findById(genreId);
+                genreE.ifPresent(genres::add);
+            });
+
             movie.get().setTitle(newMovie.getTitle());
             movie.get().setDirector(newMovie.getDirector());
             movie.get().setDescription(newMovie.getDescription());
@@ -149,31 +154,82 @@ public class MovieServiceImpl implements MovieService {
 
             movie.get().setManufacturer(newMovie.getManufacturer());
             movie.get().setDuration_min(newMovie.getDuration_min());
-            movie.get().setReleaseDate(newMovie.getReleaseDate());
+            movie.get().setReleaseDate(dateTimeTransfer.transperStrToLocalDateTime(newMovie.getReleaseDate()));
             movie.get().setRating(newMovie.getRating());
             movie.get().setWhoAdd(newMovie.getWhoAdd());
             movie.get().setGalleries(newMovie.getGalleries());
-            movie.get().setGenres(newMovie.getGenres());
+            movie.get().setGenres(genres);
 
-            if (!movieImages.isEmpty()) {
+            // handle images
+            if (movieImages != null) {
                 // call service delete image here
                 List<String> imageNames = new ArrayList<>();
                 MultipartFile[] imageFiles = new MultipartFile[movieImages.size()];
+                List<Gallery> newGalleries = new ArrayList<>();
                 for (int i = 0; i < movieImages.size(); i++) {
-                    imageNames.add(movieImages.get(0).getOriginalFilename());
+                    imageNames.add(movie.get().getGalleries().get(i).getImgUrl());
                     imageFiles[i] = movieImages.get(i);
+                    newGalleries.add(new Gallery(movieImages.get(i).getOriginalFilename()));
                 }
 
                 mediaInterface.deleteFile(imageNames, "image");
                 mediaInterface.addFiles(imageFiles, "images");
-                movie.get().setVerticalImage(movieImages.get(3).getOriginalFilename());
-                movie.get().setHorizontalImage(movieImages.get(0).getOriginalFilename());
+                String verticalImage = "";
+                String horizontalImage = "";
+
+                for (int i = 0; i < movieImages.size(); i++) {
+                    if (movieImages.get(i).getOriginalFilename().contains("v_m")) {
+                        verticalImage = movieImages.get(i).getOriginalFilename();
+                    }
+
+                    if (movieImages.get(i).getOriginalFilename().contains("h_m")) {
+                        horizontalImage = movieImages.get(i).getOriginalFilename();
+                    }
+                }
+                movie.get().setVerticalImage(verticalImage);
+                movie.get().setHorizontalImage(horizontalImage);
+                movie.get().setGalleries(newGalleries);
             }
 
-            if (!movieTrailer.isEmpty()) {
+            // handle file actor
+            // if have new file add it
+            if (actorImages != null) {
+                MultipartFile[] actorFiles = new MultipartFile[actorImages.size()];
+                for (int i = 0; i < actorImages.size(); i++) {
+                    actorFiles[i] = actorImages.get(i);
+                }
+//                mediaInterface.deleteFile(actorImageNames, "avatar");
+                mediaInterface.addFiles(actorFiles, "avatar");
+
+                movie.get().setCast(newMovie.getCast());
+            }
+            // update new actor list
+            List<String> actorAvatarNameDel = new ArrayList<>();
+            List<Actor> listOldActor = movie.get().getCast();
+            List<Actor> listNewActor = newMovie.getCast();
+            for (int i = 0; i < listOldActor.size(); i++) {
+                boolean exist = true;
+                for (int j = 0; j < listNewActor.size(); j++) {
+                    if (listOldActor.get(i).getAvatar().equals(listNewActor.get(j).getAvatar())) {
+                        exist = false;
+                        break;
+                    }
+                }
+                if (exist) {
+                    actorAvatarNameDel.add(listOldActor.get(i).getAvatar());
+                }
+            }
+            if (!actorAvatarNameDel.isEmpty()) {
+                mediaInterface.deleteFile(actorAvatarNameDel, "avatar");
+            }
+            movie.get().setCast(listNewActor);
+
+
+            if (movieTrailer != null) {
+                System.out.println("Edit trailer");
                 // call service delete trailer here
-                List<String> nameTrailer = List.of(movieTrailer.getOriginalFilename());
-                MultipartFile[] trailerFile = new MultipartFile[0];
+                List<String> nameTrailer = List.of(movie.get().getTrailer());
+                MultipartFile[] trailerFile = new MultipartFile[1];
                 trailerFile[0] = movieTrailer;
 
                 mediaInterface.deleteFile(nameTrailer, "trailer");
@@ -248,5 +304,39 @@ public class MovieServiceImpl implements MovieService {
                 .as(String.class)
                 .all();
         return new ResponseEntity<>(manufactures, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<ResponsePagination> fetchAdminMoviePagination(String username, String role, String q, int size, int cPage) {
+        if (q == null) q = "";
+        String type = "";
+        ResponsePagination responsePagination = new ResponsePagination();
+        Pagination pagination = new Pagination();
+        int skip = (cPage - 1) * size;
+
+        List<Movie> movies = new ArrayList<>();
+        int totalResult = 0;
+        if (role.equals("ADMIN")) {
+            movies = movieDao.getAdminMoviePaginationWithoutGenres(q, type, size, skip);
+        } else {
+            movies = movieDao.getBusinessMoviePaginationWithoutGenres(q, type, username, size, skip);
+        }
+
+        if (!movies.isEmpty()) {
+            if (role.equals("ADMIN")) {
+                totalResult = movieDao.countAdminMoviePaginationWithoutGenres(q, type);
+            } else {
+                totalResult = movieDao.countBusinessMoviePaginationWithoutGenres(q, type, username);
+            }
+        }
+
+        pagination.setSize(size);
+        pagination.setTotalPage((int) Math.ceil((double) totalResult/size));
+        pagination.setCurrentPage(cPage);
+        pagination.setTotalResult(totalResult);
+
+        responsePagination.setPagination(pagination);
+        responsePagination.setData(movies);
+        return new ResponseEntity<>(responsePagination, HttpStatus.OK);
     }
 }

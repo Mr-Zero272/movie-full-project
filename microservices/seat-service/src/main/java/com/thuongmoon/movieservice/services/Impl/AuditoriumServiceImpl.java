@@ -5,10 +5,15 @@ import com.thuongmoon.movieservice.dao.SeatDao;
 import com.thuongmoon.movieservice.models.Auditorium;
 import com.thuongmoon.movieservice.models.Seat;
 import com.thuongmoon.movieservice.request.AddAuditoriumRequest;
+import com.thuongmoon.movieservice.response.Pagination;
 import com.thuongmoon.movieservice.response.ResponseMessage;
+import com.thuongmoon.movieservice.response.ResponsePagination;
 import com.thuongmoon.movieservice.services.AuditoriumService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,6 +35,13 @@ public class AuditoriumServiceImpl implements AuditoriumService {
     @Transactional
     public ResponseEntity<ResponseMessage> addNewAuditorium(AddAuditoriumRequest request) {
         ResponseMessage responseMessage = new ResponseMessage();
+        Optional<Auditorium> auditoriumOptional = auditoriumDao.findByName(request.getName());
+        if (auditoriumOptional.isPresent()) {
+            responseMessage.setMessage("This auditorium is already existed!");
+            responseMessage.setState("error");
+            responseMessage.setRspCode("400");
+            return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+        }
         Auditorium newAuditorium = new Auditorium(null, request.getName(), LocalDateTime.now());
         Auditorium savedAd = auditoriumDao.save(newAuditorium);
         newAuditorium.setName(request.getName());
@@ -73,7 +85,7 @@ public class AuditoriumServiceImpl implements AuditoriumService {
         Optional<Auditorium> oldAuditorium = auditoriumDao.findById(id);
         if(oldAuditorium.isPresent()) {
             oldAuditorium.get().setName(newAuditorium.getName());
-            oldAuditorium.get().setLastUpdated(newAuditorium.getLastUpdated());
+            oldAuditorium.get().setLastUpdated(LocalDateTime.now());
 
             Auditorium savedAdm = auditoriumDao.save(oldAuditorium.get());
             responseMessage.setMessage("Update auditorium successfully!");
@@ -86,5 +98,31 @@ public class AuditoriumServiceImpl implements AuditoriumService {
 
     public ResponseEntity<List<Auditorium>> fetchAllAuditoriums() {
         return new ResponseEntity<>(auditoriumDao.findAll(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Auditorium> fetchAuditoriumById(String id) {
+        Optional<Auditorium> auditoriumOptional = auditoriumDao.findById(id);
+        return auditoriumOptional.map(auditorium -> new ResponseEntity<>(auditorium, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+    }
+
+    @Override
+    public ResponseEntity<ResponsePagination> searchPaginationAuditorium(String q, int size, int cPage) {
+        if ( q == null || q.isEmpty()) {
+            q = "";
+        }
+        Pageable pageable = PageRequest.of(cPage - 1, size);
+        Page<Auditorium> page = auditoriumDao.findAllByName(pageable, q);
+        Pagination pagination = Pagination.builder()
+                .currentPage(cPage)
+                .size(size)
+                .totalPage(page.getTotalPages())
+                .totalResult((int) page.getTotalElements())
+                .build();
+        ResponsePagination paginationResponse = ResponsePagination.builder()
+                .data(page.getContent())
+                .pagination(pagination)
+                .build();
+        return new ResponseEntity<>(paginationResponse, HttpStatus.OK);
     }
 }

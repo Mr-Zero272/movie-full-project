@@ -38,6 +38,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -241,5 +242,17 @@ public class OrderServiceImpl implements OrderService {
         mailService.sendEmailWithHtmlTemplate(request.getMail(), "Thank for your order!", "ticketMail", context);
         responseMessage.setMessage("Thank for your order!");
         return ResponseEntity.ok(responseMessage);
+    }
+
+    @Override
+    public ResponseEntity<List<Statistical>> getStatistical(String username, String role) {
+        int year = LocalDate.now().getYear();
+        List<Statistical> statisticals = new ArrayList<>();
+        if (role.equals("ADMIN")) {
+            statisticals = orderDao.getStatisticalOrderForAdmin(year);
+        } else {
+            statisticals = orderDao.getStatisticalOrderForBusiness(year, username);
+        }
+        return new ResponseEntity<>(statisticals, HttpStatus.OK);
     }
 }

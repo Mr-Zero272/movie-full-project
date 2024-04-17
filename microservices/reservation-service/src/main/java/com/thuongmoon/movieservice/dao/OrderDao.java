@@ -20,5 +20,14 @@ public interface OrderDao extends MongoRepository<Order, String> {
             "{ $sort: { \"_id.month\": 1 } }",
             "{ $project: { _id: 0, month: \"$_id.month\", totalSum: 1, serviceFeeSum: 1, totalTickets: 1 }}",
             "{ $limit: 12 }"})
-    List<Statistical> getStatisticalOrder(int year, String provider);
+    List<Statistical> getStatisticalOrderForBusiness(int year, String provider);
+
+
+    @Aggregation({"{ $project: { month: { $month: \"$createdAt\" }, year: {$year: \"$createdAt\"}, total: 1, serviceFee: 1, totalTickets: 1 }}",
+            "{ $match: { year: ?0}}",
+            "{ $group: { id: { month: \"$month\" }, totalSum: { $sum: \"$total\" }, serviceFeeSum: { $sum: \"$serviceFee\" }, totalTickets: {$sum: \"$totalTickets\"}, totalOrders: {$sum: NumberInt(1)} }}",
+            "{ $sort: { \"_id.month\": 1 } }",
+            "{ $project: { _id: 0, month: \"$_id.month\", totalSum: 1, serviceFeeSum: 1, totalTickets: 1, totalOrders: 1 } }",
+            "{ $limit: 12 }"})
+    List<Statistical> getStatisticalOrderForAdmin(int year);
 }

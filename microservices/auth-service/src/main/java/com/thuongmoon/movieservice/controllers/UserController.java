@@ -36,10 +36,10 @@ public class UserController {
 	@GetMapping("/search")
 	public ResponseEntity<ResponsePagination> findPaginationUser(
 			@RequestHeader(value = "role", required = true) String role,
-			@RequestParam(required = false) String usernameLike,
+			@RequestParam(value = "q", required = false) String q,
 			@RequestParam(required = false, defaultValue = "6") int size,
 			@RequestParam(required = false, defaultValue = "1") int cPage) {
-		return userService.fetchPaginationMovies(role, usernameLike, size, cPage);
+		return userService.fetchPaginationUsers(role, q, size, cPage);
 	}
 
 	@GetMapping("/statistical")

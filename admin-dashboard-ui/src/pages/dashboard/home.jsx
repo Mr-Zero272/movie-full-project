@@ -39,13 +39,12 @@ export function Home() {
                 const res3 = await statisticalService.getStatisticalDataCard(2024, token, userInfo.role);
                 setStatisticalChartData(res1);
                 setStatisticalCardData(res3);
-                console.log(res3);
             }
         };
 
         fetchDataUserStatistical();
     }, [isTokenValid, token]);
-    console.log(new Date().getMonth());
+
     return (
         <div className="mt-12">
             <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">

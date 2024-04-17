@@ -4,6 +4,7 @@ import { authService } from '@/apiServices';
 import { useCheckValidInput, useNotify } from '@/hooks';
 import { Input, Checkbox, Button, Typography } from '@material-tailwind/react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const validation = {
     email: {
@@ -46,12 +47,13 @@ const emailField = ['email'];
 const otpFields = ['first', 'second', 'third', 'fourth', 'fifth'];
 
 export function ForgetPass() {
+    const userInfo = useSelector((state) => state.user);
     const [signUpInfo, setSignUpInfo] = useState(() => ({
         password: '',
         passwordErrorMessage: '',
         passwordConfirm: '',
         passwordConfirmErrorMessage: '',
-        email: '',
+        email: userInfo.email,
         emailErrorMessage: '',
     }));
     const [otpCode, setOtpCode] = useState(() => ({
@@ -206,7 +208,7 @@ export function ForgetPass() {
             if (res) {
                 if (res.state === 'success') {
                     notify(res.message);
-                    navigate('/auth/signIn');
+                    navigate('/auth/sign-in');
                 } else {
                     notify(res.message, 'error');
                 }

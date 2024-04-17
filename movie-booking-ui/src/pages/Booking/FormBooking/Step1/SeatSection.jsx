@@ -1,13 +1,15 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Skeleton from 'react-loading-skeleton';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 
 import RowOfSeats from './RowOfSeats';
 import { seatService } from '~/apiServices';
+import { addToCartActions } from '~/store/add-to-cart-slice';
 
 function SeatSection({ className }) {
+    const dispatch = useDispatch();
     const activeScreening = useSelector((state) => state.addToCart.activeScreening);
     const listSeatSelected = useSelector((state) => state.addToCart.listSeatSelected);
     const username = useSelector((state) => state.user.username);
@@ -45,9 +47,9 @@ function SeatSection({ className }) {
     useEffect(() => {
         if (myStompClient !== null) {
             myStompClient.subscribe('/topic/seat-state', (message) => {
-                console.log(listSeats);
-                console.log(message.body);
-                console.log('call sub 1 lan');
+                // console.log(listSeats);
+                // console.log(message.body);
+                // console.log('call sub 1 lan');
                 const seatInfo = JSON.parse(message.body);
                 setListSeats((prevListSeats) => {
                     let listSeatUpdated = prevListSeats.map((seat) => {
@@ -78,6 +80,7 @@ function SeatSection({ className }) {
         };
         const handleBeforeUnload = (event) => {
             refreshSState();
+            dispatch(addToCartActions.refreshState());
 
             event.preventDefault();
             event.returnValue = '';

@@ -95,10 +95,6 @@ function Step2({ onNextStep }) {
                     dispatch(addToCartActions.setPaymentStatus(paymentInfoReturn));
                     dispatch(addToCartActions.setLoading(false));
                 }
-                // setTimeout(() => {
-                //     dispatch(addToCartActions.setLoading(false));
-                //     notify('Payment timeout!', 'error');
-                // }, 1000);
             });
         });
 
@@ -155,8 +151,12 @@ function Step2({ onNextStep }) {
 
         const paymentUrl = `http://localhost:3001/payment?amount=${totalPayment}&provider=zalopay&invoiceId=${invoiceId}`;
         window.open(paymentUrl, '_blank');
+        setTimeout(() => {
+            dispatch(addToCartActions.setLoading(false));
+            notify('Payment timeout!', 'error');
+        }, 1000 * 60 * 5);
     };
-    console.log(addToCartInfo);
+    // console.log(addToCartInfo);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('list-seats')}>

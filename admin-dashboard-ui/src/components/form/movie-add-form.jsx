@@ -136,18 +136,7 @@ export function MovieAddForm() {
     //handle input movie info change
     const handleInputChange = (e, isValid) => {
         // rating case
-        if (
-            e === 1 ||
-            e === 2 ||
-            e === 3 ||
-            e === 4 ||
-            e === 5 ||
-            e === 6 ||
-            e === 7 ||
-            e === 8 ||
-            e === 9 ||
-            e === 10
-        ) {
+        if (e >= 1 || e <= 100) {
             setMovieInfo((prev) => ({
                 ...prev,
                 rating: e,
@@ -662,7 +651,6 @@ export function MovieAddForm() {
 
     // console block
     // console.log(listSelectedGenres.genres);
-    console.log(isCheckTermsAndCondition);
 
     return (
         <Tabs value="basic">

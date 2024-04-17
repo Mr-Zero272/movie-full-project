@@ -19,7 +19,7 @@ public interface UserService {
 
     public ResponseEntity<ResponseMessage> updateUser(MultipartFile avatar, String userInfo) throws JsonProcessingException;
 
-    public ResponseEntity<ResponsePagination> fetchPaginationMovies(String  role, String usernameLike, int size, int cPage);
+    public ResponseEntity<ResponsePagination> fetchPaginationUsers(String  role, String usernameLike, int size, int cPage);
 
     ResponseEntity<List<StatisticalUser>> getStatisticalUser(String role, int year);
 

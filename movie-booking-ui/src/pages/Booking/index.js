@@ -111,7 +111,15 @@ function Booking() {
 
     return (
         <>
-            {checkoutInfo.loading && <Loading title="Payment..." />}
+            {checkoutInfo.loading && (
+                <Loading
+                    title="Payment...(try again after 5 minutes)"
+                    closeBtn
+                    onClose={() => {
+                        dispatch(dispatch(addToCartActions.setLoading(false)));
+                    }}
+                />
+            )}
             <div className="p-7 flex md:px-10 md:py-5">
                 <div className="hidden xl:mr-7 xl:block xl:w-[20%]">
                     <MovieItemWithDesc

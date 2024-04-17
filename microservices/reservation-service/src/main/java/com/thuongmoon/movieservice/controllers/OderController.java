@@ -55,8 +55,8 @@ public class OderController {
     }
 
     @GetMapping("/statistical")
-    public ResponseEntity<List<Statistical>> testQuery(@RequestHeader("username") String username, @RequestParam("year") int year) {
-        return ResponseEntity.ok(orderDao.getStatisticalOrder(year, username));
+    public ResponseEntity<List<Statistical>> getStatistical(@RequestHeader("username") String username, @RequestHeader("role") String role, @RequestParam("year") int year) {
+        return orderService.getStatistical(username, role);
     }
 
     @PostMapping("/mail")

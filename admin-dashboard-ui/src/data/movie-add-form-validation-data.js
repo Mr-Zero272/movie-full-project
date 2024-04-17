@@ -15,6 +15,9 @@ export const movieAddFormValidation = {
         blank: false,
         maxLength: 30,
     },
+    duration_min: {
+        blank: false,
+    },
     releaseDate: {
         blank: false,
     },

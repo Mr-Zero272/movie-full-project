@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { ArrowTopRightOnSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Avatar, Button, IconButton, Typography } from '@material-tailwind/react';
+import { Button, IconButton, Typography } from '@material-tailwind/react';
 import { useMaterialTailwindController, setOpenSidenav } from '@/context';
 import { userActions } from '@/store/user-slice';
 

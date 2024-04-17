@@ -51,12 +51,15 @@ public class MovieController {
 
     @PutMapping("/{movieId}")
     public ResponseEntity<ResponseMessage> editMovie(@PathVariable String movieId,
-                                                     @RequestPart("movie") String movie,
+                                                     @RequestPart(value = "movieInfo") String movieInfo,
                                                      @RequestPart(value = "movieImages", required = false) List<MultipartFile> movieImages,
+                                                     @RequestPart(value = "actorImages", required = false) List<MultipartFile> actorImages,
                                                      @RequestPart(value = "movieTrailer", required = false) MultipartFile movieTrailer) throws JsonProcessingException {
+
         ObjectMapper objectMapper = new ObjectMapper();
-        Movie movieParse = objectMapper.readValue(movie, Movie.class);
-        return movieService.editMovie(movieId, movieParse, movieImages, movieTrailer);
+        MovieAddRequest movieInfoParse = objectMapper.readValue(movieInfo, MovieAddRequest.class);
+        System.out.println(movieInfoParse.toString());
+        return movieService.editMovie(movieId, movieInfoParse.getMovie(), actorImages, movieImages, movieTrailer);
     }
 
     @PutMapping("/requirement/{requirementId}")
@@ -78,6 +81,15 @@ public class MovieController {
                                                      @RequestParam(required = false, defaultValue = "6") int size,
                                                      @RequestParam(required = false, defaultValue = "1") int cPage) {
         return movieService.fetchMoviePagination(q, type, genreIds, manufacturers, size, cPage);
+    }
+
+    @GetMapping("/business/search")
+    public ResponseEntity<ResponsePagination> fetchAdminMoviePagination(@RequestHeader("username") String username,
+                                                                           @RequestHeader("role") String role,
+                                                                           @RequestParam(required = false, defaultValue = "") String q,
+                                                                           @RequestParam(required = false, defaultValue = "6") int size,
+                                                                           @RequestParam(required = false, defaultValue = "1") int cPage) {
+        return movieService.fetchAdminMoviePagination(username, role, q, size, cPage);
     }
 
     @GetMapping("/info/{movieId}")

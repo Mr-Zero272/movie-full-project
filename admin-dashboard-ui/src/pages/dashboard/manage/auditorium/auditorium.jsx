@@ -16,7 +16,7 @@ function Auditorium() {
                 <Skeleton className="inline" width={100} />
             )} */}
             </h1>
-            <CustomTabsUnderline data={manageData.Genre} />
+            <CustomTabsUnderline data={manageData.Auditorium} />
         </div>
     );
 }

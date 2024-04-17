@@ -18,7 +18,6 @@ import java.util.Optional;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final UserService userService;
-    private final MailService mailService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {

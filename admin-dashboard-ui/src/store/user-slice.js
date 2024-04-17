@@ -1,4 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { authService } from '@/apiServices';
+
+export const fetchUserInfo = createAsyncThunk('fetchUserInfo/fetch', async (token = '') => {
+    if (token === '') {
+        console.log('Token is null!');
+        return;
+    }
+    const response = await authService.getUserInfo(token);
+    return response;
+});
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -79,6 +90,19 @@ const userSlice = createSlice({
                 role: '',
             };
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchUserInfo.fulfilled, (state, action) => {
+            state.status = 'online';
+            state.avatar = action.payload.avatar;
+            state.username = action.payload.username;
+            state.phone = action.payload.phoneNumber;
+            state.email = action.payload.email;
+            state.role = action.payload.authorities[0].authority;
+        });
+        builder.addCase(fetchUserInfo.rejected, (state, action) => {
+            console.log('error');
+        });
     },
 });
 

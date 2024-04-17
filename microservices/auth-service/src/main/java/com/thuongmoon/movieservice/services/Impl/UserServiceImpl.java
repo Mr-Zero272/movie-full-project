@@ -134,8 +134,8 @@ public class UserServiceImpl implements UserService {
 		return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 	}
 
-	public ResponseEntity<ResponsePagination> fetchPaginationMovies(String  role, String usernameLike, int size, int cPage) {
-		System.out.println(role);
+	public ResponseEntity<ResponsePagination> fetchPaginationUsers(String  role, String usernameLike, int size, int cPage) {
+//		System.out.println(role);
 		ResponsePagination responsePagination = new ResponsePagination();
 		if (role.equals("ADMIN")) {
 			Pagination pagination = new Pagination();

@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import {
     Navbar,
     Typography,
@@ -12,6 +11,9 @@ import {
     MenuList,
     MenuItem,
     Avatar,
+    List,
+    ListItem,
+    Card,
 } from '@material-tailwind/react';
 import {
     UserCircleIcon,
@@ -22,60 +24,67 @@ import {
     Bars3Icon,
 } from '@heroicons/react/24/solid';
 import { useMaterialTailwindController, setOpenConfigurator, setOpenSidenav } from '@/context';
-import { jwtDecode } from 'jwt-decode';
-import useFetchUserInfo from '@/hooks/useFetchUserInfo';
-import { useDispatch, useSelector } from 'react-redux';
-import { userActions } from '@/store/user-slice';
-
-const isExpired = (d1) => {
-    const today = new Date();
-    return d1.getTime() < today.getTime();
-};
+import { useSelector } from 'react-redux';
+import { pathNavAdmin, pathNavBusiness } from '@/data';
+import { useEffect, useRef, useState } from 'react';
 
 export function DashboardNavbar() {
-    const _dispatch = useDispatch();
-    const currentUser = useSelector((state) => state.user);
+    const navigate = useNavigate();
     const [controller, dispatch] = useMaterialTailwindController();
     const { fixedNavbar, openSidenav } = controller;
     const { pathname } = useLocation();
-    const [layout, page] = pathname.split('/').filter((el) => el !== '');
-    const { userInfo, loading, error } = useFetchUserInfo();
-    // console.log(userInfo);
-    // console.log(error);
-    // console.log(currentUser);
+    const [layout, ...pages] = pathname.split('/').filter((el) => el !== '');
+    const currentUser = useSelector((state) => state.user);
+    const searchData = currentUser.role === 'ADMIN' ? pathNavAdmin : pathNavBusiness;
+    const menuSearchRef = useRef(null);
+    const [searchInfo, setSearchInfo] = useState(() => ({
+        q: '',
+        data: [],
+        isFocus: false,
+    }));
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-
-        if (token === '' || token === null) {
-            localStorage.setItem('token', '');
-            _dispatch(userActions.logout());
-        } else {
-            const tokenDecode = jwtDecode(token);
-            if (!isExpired(new Date(tokenDecode.exp * 1000))) {
-                if (error === null && userInfo !== null && userInfo !== undefined) {
-                    _dispatch(
-                        userActions.setUserNecessaryInfo({
-                            status: 'online',
-                            username: tokenDecode.sub,
-                            avatar: userInfo.avatar,
-                            phone: userInfo.phone,
-                            email: userInfo.email,
-                            role: userInfo.authorities[0].authority,
-                        }),
-                    );
-                }
-            } else {
-                _dispatch(userActions.logout());
-                localStorage.setItem('token', '');
+        const handleClickOutside = (event) => {
+            if (menuSearchRef.current && !menuSearchRef.current.contains(event.target)) {
+                setSearchInfo((prev) => ({
+                    ...prev,
+                    isFocus: false,
+                })); // Replace setIsMenuOpen with your state setter
             }
-        }
+        };
 
-        // return () => {
-        //     dispatch(userActions.clearUserInfo());
-        // };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userInfo]);
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const filterSearchResults = (inputValue) => {
+        if (inputValue === '') return [];
+        return searchData.filter((i) => i.label.toLowerCase().includes(inputValue.toLowerCase()));
+    };
+
+    const handleSearchInputChange = (e) => {
+        setSearchInfo((prev) => {
+            const data = filterSearchResults(e.target.value);
+            return {
+                ...prev,
+                q: e.target.value,
+                data: data,
+                isFocus: true,
+            };
+        });
+    };
+
+    const handleSearchMenuItemClick = (navigateTo) => {
+        navigate(navigateTo);
+        setSearchInfo(() => ({
+            q: '',
+            data: [],
+            isFocus: false,
+        }));
+    };
 
     return (
         <Navbar
@@ -98,17 +107,44 @@ export function DashboardNavbar() {
                                 {layout}
                             </Typography>
                         </Link>
-                        <Typography variant="small" color="blue-gray" className="font-normal">
-                            {page}
-                        </Typography>
+                        <Link to={`/${layout}/${pages[0] === 'manage' ? 'manage/' + pages[1] : pages[0]}`}>
+                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                {pages[0]}
+                            </Typography>
+                        </Link>
+                        {pages.slice(1, pages.length).map((page) => (
+                            <Typography key={page} variant="small" color="blue-gray" className="font-normal">
+                                {page}
+                            </Typography>
+                        ))}
                     </Breadcrumbs>
                     <Typography variant="h6" color="blue-gray">
-                        {page}
+                        {pages[0]}
                     </Typography>
                 </div>
                 <div className="flex items-center">
-                    <div className="mr-auto md:mr-4 md:w-56">
-                        <Input label="Search" />
+                    <div className="relative mr-auto md:mr-4 md:w-60">
+                        <Input
+                            label="search"
+                            value={searchInfo.q}
+                            onChange={handleSearchInputChange}
+                            onFocus={() => setSearchInfo((prev) => ({ ...prev, isFocus: true }))}
+                        />
+                        {searchInfo.data?.length !== 0 && searchInfo.isFocus && (
+                            <Card ref={menuSearchRef} className="w-full absolute z-50">
+                                <List>
+                                    {searchInfo.data.map((it) => (
+                                        <ListItem
+                                            key={it.label}
+                                            className="w-full"
+                                            onClick={() => handleSearchMenuItemClick(it.value)}
+                                        >
+                                            {it.label}
+                                        </ListItem>
+                                    ))}
+                                </List>
+                            </Card>
+                        )}
                     </div>
                     <IconButton
                         variant="text"

@@ -1,7 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { format } from 'date-fns';
-import { toast } from 'react-toastify';
 
 import Button from '~/components/Button';
 import FormInputText3 from '~/components/Form/FormInput/FormInputText3';
@@ -9,17 +8,7 @@ import useToken from '~/hooks/useToken';
 import { userService } from '~/apiServices';
 import { userActions } from '~/store/user-slice';
 import useFetchUserInfo from '~/hooks/useFetchUserInfo';
-
-const notify = (message, type = 'success') => {
-    toast(message, {
-        type: type,
-        style: { fontSize: '1.4rem' },
-        position: toast.POSITION.TOP_RIGHT,
-        closeOnClick: true,
-        autoClose: 1500,
-        className: 'foo-bar',
-    });
-};
+import { useNotify } from '~/hooks';
 
 const validation = {
     phoneNumber: {
@@ -36,6 +25,7 @@ const validation = {
 
 function ProfileDetail() {
     const dispatch = useDispatch();
+    const notify = useNotify();
     const { userInfo } = useFetchUserInfo();
     const [newAvatar, setNewAvatar] = useState(null);
     const [userDetail, setUserDetail] = useState(() => ({
@@ -49,7 +39,7 @@ function ProfileDetail() {
         phoneNumberFieldValid: true,
     }));
     const fileInputRef = useRef(null);
-    const { token, isTokenValid } = useToken();
+    const { token } = useToken();
 
     useEffect(() => {
         return () => {
@@ -89,8 +79,8 @@ function ProfileDetail() {
     }, []);
 
     const handleSubmit = () => {
-        if (!userDetail.emailFieldValid || !userDetail.phoneFieldValid) {
-            alert('Invalid form!');
+        if (!userDetail.emailFieldValid || !userDetail.phoneNumberFieldValid) {
+            notify('Invalid form!', 'error');
             return;
         }
         const updateUserCall = async () => {
@@ -100,7 +90,7 @@ function ProfileDetail() {
                 username: userDetail.username,
                 avatar: '',
                 email: userDetail.email,
-                phone: userDetail.phoneNumber,
+                phoneNumber: userDetail.phoneNumber,
             };
 
             if (newAvatar !== null) {
@@ -134,11 +124,7 @@ function ProfileDetail() {
             }
         };
 
-        if (isTokenValid) {
-            updateUserCall();
-        } else {
-            notify('Token is expire!', 'error');
-        }
+        updateUserCall();
     };
 
     return (

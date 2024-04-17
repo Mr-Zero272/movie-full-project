@@ -21,10 +21,6 @@ public class MyRouteConfig {
                                         .rewritePath("/api/v1/media/images//(?<segment>.*)", "/images/${segment}")
                                         .rewritePath("/api/v1/media/videos//(?<segment>.*)", "/videos/${segment}"))
                                 .uri("lb://media-service"))
-                .route("movie-service1", predicateSpec ->
-                        predicateSpec.path("/api/v1/movie")
-                                .filters(f -> f.filter(authenticationFilter))
-                                .uri("lb://movie-service"))
                 .route("movie-service12", predicateSpec ->
                         predicateSpec.path("/api/v1/movie/schedule")
                                 .filters(f -> f.filter(authenticationFilter))
@@ -37,6 +33,11 @@ public class MyRouteConfig {
                         predicateSpec.path("/api/v1/movie/search/**")
                                 .filters(f -> f.rewritePath("/api/v1/movie/search/(?<segment>.*)", "/${segment}"))
                                 .uri("lb://movie-service"))
+                .route("movie-service13", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/business/search/**")
+                                .filters(f -> f.rewritePath("/api/v1/movie/business/search/(?<segment>.*)", "/${segment}")
+                                        .filter(authenticationFilter))
+                                .uri("lb://movie-service"))
                 .route("movie-service3", predicateSpec ->
                         predicateSpec.path("/api/v1/movie/manufacture")
                                 .uri("lb://movie-service"))
@@ -47,6 +48,7 @@ public class MyRouteConfig {
                         predicateSpec.path("/api/v1/movie/genre/**")
                                 .filters(f -> f
                                         .rewritePath("/api/v1/movie/genre/search/(?<segment>.*)", "/${segment}")
+                                        .rewritePath("/api/v1/movie/genre/info//(?<segment>.*)", "/info/${segment}")
                                         .rewritePath("/api/v1/movie/genre/all", "//all"))
                                 .uri("lb://movie-service"))
                 .route("movie-service5", predicateSpec ->
@@ -67,6 +69,12 @@ public class MyRouteConfig {
                         predicateSpec.path("/api/v1/movie/review/**")
                                 .filters(f -> f.filter(authenticationFilter))
                                 .uri("lb://movie-service"))
+                .route("movie-service1", predicateSpec ->
+                        predicateSpec.path("/api/v1/movie/**")
+                                .filters(f -> f
+                                        .rewritePath("/api/v1/movie//(?<segment>.*)", "/${segment}")
+                                        .filter(authenticationFilter))
+                                .uri("lb://movie-service"))
                 .route("auth-service1", predicateSpec ->
                         predicateSpec.path("/api/v1/auth/**")
                                 .filters(f -> f.rewritePath("/api/v1/auth/user//(?<segment>.*)", "/user/${segment}")
@@ -76,8 +84,8 @@ public class MyRouteConfig {
                 .route("seat-service", predicateSpec ->
                         predicateSpec.path("/api/v1/auditorium/**")
                                 .filters(f ->
-                                        f.rewritePath("/api/v1/auditorium/seat-status//(?<segment>.*)", "/seat-status/${segment}")
-                                                )
+                                        f.rewritePath("/api/v1/auditorium/search/(?<segment>.*)", "/${segment}")
+                                                .rewritePath("/api/v1/auditorium/seat-status//(?<segment>.*)", "/seat-status/${segment}"))
                                 .uri("lb://seat-service"))
                 .route("reservation-service", predicateSpec ->
                         predicateSpec.path("/api/v1/reservation/**")

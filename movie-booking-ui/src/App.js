@@ -10,11 +10,6 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import 'tippy.js/dist/tippy.css';
 
 function App() {
-    // if (modalInfo.isOpen) {
-    //     document.body.classList.add('modal-active');
-    // } else {
-    //     document.body.classList.remove('modal-active');
-    // }
     return (
         <Router>
             <ToastContainer />

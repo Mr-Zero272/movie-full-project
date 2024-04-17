@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { faStar as faStarFull } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Typography } from '@material-tailwind/react';
+import { Typography, Tooltip } from '@material-tailwind/react';
 
 const deF = (star) => {};
 function RatingStar({ stars, onChange = deF, totalStars }) {
@@ -10,29 +10,31 @@ function RatingStar({ stars, onChange = deF, totalStars }) {
         let starRender = [];
         for (let i = 0; i < stars; i++) {
             starRender.push(
-                <FontAwesomeIcon
-                    key={i + 1}
-                    icon={faStarFull}
-                    className="cursor-pointer w-5 h-5"
-                    onClick={() => onChange(i + 1)}
-                />,
+                <Tooltip key={i + 1} content={i + 1 + ' stars'}>
+                    <FontAwesomeIcon
+                        icon={faStarFull}
+                        className="cursor-pointer w-5 h-5"
+                        onClick={() => onChange(i + 1)}
+                    />
+                </Tooltip>,
             );
         }
         for (let i = 0; i < totalStars - stars; i++) {
             starRender.push(
-                <FontAwesomeIcon
-                    key={i + 1 + stars}
-                    icon={faStar}
-                    className="cursor-pointer w-5 h-5"
-                    onClick={() => onChange(i + 1 + stars)}
-                />,
+                <Tooltip key={i + 1 + stars} content={i + 1 + stars + ' stars'}>
+                    <FontAwesomeIcon
+                        icon={faStar}
+                        className="cursor-pointer w-5 h-5"
+                        onClick={() => onChange(i + 1 + stars)}
+                    />
+                </Tooltip>,
             );
         }
         return starRender;
     };
     return (
         <div>
-            <Typography className="text-sm italic">{stars} stars</Typography>
+            {totalStars > 10 && <Typography className="text-sm italic">{stars} stars</Typography>}
             <div className="mb-3 text-yellow-600">{renderStars()}</div>
         </div>
     );

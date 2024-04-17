@@ -365,7 +365,7 @@ function NormalTable({
                         <IconButton
                             variant="outlined"
                             size="sm"
-                            disabled={pagination.currentPage === pagination.totalPage}
+                            disabled={pagination.currentPage === pagination.totalPage || pagination.totalPage === 0}
                             onClick={handleNextPage}
                         >
                             <FontAwesomeIcon icon={faChevronRight} />

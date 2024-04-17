@@ -22,8 +22,10 @@ import { manageData } from '@/data';
 import ManageNavigation from '@/components/ManageNavigation';
 import { manageRoutes } from '@/routes';
 import EditMovie from './movie/editMovie';
+import EditGenre from './genre/editGenre';
+import EditAuditorium from './auditorium/editAuditorium';
 
-export function Manage() {
+export function Manage({ routes }) {
     const [notification, setNotification] = React.useState({ type: '', message: '' });
     const [isManagePage, setIsManagePage] = useState(false);
     const dispatch = useDispatch();
@@ -31,32 +33,7 @@ export function Manage() {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        // if (manageInfo.notifyInfo.message !== '' && manageInfo.notifyInfo.from !== '') {
-        //     switch (manageInfo.notifyInfo.from) {
-        //         case 'genre':
-        //             const fetchInfo = {
-        //                 size: 6,
-        //                 q: '',
-        //                 cPage: 1,
-        //             };
-        //             dispatch(fetchPaginationGenre({ ...fetchInfo }));
-        //             break;
-        //         case 'movie':
-        //             break;
-        //         default:
-        //             throw new Error('From notify error!');
-        //     }
-
-        //     setNotification({ type: manageInfo.notifyInfo.type, message: manageInfo.notifyInfo.message });
-        //     setTimeout(() => {
-        //         setNotification({ type: '', message: '' });
-        //         dispatch(manageActions.clearNotify());
-        //     }, 2000);
-        // }
         navigate('/dashboard/manage/movie');
-        // return () => {
-        //     setCurrentAction('');
-        // };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -80,7 +57,7 @@ export function Manage() {
             >
                 {notification.message}
             </Alert>
-            {isManagePage && <ManageNavigation data={manageRoutes} />}
+            {isManagePage && <ManageNavigation data={routes} />}
             {/* <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
                 {manageDataWidgets.map(({ icon, title, footer, value, ...rest }) => (
                     <StatisticsCard
@@ -108,9 +85,11 @@ export function Manage() {
             </div> */}
 
             <Routes>
-                {manageRoutes.map(({ name, path, element }) => (
+                {routes.map(({ name, path, element }) => (
                     <Route key={name} exact path={path} element={element} />
                 ))}
+                <Route exact path="/genre/edit/:genreId" element={<EditGenre />} />
+                <Route exact path="/auditorium/edit/:auditoriumId" element={<EditAuditorium />} />
                 <Route exact path="/movie/edit/:movieId" element={<EditMovie />} />
             </Routes>
         </div>

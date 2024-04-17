@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 export function ProfileEditModal({ isOpen, onToggle, onSubmit, onChange }) {
     const currentUser = useSelector((state) => state.user);
-    const [editUserInfo, setEditUserInfo] = useState(() => ({ email: '', phone: '' }));
+    const [editUserInfo, setEditUserInfo] = useState(() => ({ email: '', phoneNumber: '' }));
     const [avatarFile, setAvatarFile] = useState(null);
     useEffect(() => {
         setEditUserInfo((prev) => ({
@@ -54,8 +54,8 @@ export function ProfileEditModal({ isOpen, onToggle, onSubmit, onChange }) {
                     <Input
                         label="New phone number..."
                         size="lg"
-                        name="phone"
-                        value={editUserInfo.phone}
+                        name="phoneNumber"
+                        value={editUserInfo.phoneNumber}
                         onChange={handleEditInputChange}
                     />
                 </CardBody>

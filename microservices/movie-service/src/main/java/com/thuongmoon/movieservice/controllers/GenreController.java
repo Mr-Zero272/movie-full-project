@@ -31,6 +31,11 @@ public class GenreController {
         return genreService.fetchPaginationGenres(q, size, cPage);
     }
 
+    @GetMapping("/info/{genreId}")
+    public ResponseEntity<Genre> getGenreInfo(@PathVariable("genreId") String id) {
+        return genreService.getGenreInfoById(id);
+    }
+
     @PostMapping
     public ResponseEntity<String> addGenre(@RequestBody List<Genre> genres) {
         return genreService.addGenres(genres);

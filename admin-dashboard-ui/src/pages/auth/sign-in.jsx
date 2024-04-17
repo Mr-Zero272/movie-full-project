@@ -5,19 +5,23 @@ import { Card, Input, Checkbox, Button, Typography } from '@material-tailwind/re
 import { useDebounce } from '@/hooks';
 import CustomLabel from '@/components/CustomLabel';
 import { authService } from '@/apiServices';
+import { useDispatch } from 'react-redux';
+import { fetchUserInfo, userActions } from '@/store/user-slice';
+import { jwtDecode } from 'jwt-decode';
 const validations = {
     username: {
         maxLength: 50,
     },
     password: {
-        patternRegex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        errorMessage:
-            'Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character.',
+        // patternRegex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        // errorMessage:
+        //     'Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character.',
         maxLength: 50,
     },
 };
 
 export function SignIn() {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [errorSignInForm, setErrorSignInForm] = useState(null);
     const [signInInfo, setSignInInfo] = useState(() => ({
@@ -91,7 +95,13 @@ export function SignIn() {
         const login = async () => {
             const result = await authService.login(signInInfo.username, signInInfo.password);
             if (result.token !== undefined && result.token !== null) {
+                const tokenDecode = jwtDecode(result.token);
+                if (tokenDecode.roles[0].authority === 'USER') {
+                    setErrorSignInForm('This is not an ADMIN account or BUSINESS account!');
+                    return;
+                }
                 localStorage.setItem('token', result.token);
+                dispatch(fetchUserInfo(result.token));
                 setErrorSignInForm(null);
                 navigate('/dashboard/home');
             } else {

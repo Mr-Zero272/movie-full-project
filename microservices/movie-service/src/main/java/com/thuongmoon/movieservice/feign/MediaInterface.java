@@ -20,6 +20,6 @@ public interface MediaInterface {
     public ResponseEntity<ResponseMessage> addFiles(
             @RequestPart("files") MultipartFile[] files, @RequestPart("type") String type);
 
-    @DeleteMapping
+    @DeleteMapping(value = "api/v1/media")
     public ResponseEntity<ResponseMessage> deleteFile(@RequestParam List<String> fileNames, @RequestParam String type);
 }

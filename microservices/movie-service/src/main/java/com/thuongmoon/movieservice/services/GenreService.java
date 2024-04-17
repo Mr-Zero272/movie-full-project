@@ -14,4 +14,6 @@ public interface GenreService {
     public ResponseEntity<String> addGenres(List<Genre> genres);
     @Transactional
     public ResponseEntity<ResponseMessage> editGenre(String id, String newName);
+
+    ResponseEntity<Genre> getGenreInfoById(String id);
 }

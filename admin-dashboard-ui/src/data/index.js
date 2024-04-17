@@ -8,3 +8,4 @@ export * from '@/data/projects-data';
 export * from '@/data/authors-table-data';
 export * from '@/data/mana-data';
 export * from '@/data/movie-add-form-validation-data';
+export * from '@/data/search-nav-data';

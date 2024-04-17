@@ -2,6 +2,7 @@ package com.thuongmoon.movieservice.services;
 
 import com.thuongmoon.movieservice.dto.OrderDto;
 import com.thuongmoon.movieservice.models.PaymentDetail;
+import com.thuongmoon.movieservice.models.Statistical;
 import com.thuongmoon.movieservice.request.AddNewOrderRequest;
 import com.thuongmoon.movieservice.request.AddNewPaymentRequest;
 import com.thuongmoon.movieservice.request.CreateNewZalopayPaymentRequest;
@@ -25,4 +26,6 @@ public interface OrderService {
     ResponseEntity<List<OrderDto>> getAllOrders(String username) throws ExecutionException, InterruptedException;
 
     ResponseEntity<ResponseMessage> sendTicketsToCusByMail(SendTicketsMailRequest request);
+
+    ResponseEntity<List<Statistical>> getStatistical(String username, String role);
 }

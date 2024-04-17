@@ -1,5 +1,6 @@
 package com.thuongmoon.movieservice.services;
 
+import com.thuongmoon.movieservice.dto.MovieDto;
 import com.thuongmoon.movieservice.dto.Pagination;
 import com.thuongmoon.movieservice.model.Gallery;
 import com.thuongmoon.movieservice.model.Genre;
@@ -22,8 +23,9 @@ public interface MovieService {
     public int getTotalMovie();
     public ResponseEntity<ResponseMessage> addMovie(MovieAddRequest request, MultipartFile[] movieImages, MultipartFile movieTrailer, MultipartFile[] actorImages, String username);
     public ResponseEntity<ResponseMessage> editRequest(String idRequirement, Requirement newRequirement);
-    public ResponseEntity<ResponseMessage> editMovie(String movieId, Movie newMovie, List<MultipartFile> movieImages, MultipartFile movieTrailer);
+    public ResponseEntity<ResponseMessage> editMovie(String movieId, MovieDto newMovie, List<MultipartFile> actorImages, List<MultipartFile> movieImages, MultipartFile movieTrailer);
     public ResponseEntity<ResponsePagination> fetchMoviePagination(String q, String type, List<ObjectId> genreIds, List<String> manufacturers, int size, int cPage);
     public ResponseEntity<Movie> getMovieInfo(String movieId);
     public ResponseEntity<List<String>> getListManufactures();
+    ResponseEntity<ResponsePagination> fetchAdminMoviePagination(String username, String role, String q, int size, int cPage);
 }
