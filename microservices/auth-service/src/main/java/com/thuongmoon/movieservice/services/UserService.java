@@ -23,5 +23,5 @@ public interface UserService {
 
     ResponseEntity<List<StatisticalUser>> getStatisticalUser(String role, int year);
 
-    ResponseEntity<Integer> getTotalUserByMonth(int month);
+    ResponseEntity<Integer> getTotalUserByMonth(int year, int month);
 }

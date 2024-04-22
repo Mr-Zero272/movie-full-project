@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public interface MovieService {
     public int getTotalMovie();
-    public ResponseEntity<ResponseMessage> addMovie(MovieAddRequest request, MultipartFile[] movieImages, MultipartFile movieTrailer, MultipartFile[] actorImages, String username);
+    public ResponseEntity<ResponseMessage> addMovie(MovieAddRequest request, MultipartFile[] movieImages, MultipartFile movieTrailer, MultipartFile[] actorImages, String username, String role);
     public ResponseEntity<ResponseMessage> editRequest(String idRequirement, Requirement newRequirement);
     public ResponseEntity<ResponseMessage> editMovie(String movieId, MovieDto newMovie, List<MultipartFile> actorImages, List<MultipartFile> movieImages, MultipartFile movieTrailer);
     public ResponseEntity<ResponsePagination> fetchMoviePagination(String q, String type, List<ObjectId> genreIds, List<String> manufacturers, int size, int cPage);

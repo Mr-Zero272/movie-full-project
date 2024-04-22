@@ -27,6 +27,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.DayOfWeek;
@@ -40,153 +41,178 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-	@Autowired
-	private final UserDao userDao;
-	@Autowired
-	private final JwtService jwtService;
-	@Autowired
-	private MediaInterface mediaInterface;
-	@Autowired
-	private JsonKafkaProducer jsonKafkaProducer;
+    @Autowired
+    private final UserDao userDao;
+    @Autowired
+    private final JwtService jwtService;
+    @Autowired
+    private MediaInterface mediaInterface;
+    @Autowired
+    private JsonKafkaProducer jsonKafkaProducer;
 
-	public Optional<User> findByUsernameOrEmail(String username, String email) {
-		return userDao.findByUsernameOrEmail(username, email);
-	}
+    public Optional<User> findByUsernameOrEmail(String username, String email) {
+        return userDao.findByUsernameOrEmail(username, email);
+    }
 
-	private static String getUserNameFromContext() {
-		String username = "";
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+    private static String getUserNameFromContext() {
+        String username = "";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
             username = authentication.getName();
-		}
-		return username;
-	}
+        }
+        return username;
+    }
 
-	public ResponseEntity<UserDto> getUserInfo() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			String currentUserName = authentication.getName();
-			Optional<User> currentUser = userDao.findByUsername(currentUserName);
-			if (currentUser.isPresent()) {
-				UserDto userDto = UserDto.builder()
-						.id(currentUser.get().getId())
-						.username(currentUser.get().getUsername())
-						.email(currentUser.get().getEmail())
-						.phoneNumber(currentUser.get().getPhoneNumber())
-						.avatar(currentUser.get().getAvatar())
-						.authorities(currentUser.get().getAuthorities())
-						.build();
-				return new ResponseEntity<>(userDto, HttpStatus.OK);
-			}
-		}
-		return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-	}
+    public ResponseEntity<UserDto> getUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            Optional<User> currentUser = userDao.findByUsername(currentUserName);
+            if (currentUser.isPresent()) {
+                UserDto userDto = UserDto.builder()
+                        .id(currentUser.get().getId())
+                        .username(currentUser.get().getUsername())
+                        .email(currentUser.get().getEmail())
+                        .phoneNumber(currentUser.get().getPhoneNumber())
+                        .avatar(currentUser.get().getAvatar())
+                        .authorities(currentUser.get().getAuthorities())
+                        .createdAt(currentUser.get().getCreatedAt())
+                        .modifiedAt(currentUser.get().getModifiedAt())
+                        .build();
+                return new ResponseEntity<>(userDto, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
 
-	public ResponseEntity<ResponseMessage> updateUser(MultipartFile avatar, String userInfo) throws JsonProcessingException {
-		String currentUsername = getUserNameFromContext();
-		ResponseMessage responseMessage = new ResponseMessage();
-		if (!currentUsername.isEmpty()) {
-			Optional<User> user = userDao.findByUsername(currentUsername);
-			if (user.isPresent()) {
-				ObjectMapper objectMapper = new ObjectMapper();
-				UserDto newUserInfo = objectMapper.readValue(userInfo, UserDto.class);
-				UserUpdateDto userUpdateDto = new UserUpdateDto();
-				if (avatar != null) {
-					String fileName = avatar.getOriginalFilename();
-					int dotIndex = fileName.lastIndexOf(".");
-					String name = fileName.substring(0, dotIndex);
-					String extension = fileName.substring(dotIndex);
-					String newFileName = name + currentUsername + extension;
+    @Transactional
+    public ResponseEntity<ResponseMessage> updateUser(MultipartFile avatar, String userInfo) throws JsonProcessingException {
+        String currentUsername = getUserNameFromContext();
+        ResponseMessage responseMessage = new ResponseMessage();
+        if (!currentUsername.isEmpty()) {
+            Optional<User> user = userDao.findByUsername(currentUsername);
+            ObjectMapper objectMapper = new ObjectMapper();
+            UserDto newUserInfo = objectMapper.readValue(userInfo, UserDto.class);
+            UserUpdateDto userUpdateDto = new UserUpdateDto();
+            List<User> listUserEmail = userDao.findAllByEmail(newUserInfo.getEmail());
+            Optional<User> userEmail = userDao.findByEmail(newUserInfo.getEmail());
+            if (user.isPresent()) {
+                if (listUserEmail.isEmpty() || (listUserEmail.size() == 1 && userEmail.isPresent() && userEmail.get().getEmail().equals(user.get().getEmail()))) {
+                    if (avatar != null) {
+                        String fileName = avatar.getOriginalFilename();
+                        int dotIndex = fileName.lastIndexOf(".");
+                        String name = fileName.substring(0, dotIndex);
+                        String extension = fileName.substring(dotIndex);
+                        String newFileName = name + currentUsername + extension;
 
-					int point1 = user.get().getAvatar().lastIndexOf("?type=avatar");
-					String oldName =user.get().getAvatar().substring(36, point1);
-					mediaInterface.addAvatarUser(avatar, newFileName, oldName);
-					user.get().setAvatar("http://localhost:8272/api/v1/media/images/" + newFileName + "?type=avatar");
-					userUpdateDto.setAvatar("http://localhost:8272/api/v1/media/images/" + newFileName + "?type=avatar");
-				} else {
-					userUpdateDto.setAvatar(user.get().getAvatar());
-				}
-				// send to kafka to update
-				userUpdateDto.setId(user.get().getId());
-				userUpdateDto.setUsername(user.get().getUsername());
-				userUpdateDto.setEmail(newUserInfo.getEmail());
-				userUpdateDto.setPhone(newUserInfo.getPhoneNumber());
-				jsonKafkaProducer.updateUser(userUpdateDto);
+                        int point1 = user.get().getAvatar().lastIndexOf("?type=avatar");
+                        String oldName = user.get().getAvatar().substring(42, point1);
+                        mediaInterface.addAvatarUser(avatar, newFileName, oldName);
+                        user.get().setAvatar("http://localhost:8272/api/v1/media/images/" + newFileName + "?type=avatar");
+                        userUpdateDto.setAvatar("http://localhost:8272/api/v1/media/images/" + newFileName + "?type=avatar");
+                    } else {
+                        userUpdateDto.setAvatar(user.get().getAvatar());
+                    }
+                    // send to kafka to update
+                    userUpdateDto.setId(user.get().getId());
+                    userUpdateDto.setUsername(user.get().getUsername());
+                    userUpdateDto.setEmail(newUserInfo.getEmail());
+                    userUpdateDto.setPhone(newUserInfo.getPhoneNumber());
+                    jsonKafkaProducer.updateUser(userUpdateDto);
 
 
-				user.get().setEmail(newUserInfo.getEmail());
-				user.get().setPhoneNumber(newUserInfo.getPhoneNumber());
-				user.get().setModifiedAt(LocalDateTime.now());
-				User updatedUser = userDao.save(user.get());
-				UserDto userDtoUpdated = UserDto.builder()
-						.id(updatedUser.getId())
-						.username(updatedUser.getUsername())
-						.email(updatedUser.getEmail())
-						.avatar(updatedUser.getAvatar())
-						.phoneNumber(updatedUser.getPhoneNumber())
-						.authorities(updatedUser.getAuthorities())
-						.build();
+                    user.get().setEmail(newUserInfo.getEmail());
+                    user.get().setPhoneNumber(newUserInfo.getPhoneNumber());
+                    user.get().setModifiedAt(LocalDateTime.now());
+                    User updatedUser = userDao.save(user.get());
+                    UserDto userDtoUpdated = UserDto.builder()
+                            .id(updatedUser.getId())
+                            .username(updatedUser.getUsername())
+                            .email(updatedUser.getEmail())
+                            .avatar(updatedUser.getAvatar())
+                            .phoneNumber(updatedUser.getPhoneNumber())
+                            .authorities(updatedUser.getAuthorities())
+                            .createdAt(updatedUser.getCreatedAt())
+                            .modifiedAt(updatedUser.getModifiedAt())
+                            .build();
 
-				responseMessage.setData(userDtoUpdated);
-				responseMessage.setMessage("Update user information successfully!");
-			}
-		}
-		return new ResponseEntity<>(responseMessage, HttpStatus.OK);
-	}
+                    responseMessage.setData(userDtoUpdated);
+                    responseMessage.setMessage("Update user information successfully!");
+                } else {
+                    responseMessage.setRspCode("400");
+                    responseMessage.setState("error");
+                    responseMessage.setMessage("New Email is not unique!");
+                }
+            } else {
+                responseMessage.setRspCode("400");
+                responseMessage.setState("error");
+                responseMessage.setMessage("User is not existed!");
+            }
+        } else {
+            responseMessage.setRspCode("400");
+            responseMessage.setState("error");
+            responseMessage.setMessage("Current context is null!");
+        }
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    }
 
-	public ResponseEntity<ResponsePagination> fetchPaginationUsers(String  role, String usernameLike, int size, int cPage) {
+    public ResponseEntity<ResponsePagination> fetchPaginationUsers(String role, String usernameLike, int size, int cPage) {
 //		System.out.println(role);
-		ResponsePagination responsePagination = new ResponsePagination();
-		if (role.equals("ADMIN")) {
-			Pagination pagination = new Pagination();
-			Page<UserDto> page = null;
-			Pageable pageable = PageRequest.of(cPage - 1, size);
-			if (usernameLike != null) {
-				page = userDao.findAllByName(pageable, usernameLike);
-			}
+        ResponsePagination responsePagination = new ResponsePagination();
+        if (role.equals("ADMIN")) {
+            Pagination pagination = new Pagination();
+            Page<UserDto> page = null;
+            Pageable pageable = PageRequest.of(cPage - 1, size);
+            if (usernameLike != null) {
+                page = userDao.findAllByName(pageable, usernameLike);
+            }
 
-			pagination.setSize(page.getSize());
-			pagination.setTotalPage(page.getTotalPages());
-			pagination.setCurrentPage(page.getNumber() + 1);
-			pagination.setTotalResult((int) page.getTotalElements());
+            pagination.setSize(page.getSize());
+            pagination.setTotalPage(page.getTotalPages());
+            pagination.setCurrentPage(page.getNumber() + 1);
+            pagination.setTotalResult((int) page.getTotalElements());
 
-			responsePagination.setPagination(pagination);
-			responsePagination.setData(page.getContent());
-		} else {
-			responsePagination.setData("You are not an admin!");
-		}
-		return new ResponseEntity<>(responsePagination, HttpStatus.OK);
-	}
+            responsePagination.setPagination(pagination);
+            responsePagination.setData(page.getContent());
+        } else {
+            responsePagination.setData("You are not an admin!");
+        }
+        return new ResponseEntity<>(responsePagination, HttpStatus.OK);
+    }
 
-	@Override
-	public ResponseEntity<List<StatisticalUser>> getStatisticalUser(String role, int year) {
-		return new ResponseEntity<>(userDao.statisticalUser(role, year), HttpStatus.OK);
-	}
+    @Override
+    public ResponseEntity<List<StatisticalUser>> getStatisticalUser(String role, int year) {
+        return new ResponseEntity<>(userDao.statisticalUser(role, year), HttpStatus.OK);
+    }
 
-	@Override
-	public ResponseEntity<Integer> getTotalUserByMonth(int month) {
-		return ResponseEntity.ok(userDao.countUsersByMonth(month));
-	}
+    @Override
+    public ResponseEntity<Integer> getTotalUserByMonth(int year, int month) {
+        int totalUser = 0;
+        if (userDao.countUsersByMonth(year, month) != null) {
+            totalUser = userDao.countUsersByMonth(year, month);
+        }
+        return ResponseEntity.ok(totalUser);
+    }
 
-	public static List<LocalDateTime> getWeekList(LocalDate date) {
-		List<LocalDateTime> weekList = new ArrayList<>();
-		DayOfWeek dayOfWeek = date.getDayOfWeek();
+    public static List<LocalDateTime> getWeekList(LocalDate date) {
+        List<LocalDateTime> weekList = new ArrayList<>();
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
 
-		// Add the input date
-		weekList.add(date.atTime(0, 0));
+        // Add the input date
+        weekList.add(date.atTime(0, 0));
 
-		// Add days before the input date to reach Monday
-		for (int i = 0; i < dayOfWeek.getValue() - 1; i++) {
-			date = date.minusDays(1);
-			weekList.add(0, date.atTime(0, 0));
-		}
+        // Add days before the input date to reach Monday
+        for (int i = 0; i < dayOfWeek.getValue() - 1; i++) {
+            date = date.minusDays(1);
+            weekList.add(0, date.atTime(0, 0));
+        }
 
-		// Add days after the input date to reach Sunday
-		for (int i = dayOfWeek.getValue(); i <= 7; i++) {
-			date = date.plusDays(1);
-			weekList.add(date.atTime(0, 0));
-		}
+        // Add days after the input date to reach Sunday
+        for (int i = dayOfWeek.getValue(); i <= 7; i++) {
+            date = date.plusDays(1);
+            weekList.add(date.atTime(0, 0));
+        }
 
-		return weekList;
-	}
+        return weekList;
+    }
 }

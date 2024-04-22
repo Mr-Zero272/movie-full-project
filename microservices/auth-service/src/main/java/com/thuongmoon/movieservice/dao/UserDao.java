@@ -21,6 +21,8 @@ public interface UserDao extends MongoRepository<User, String> {
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
 
+    List<User> findAllByEmail(String email);
+
     Optional<User> findByUsernameOrEmail(String username, String email);
 
     @Query("{ 'username' : { $regex: ?0, $options: 'i' } }")
@@ -33,10 +35,10 @@ public interface UserDao extends MongoRepository<User, String> {
 
     Integer countUserByRole(@Param("role") Role role);
 
-    @Aggregation({"{ $project: { month: {$month: \"$createdAt\"}}}",
-            "{ $match: {month : ?0 } }",
+    @Aggregation({"{ $project: { month: {$month: \"$createdAt\"}, year:  {$year: \"$createdAt\" }}}",
+            "{ $match: {year: ?0, month : ?1 } }",
             " { $count: \"totalUser\" }"})
-    Integer countUsersByMonth(int month);
+    Integer countUsersByMonth(int year, int month);
 
     @Aggregation({"{ $project: { month: {$month: \"$createdAt\"}, year: {$year: \"$createdAt\"}, role: 1 } }",
             "{ $match: { role: ?0, year: ?1 } }",

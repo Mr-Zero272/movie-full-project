@@ -38,7 +38,10 @@ public class SchedulingServiceImpl implements SchedulingService {
     @Autowired
     private JsonKafkaProducer jsonKafkaProducer;
 
-    public ResponseEntity<String> doSchedule(LocalDateTime startDate) {
+    public ResponseEntity<String> doSchedule(String role, LocalDateTime startDate) {
+        if (!role.equals("ADMIN")) {
+            return new ResponseEntity<>("Do not have permission.", HttpStatus.OK);
+        }
         Optional<ScheduleState> scheduleStateOptional = scheduleStateDao.findLastEle();
         if (!scheduleStateOptional.isEmpty()) {
             if (startDate.isBefore(scheduleStateOptional.get().getLastScheduledTime())) {
@@ -156,7 +159,7 @@ public class SchedulingServiceImpl implements SchedulingService {
 
         // update schedule state
         ScheduleState scheduleState = new ScheduleState();
-        scheduleState.setLastScheduledTime(startTimeToSchedule.plusDays(7L));
+        scheduleState.setLastScheduledTime(startDate.plusDays(7L));
         scheduleState.setTotalSchedules(screeningListSaved.size());
         scheduleStateDao.save(scheduleState);
 

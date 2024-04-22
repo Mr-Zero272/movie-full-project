@@ -166,7 +166,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
         }
 
         ResponseMessage responseMessage = new ResponseMessage();
-        responseMessage.setMessage("Save file successfully!");
+        responseMessage.setMessage("Delete file successfully!");
         responseMessage.setState("success");
         responseMessage.setRspCode("200");
 
@@ -199,10 +199,13 @@ public class FilesStorageServiceImpl implements FilesStorageService {
         responseMessage.setRspCode("200");
         Path path = Paths.get("uploads/images/avatars");
         try {
-            Files.copy(avatar.getInputStream(), path.resolve(newName));
-            if (!oldName.equals("http://localhost:8272/api/v1/media/images/no_image.png?type=avatar")) {
-                Path fileDelete = path.resolve(Objects.requireNonNull(oldName));
-                Files.deleteIfExists(fileDelete);
+            if (!newName.startsWith(oldName)) {
+                Files.copy(avatar.getInputStream(), path.resolve(newName));
+//                System.out.println(oldName);
+                if (!oldName.equals("no_image.png")) {
+                    Path fileDelete = path.resolve(Objects.requireNonNull(oldName));
+                    Files.deleteIfExists(fileDelete);
+                }
             }
         } catch (Exception e) {
             if (e instanceof FileAlreadyExistsException) {

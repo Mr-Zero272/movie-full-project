@@ -3,6 +3,8 @@ import { Card, Typography, Input, Checkbox, Button, Select, Option } from '@mate
 import { format } from 'date-fns';
 import { useDispatch } from 'react-redux';
 import { manageActions } from '@/store/manage-slice';
+import { useNotify } from '@/hooks';
+import { movieService } from '@/apiServices';
 
 const randomImages = [
     'https://i.pinimg.com/originals/d8/b0/8e/d8b08ea0e439bcdefd6bebbb765ecc1f.jpg',
@@ -30,27 +32,38 @@ const getNextMondays = (numberOfMondays = 5) => {
 export function DoScheduleForm() {
     const [dateSchedule, setDateSchedule] = useState('');
     const listSelectDays = getNextMondays(3);
+    const notify = useNotify();
     const dispatch = useDispatch();
 
-    const handleChooseDate = (value) => {
-        setDateSchedule(value);
+    const handleChooseDate = (e) => {
+        setDateSchedule(e.target.value);
     };
 
     const handleSubmit = () => {
         if (dateSchedule === '') {
-            dispatch(
-                manageActions.notify({
-                    type: 'warning',
-                    message: 'You have to choose date to schedule!',
-                    from: 'movie',
-                }),
-            );
+            notify('You have to choose date to schedule!', 'warning');
             return;
         }
-        alert('submit');
-    };
 
-    // console.log(dateSchedule);
+        const tempDate = new Date(dateSchedule);
+        if (tempDate.getDay() !== 1) {
+            notify('You have to choose the Monday to schedule!', 'warning');
+            return;
+        }
+
+        const doSchedule = async () => {
+            const token = localStorage.getItem('token');
+            const res = await movieService.doSchedule(dateSchedule + 'T00:00:00', token);
+            console.log(res);
+            if (res) {
+                notify(res, 'info');
+            } else {
+                notify('Something went wrong!', 'error!');
+            }
+        };
+
+        doSchedule();
+    };
 
     return (
         <Card className="flex justify-center items-center" color="transparent" shadow={false}>
@@ -67,14 +80,15 @@ export function DoScheduleForm() {
                     <Typography variant="h6" color="blue-gray" className="-mb-3">
                         Choose start time:
                     </Typography>
-                    <Select value={dateSchedule} size="lg" label="Choose date" onChange={handleChooseDate}>
+                    <Input label="date" type="date" value={dateSchedule} onChange={handleChooseDate} />
+                    {/* <Select value={dateSchedule} size="lg" label="Choose date" onChange={handleChooseDate}>
                         {listSelectDays?.length !== 0 &&
                             listSelectDays.map((day, index) => (
                                 <Option key={index} value={format(day, "yyyy-MM-dd'T'HH:mm:ss")}>
                                     {format(day, 'EEEE, dd MMM yyyy')}
                                 </Option>
                             ))}
-                    </Select>
+                    </Select> */}
                 </div>
                 <Checkbox
                     label={

@@ -12,7 +12,7 @@ import styles from './Payment.module.scss';
 import Button from '~/components/Button';
 import FormInputText2 from '~/components/Form/FormInput/FormInputText2';
 import Loading from '~/components/Loading';
-import { cartService } from '~/apiServices';
+import { cartService, paymentService } from '~/apiServices';
 
 let VND = new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -61,6 +61,7 @@ function Payment() {
     const amount = searchParams.get('amount');
     const status = searchParams.get('status');
     const provider = searchParams.get('provider');
+    const rspCode = searchParams.get('vnp_ResponseCode');
 
     const handleInputChange = (e) => {
         setPaymentInfo((prev) => {
@@ -84,6 +85,16 @@ function Payment() {
             window.open(res.data.order_url, '_self');
         };
 
+        const createVnPayOrder = async () => {
+            const payment_url = paymentService.createVnPayPayment(
+                amount,
+                'Pay for movies tickets',
+                location,
+                invoiceId,
+            );
+            window.open(payment_url, '_self');
+        };
+
         const createNewPayment = async (status) => {
             await cartService.createNewPayment(amount, provider, invoiceId, status, token);
 
@@ -91,31 +102,87 @@ function Payment() {
                 window.close();
             }, 1500);
         };
-        if (status && +status !== 0) {
-            if (+status === 1) {
-                Swal.fire({
-                    title: 'This order is paid!',
-                    text: 'Thanks for your order.',
-                    icon: 'success',
-                    preConfirm: () => createNewPayment('paid'),
-                    allowOutsideClick: false,
-                    showConfirmButton: 'Agree!',
-                });
+        if (provider === 'zalopay') {
+            if (status && +status !== 0) {
+                if (+status === 1) {
+                    Swal.fire({
+                        title: 'This order is paid!',
+                        text: 'Thanks for your order.',
+                        icon: 'success',
+                        preConfirm: () => createNewPayment('paid'),
+                        allowOutsideClick: false,
+                        showConfirmButton: 'Agree!',
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'This order was not paid!',
+                        text: 'Something went wrong!',
+                        icon: 'error',
+                        preConfirm: () => createNewPayment('unpaid'),
+                        allowOutsideClick: false,
+                        showConfirmButton: 'Agree!',
+                    });
+                }
             } else {
-                Swal.fire({
-                    title: 'This order was not paid!',
-                    text: 'Something went wrong!',
-                    icon: 'error',
-                    preConfirm: () => createNewPayment('unpaid'),
-                    allowOutsideClick: false,
-                    showConfirmButton: 'Agree!',
-                });
+                createNewZalopPayOrder();
             }
         } else {
-            createNewZalopPayOrder();
+            //console.log(rspCode);
+            if (rspCode !== null) {
+                const vnp_Amount = searchParams.get('vnp_Amount');
+                const vnp_BankCode = searchParams.get('vnp_BankCode');
+                const vnp_BankTranNo = searchParams.get('vnp_BankTranNo');
+                const vnp_CardType = searchParams.get('vnp_CardType');
+                const vnp_OrderInfo = searchParams.get('vnp_OrderInfo');
+                const vnp_PayDate = searchParams.get('vnp_PayDate');
+                const vnp_ResponseCode = searchParams.get('vnp_ResponseCode');
+                const vnp_TmnCode = searchParams.get('vnp_TmnCode');
+                const vnp_TransactionNo = searchParams.get('vnp_TransactionNo');
+                const vnp_TransactionStatus = searchParams.get('vnp_TransactionStatus');
+                const vnp_TxnRef = searchParams.get('vnp_TxnRef');
+                const vnp_SecureHash = searchParams.get('vnp_SecureHash');
+
+                const result = paymentService.checkTransactionState(
+                    vnp_Amount,
+                    vnp_BankCode,
+                    vnp_BankTranNo,
+                    vnp_CardType,
+                    vnp_OrderInfo,
+                    vnp_PayDate,
+                    vnp_ResponseCode,
+                    vnp_TmnCode,
+                    vnp_TransactionNo,
+                    vnp_TransactionStatus,
+                    vnp_TxnRef,
+                    vnp_SecureHash,
+                );
+
+                if (rspCode === '00' && result.message === 'success') {
+                    Swal.fire({
+                        title: 'This order is paid!',
+                        text: 'Thanks for your order.',
+                        icon: 'success',
+                        preConfirm: () => createNewPayment('paid'),
+                        allowOutsideClick: false,
+                        showConfirmButton: 'Agree!',
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'This order was not paid!',
+                        text: 'Something went wrong!',
+                        icon: 'error',
+                        preConfirm: () => createNewPayment('unpaid'),
+                        allowOutsideClick: false,
+                        showConfirmButton: 'Agree!',
+                    });
+                }
+            } else {
+                createVnPayOrder();
+            }
         }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status]);
+    }, [status, rspCode]);
 
     const handleSubmit = () => {
         console.log('Submit');

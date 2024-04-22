@@ -43,10 +43,11 @@ public class MovieController {
                                                        @RequestPart(value = "movieImages", required = false) MultipartFile[] movieImages,
                                                        @RequestPart(value = "movieTrailer", required = false) MultipartFile movieTrailer,
                                                        @RequestPart(value = "actorImages", required = false) MultipartFile[] actorImages,
-                                                       @RequestHeader("username") String username) throws JsonProcessingException {
+                                                       @RequestHeader("username") String username,
+                                                       @RequestHeader("role") String role) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         MovieAddRequest movieInfoParse = objectMapper.readValue(movieInfo, MovieAddRequest.class);
-        return movieService.addMovie(movieInfoParse, movieImages, movieTrailer, actorImages, username);
+        return movieService.addMovie(movieInfoParse, movieImages, movieTrailer, actorImages, username, role);
     }
 
     @PutMapping("/{movieId}")
@@ -68,9 +69,9 @@ public class MovieController {
     }
 
     @PostMapping("/schedule")
-    public ResponseEntity<String> scheduling(@RequestBody LocalDateTime startTime) {
+    public ResponseEntity<String> scheduling(@RequestHeader("role") String role, @RequestBody LocalDateTime startTime) {
         System.out.println(startTime.toString());
-        return scheduleService.doSchedule(startTime);
+        return scheduleService.doSchedule(role, startTime);
     }
 
     @GetMapping("/search")

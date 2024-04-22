@@ -109,6 +109,7 @@ function Booking() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [checkoutInfo]);
 
+    console.log(checkoutInfo);
     return (
         <>
             {checkoutInfo.loading && (

@@ -25,7 +25,9 @@ public class ScreeningController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Screening>> getScreeningByTypeAndDate(
-            @RequestParam("date")LocalDateTime date, @RequestParam(value = "type", required = false) String type, @RequestParam(value = "movieId", required = false)ObjectId movieId) {
+            @RequestParam("date")LocalDateTime date,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "movieId", required = false)ObjectId movieId) {
         return screeningService.fetchScreeningByTypeAndDate(type, date, movieId);
     }
 

@@ -18,10 +18,10 @@ function sortObject(obj) {
     return sorted;
 }
 
-export const createPayment = (
+export const createVnPayPayment = (
     amount = 1,
-    orderInfo = 'Chuyen tien',
-    returnUrl = 'http://localhost:3001/',
+    orderInfo = 'Pay for Moon movie tickets',
+    returnUrl = 'http://localhost:3001/payment',
     txnRef = 1,
 ) => {
     let vpnUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
@@ -115,17 +115,17 @@ export const checkTransactionState = (
 };
 
 // APP INFO
-const generateRandomString = (length, key) => {
-    const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' + key;
-    let result = '';
+// const generateRandomString = (length, key) => {
+//     const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' + key;
+//     let result = '';
 
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        result += characters[randomIndex];
-    }
+//     for (let i = 0; i < length; i++) {
+//         const randomIndex = Math.floor(Math.random() * characters.length);
+//         result += characters[randomIndex];
+//     }
 
-    return result;
-};
+//     return result;
+// };
 
 export const createZalopayNewOrder = () => {
     // APP INFO

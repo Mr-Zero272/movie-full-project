@@ -35,10 +35,10 @@ public class UserController {
 
 	@GetMapping("/search")
 	public ResponseEntity<ResponsePagination> findPaginationUser(
-			@RequestHeader(value = "role", required = true) String role,
-			@RequestParam(value = "q", required = false) String q,
-			@RequestParam(required = false, defaultValue = "6") int size,
-			@RequestParam(required = false, defaultValue = "1") int cPage) {
+			@RequestHeader(value = "role") String role,
+			@RequestParam(value = "q", required = false, defaultValue = "") String q,
+			@RequestParam(value = "size", required = false, defaultValue = "6") int size,
+			@RequestParam(value = "cPage", required = false, defaultValue = "1") int cPage) {
 		return userService.fetchPaginationUsers(role, q, size, cPage);
 	}
 
@@ -48,7 +48,7 @@ public class UserController {
 	}
 
 	@GetMapping("/total")
-	public ResponseEntity<Integer> getTotalUser(@RequestParam(value = "month") int month) {
-		return userService.getTotalUserByMonth(month);
+	public ResponseEntity<Integer> getTotalUser(@RequestParam(value = "year") int year, @RequestParam(value = "month") int month) {
+		return userService.getTotalUserByMonth(year, month);
 	}
 }

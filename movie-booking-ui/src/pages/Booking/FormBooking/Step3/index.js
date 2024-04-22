@@ -10,7 +10,7 @@ import FormInputText2 from '~/components/Form/FormInput/FormInputText2';
 import Button from '~/components/Button';
 import { cartService } from '~/apiServices';
 import MovieTicket from '~/components/MovieTicket';
-import { useNotify, useToken } from '~/hooks';
+import { useNotify } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
@@ -20,7 +20,7 @@ function Step3({ userInfo }) {
     const notify = useNotify();
     const addToCartInfo = useSelector((state) => state.addToCart);
     const [email, setEmail] = useState({ email: '' });
-    const { token } = useToken();
+    const token = localStorage.getItem('token');
 
     const handleChangeInput = (e) => {
         setEmail((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -40,15 +40,37 @@ function Step3({ userInfo }) {
             notify('This email is not valid!', 'error');
             return;
         }
-        const id = toast.loading('Please wait...');
-        setTimeout(() => {
-            toast.update(id, {
-                render: 'Tickets have been sent to your email ^o^!',
-                type: 'success',
-                isLoading: false,
-                autoClose: 1000,
-            });
-        }, 1000);
+        const sendTicketsToMail = async () => {
+            const id = toast.loading('Please wait...');
+            const ticketsMail = addToCartInfo.listSeatSelected.map((it) => ({
+                title: it.movieTitle,
+                date: it.screeningStart,
+                hall: it.seat.auditorium.name,
+                row: it.seat.rowSeat,
+                seat: it.seat.numberSeat,
+                id: it.id,
+                price: it.price,
+            }));
+
+            const res = await cartService.sendTicketsToCart(email.email, ticketsMail, token);
+            if (res && res.state === 'success') {
+                toast.update(id, {
+                    render: 'Tickets have been sent to your email ^o^!',
+                    type: 'success',
+                    isLoading: false,
+                    autoClose: 1500,
+                });
+            } else {
+                toast.update(id, {
+                    render: 'Something went wrong!',
+                    type: 'error',
+                    isLoading: false,
+                    autoClose: 1500,
+                });
+            }
+        };
+
+        sendTicketsToMail();
     };
 
     const handleSubmit = () => {

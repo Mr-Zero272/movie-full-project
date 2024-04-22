@@ -265,10 +265,10 @@ export function Customers() {
                         </>
                     ) : (
                         <div className="animate-pulse w-full flex justify-between items-center">
-                            <div class="h-5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                            <div className="h-5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
                             <div className="flex gap-2">
-                                <div class="h-8 bg-gray-200 rounded-lg dark:bg-gray-700 w-32 mb-4"></div>
-                                <div class="h-8 bg-gray-200 rounded-lg dark:bg-gray-700 w-32 mb-4"></div>
+                                <div className="h-8 bg-gray-200 rounded-lg dark:bg-gray-700 w-32 mb-4"></div>
+                                <div className="h-8 bg-gray-200 rounded-lg dark:bg-gray-700 w-32 mb-4"></div>
                             </div>
                         </div>
                     )}

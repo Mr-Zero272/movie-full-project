@@ -71,3 +71,18 @@ export const getMovieInfo = async (movieId) => {
         console.log(error);
     }
 };
+
+export const doSchedule = async (startDate, token) => {
+    try {
+        const res = await movieRequest.post(`/schedule`, startDate, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+            },
+        });
+        return res;
+    } catch (error) {
+        console.log('Schedule error info error!');
+        console.log(error);
+    }
+};

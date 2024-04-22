@@ -7,6 +7,7 @@ import {
     CommandLineIcon,
     FingerPrintIcon,
     UserGroupIcon,
+    ArrowPathIcon,
 } from '@heroicons/react/24/solid';
 import { Home, Profile, Notifications, Customers } from '@/pages/dashboard';
 import Manage from './pages/dashboard/manage/manage';
@@ -15,6 +16,7 @@ import Movie from './pages/dashboard/manage/movie/movie';
 import Genre from './pages/dashboard/manage/genre/genre';
 import Auditorium from './pages/dashboard/manage/auditorium/auditorium';
 import ForgetPass from './pages/auth/forget-pass';
+import Schedule from './pages/dashboard/schedule';
 
 const icon = {
     className: 'w-5 h-5 text-inherit',
@@ -157,6 +159,12 @@ export const adminRoutes = [
                 name: 'customers',
                 path: '/customers',
                 element: <Customers />,
+            },
+            {
+                icon: <ArrowPathIcon {...icon} />,
+                name: 'schedule',
+                path: '/schedule',
+                element: <Schedule />,
             },
             {
                 icon: <CommandLineIcon {...icon} />,

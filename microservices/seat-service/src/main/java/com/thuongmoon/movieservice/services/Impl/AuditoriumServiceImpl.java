@@ -66,8 +66,10 @@ public class AuditoriumServiceImpl implements AuditoriumService {
         List<Auditorium> auditoriums = auditoriumDao.findAll();
         List<String> admIds = new ArrayList<>();
         for(Auditorium auditorium: auditoriums) {
+            if(auditorium.getLastUpdated().isEqual(startDate) || auditorium.getLastUpdated().isBefore(startDate)) {
                 auditorium.setLastUpdated(startDate.plusDays(7L));
                 admIds.add(auditorium.getId());
+            }
 
             if(admIds.size() == numAuditoriums) break;
         }

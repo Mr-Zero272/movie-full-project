@@ -48,7 +48,14 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseMessage> addMovie(MovieAddRequest request, MultipartFile[] movieImages, MultipartFile movieTrailer, MultipartFile[] actorImages, String username) {
+    public ResponseEntity<ResponseMessage> addMovie(MovieAddRequest request, MultipartFile[] movieImages, MultipartFile movieTrailer, MultipartFile[] actorImages, String username, String role) {
+        ResponseMessage responseMessage = new ResponseMessage();
+        if (!role.equals("MOVIE_BUSINESS")) {
+            responseMessage.setMessage("Do not have permission!");
+            responseMessage.setState("error");
+            responseMessage.setRspCode("400");
+            return ResponseEntity.ok(responseMessage);
+        }
         // do I need to handle image or video right there?
         MultipartFile[] movieTrailers = new MultipartFile[1];
         movieTrailers[0] = movieTrailer;
@@ -104,7 +111,7 @@ public class MovieServiceImpl implements MovieService {
                 .genres(genres)
                 .build();
         movieDao.save(newMovie);
-        ResponseMessage responseMessage = new ResponseMessage();
+
         responseMessage.setMessage("Add new movie success!");
         responseMessage.setState("success");
         responseMessage.setRspCode("200");

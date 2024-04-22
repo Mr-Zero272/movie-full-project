@@ -12,7 +12,7 @@ import static org.apache.tomcat.util.http.fileupload.FileUploadBase.MULTIPART_FO
 
 @FeignClient("MEDIA-SERVICE")
 public interface MediaInterface {
-    @PostMapping(value = "api/v1/images/avatar", consumes = MULTIPART_FORM_DATA, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "api/v1/media/images/avatar", consumes = MULTIPART_FORM_DATA, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseMessage> addAvatarUser(
             @RequestPart("file") MultipartFile avatar, @RequestPart("newName") String newName, @RequestPart("oldName") String oldName);
 }

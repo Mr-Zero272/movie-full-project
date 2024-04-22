@@ -138,8 +138,8 @@ function Step2({ onNextStep }) {
     }, [addToCartInfo.activeScreening, addToCartInfo.listSeatSelected]);
 
     const handlePaymentSubmit = () => {
-        if (selected.value !== 'zalopay') {
-            notify('We just support zalopay right now!', 'warning');
+        if (selected.value === 'momo') {
+            notify('We only support zalopay and Vnpay right now!', 'warning');
             return;
         }
         const invoiceId = crateRandomTransId();
@@ -148,13 +148,17 @@ function Step2({ onNextStep }) {
             app_trans_id: invoiceId,
         }));
         dispatch(addToCartActions.setLoading(true));
-
-        const paymentUrl = `http://localhost:3001/payment?amount=${totalPayment}&provider=zalopay&invoiceId=${invoiceId}`;
-        window.open(paymentUrl, '_blank');
-        setTimeout(() => {
-            dispatch(addToCartActions.setLoading(false));
-            notify('Payment timeout!', 'error');
-        }, 1000 * 60 * 5);
+        if (selected.value === 'zalopay') {
+            const paymentUrl = `http://localhost:3001/payment?amount=${totalPayment}&provider=zalopay&invoiceId=${invoiceId}`;
+            window.open(paymentUrl, '_blank');
+        } else {
+            const paymentUrl = `http://localhost:3001/payment?amount=${totalPayment}&provider=vnpay&invoiceId=${invoiceId}`;
+            window.open(paymentUrl, '_blank');
+        }
+        // setTimeout(() => {
+        //     dispatch(addToCartActions.setLoading(false));
+        //     notify('Payment timeout!', 'error');
+        // }, 1000 * 60 * 5);
     };
     // console.log(addToCartInfo);
     return (

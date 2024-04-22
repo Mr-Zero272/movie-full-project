@@ -112,3 +112,20 @@ export const createNewPayment = async (amount, provider, invoiceId, status, toke
         alert(error);
     }
 };
+
+export const sendTicketsToCart = async (mail, tickets, token) => {
+    //console.log(ids);
+    try {
+        const res = await movieApiRequest.postRequest(
+            '/reservation/order/mail',
+            {
+                mail,
+                tickets,
+            },
+            { headers: { Authorization: 'Bearer ' + token } },
+        );
+        return res;
+    } catch (error) {
+        alert(error);
+    }
+};
