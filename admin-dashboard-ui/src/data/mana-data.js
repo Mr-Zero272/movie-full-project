@@ -20,26 +20,36 @@ export const manageData = {
             content: GenreForm,
         },
     ],
-    Movie: [
-        {
-            label: 'Movie table',
-            value: 'table',
-            icon: DocumentChartBarIcon,
-            content: MovieTable,
-        },
-        {
-            label: 'Add movie',
-            value: 'add_movie',
-            icon: PlusCircleIcon,
-            content: MovieAddForm,
-        },
-        {
-            label: 'Do schedule',
-            value: 'schedule',
-            icon: ChartBarIcon,
-            content: DoScheduleForm,
-        },
-    ],
+    movie: {
+        admin: [
+            {
+                label: 'Movie table',
+                value: 'table',
+                icon: DocumentChartBarIcon,
+                content: MovieTable,
+            },
+            {
+                label: 'Do schedule',
+                value: 'schedule',
+                icon: ChartBarIcon,
+                content: DoScheduleForm,
+            },
+        ],
+        business: [
+            {
+                label: 'Movie table',
+                value: 'table',
+                icon: DocumentChartBarIcon,
+                content: MovieTable,
+            },
+            {
+                label: 'Add movie',
+                value: 'add_movie',
+                icon: PlusCircleIcon,
+                content: MovieAddForm,
+            },
+        ],
+    },
     Auditorium: [
         {
             label: 'Auditorium table',

@@ -19,7 +19,7 @@ const validation = {
     email: {
         patternRegex: /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/,
         errorMessage: 'Invalid email!',
-        maxLength: 30,
+        maxLength: 150,
     },
 };
 

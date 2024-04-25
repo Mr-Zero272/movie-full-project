@@ -30,10 +30,11 @@ function App() {
                 if (error === null && userInfo !== null && userInfo !== undefined) {
                     _dispatch(
                         userActions.setUserNecessaryInfo({
+                            id: userInfo.id,
                             status: 'online',
                             username: tokenDecode.sub,
                             avatar: userInfo.avatar,
-                            phone: userInfo.phone,
+                            phoneNumber: userInfo.phoneNumber,
                             email: userInfo.email,
                             role: userInfo.authorities[0].authority,
                         }),
@@ -50,6 +51,7 @@ function App() {
         // };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userInfo]);
+
     return (
         <>
             <ToastContainer />

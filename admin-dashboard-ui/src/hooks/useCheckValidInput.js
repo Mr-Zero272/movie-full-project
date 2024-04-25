@@ -4,9 +4,8 @@ function useCheckValidInput() {
     };
 
     const validInput = (value, validation = {}) => {
-        console.log(value);
         if (value !== '') {
-            if (validation.maxLength && value.length >= validation.maxLength) {
+            if (validation.maxLength && value.length > validation.maxLength) {
                 return { valid: false, messageError: lengthErrorMessage(validation.maxLength) };
             } else {
                 const regex = new RegExp(validation.patternRegex);

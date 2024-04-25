@@ -19,6 +19,10 @@ export const pathNavAdmin = [
         label: 'Customers page',
         value: '/dashboard/customers',
     },
+    {
+        label: 'Schedule page',
+        value: '/dashboard/schedule',
+    },
 ];
 
 export const pathNavBusiness = [

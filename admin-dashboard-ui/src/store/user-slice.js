@@ -13,11 +13,12 @@ export const fetchUserInfo = createAsyncThunk('fetchUserInfo/fetch', async (toke
 const userSlice = createSlice({
     name: 'user',
     initialState: {
+        id: '',
         status: 'logout',
         username: '',
         avatar: '',
         lastUpdate: '',
-        phone: '',
+        phoneNumber: '',
         email: '',
         role: '',
     },
@@ -58,10 +59,11 @@ const userSlice = createSlice({
         setUserNecessaryInfo(state, action) {
             return {
                 ...state,
+                id: action.payload.id,
                 status: action.payload.status,
                 username: action.payload.username,
                 avatar: action.payload.avatar,
-                phone: action.payload.phone,
+                phoneNumber: action.payload.phoneNumber,
                 email: action.payload.email,
                 role: action.payload.role,
             };
@@ -70,10 +72,11 @@ const userSlice = createSlice({
             localStorage.setItem('token', '');
             return {
                 ...state,
+                id: '',
                 status: 'logout',
                 avatar: '',
                 username: '',
-                phone: '',
+                phoneNumber: '',
                 email: '',
                 role: '',
             };
@@ -82,10 +85,11 @@ const userSlice = createSlice({
             localStorage.setItem('token', '');
             return {
                 ...state,
+                id: '',
                 status: 'logout',
                 avatar: '',
                 username: '',
-                phone: '',
+                phoneNumber: '',
                 email: '',
                 role: '',
             };
@@ -96,9 +100,10 @@ const userSlice = createSlice({
             state.status = 'online';
             state.avatar = action.payload.avatar;
             state.username = action.payload.username;
-            state.phone = action.payload.phoneNumber;
+            state.phoneNumber = action.payload.phoneNumber;
             state.email = action.payload.email;
             state.role = action.payload.authorities[0].authority;
+            state.id = action.payload.id;
         });
         builder.addCase(fetchUserInfo.rejected, (state, action) => {
             console.log('error');

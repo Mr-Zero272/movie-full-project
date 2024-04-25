@@ -93,3 +93,16 @@ export const changePass = async (newPassword, email) => {
         console.log(error);
     }
 };
+
+export const updateUserInfo = async (token = '', formData) => {
+    //console.log(token, newUsername, newEmail, 'sadfasdfasdfasdf');
+    try {
+        const res = await authRequest.put('/user', formData, {
+            headers: { Authorization: 'Bearer ' + token },
+        });
+        return res;
+    } catch (error) {
+        console.log(error);
+        alert('update userinfo error!');
+    }
+};
