@@ -72,6 +72,7 @@ function NormalTable({
     deleteBtn = true,
     addBtn = true,
     actionCol = true,
+    linkToAction,
     onNextPage = deF,
     onPrevPage = deF,
     onSearch = deF,
@@ -335,7 +336,13 @@ function NormalTable({
                                 ))}
                                 {actionCol && (
                                     <td className="px-6 py-4">
-                                        <Link to={pathname + '/edit/' + dataItem.id}>
+                                        <Link
+                                            to={
+                                                linkToAction
+                                                    ? pathname + linkToAction + dataItem.id
+                                                    : pathname + '/edit/' + dataItem.id
+                                            }
+                                        >
                                             <Tooltip content="Edit">
                                                 <IconButton variant="text">
                                                     <PencilIcon className="h-4 w-4" />

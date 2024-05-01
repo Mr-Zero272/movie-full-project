@@ -29,6 +29,7 @@ public class MovieDto {
     private String releaseDate;
     private int rating;
     private String whoAdd;
+    private int price;
     private String state;
 
     private List<Actor> cast = new ArrayList<>();

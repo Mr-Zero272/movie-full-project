@@ -12,6 +12,7 @@ function EditAuditorium() {
     const navigate = useNavigate();
     const [auditoriumInfo, setAuditoriumInfo] = useState(() => ({
         name: '',
+        address: '',
     }));
 
     useEffect(() => {
@@ -34,7 +35,7 @@ function EditAuditorium() {
     };
 
     const handleSubmit = async () => {
-        const res = await auditoriumService.editAuditorium(auditoriumId, auditoriumInfo.name);
+        const res = await auditoriumService.editAuditorium(auditoriumId, auditoriumInfo.name, auditoriumInfo.address);
         if (res && res.state === 'success') {
             notify(res.message);
             navigate(-1);
@@ -42,15 +43,28 @@ function EditAuditorium() {
             notify(res.message, 'error');
         }
     };
+
+    console.log(auditoriumInfo);
     return (
         <div className="h-lg">
             <form>
-                <div className="">
+                <div className="mb-5">
                     <MyCustomInput
                         label="Auditorium name:"
                         name="name"
                         value={auditoriumInfo.name}
                         placeholder="Auditorium name..."
+                        validation={{ patternRegex: '', errorMessage: '', maxLength: 100 }}
+                        // error={movieInfo.titleErrorMessage}
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <div className="">
+                    <MyCustomInput
+                        label="Address:"
+                        name="address"
+                        value={auditoriumInfo.address}
+                        placeholder="Address..."
                         validation={{ patternRegex: '', errorMessage: '', maxLength: 100 }}
                         // error={movieInfo.titleErrorMessage}
                         onChange={handleInputChange}

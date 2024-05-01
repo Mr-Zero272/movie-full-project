@@ -27,7 +27,7 @@ import { movieAddFormValidation } from '@/data';
 import { useNotify } from '@/hooks';
 import baseUrl from '@/configs/baseUrl';
 
-const labels = ['title', 'director', 'description', 'manufacturer', 'duration_min', 'releaseDate'];
+const labels = ['title', 'director', 'description', 'manufacturer', 'duration_min', 'releaseDate', 'price'];
 const errorLabels = [
     'titleErrorMessage',
     'directorErrorMessage',
@@ -35,6 +35,7 @@ const errorLabels = [
     'manufacturerErrorMessage',
     'duration_minErrorMessage',
     'releaseDateErrorMessage',
+    'priceErrorMessage',
 ];
 const actorLabels = ['avatar', 'characterName', 'fullName'];
 
@@ -57,6 +58,8 @@ function EditMovieInfo() {
         releaseDate: '',
         releaseDateErrorMessage: '',
         rating: 1,
+        price: 0,
+        priceErrorMessage: '',
         whoAdd: '',
         cast: [],
     }));
@@ -437,11 +440,28 @@ function EditMovieInfo() {
                     </div>
                 </div>
 
-                <div>
-                    <Typography variant="h6" color="blue-gray" className="mt-3">
-                        Rating
-                    </Typography>
-                    <RatingStar stars={movieInfo.rating} totalStars={100} onChange={handleInputChange} />
+                <div className="md:flex md:gap-6">
+                    <div className="md:w-1/2">
+                        <Typography variant="h6" color="blue-gray" className="mt-3">
+                            Rating
+                        </Typography>
+                        <RatingStar stars={movieInfo.rating} totalStars={100} onChange={handleInputChange} />
+                    </div>
+                    <div className="md:w-1/2">
+                        <MyCustomInput
+                            label="Price for each ticket"
+                            name="price"
+                            value={movieInfo.price}
+                            placeholder="From 1000 to 1000000"
+                            validation={{
+                                patternRegex: /^(?!0*(\\.0+)?$)(\\d*(?:\\.[0-9]{0,4})?)$/,
+                                errorMessage: '',
+                                maxLength: 30,
+                            }}
+                            error={movieInfo.priceErrorMessage}
+                            onChange={handleInputChange}
+                        />
+                    </div>
                 </div>
 
                 <div className="mb-5">

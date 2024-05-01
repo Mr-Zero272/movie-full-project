@@ -99,7 +99,7 @@ function SeatSection({ className }) {
     const handleChooseSeat = useCallback(
         (seatId, seatStatus) => {
             if (seatStatus === 'booked') return;
-            console.log(!listSeatSelected.some((seat) => seat.id === seatId && seatStatus === 'choosing'));
+            // console.log(!listSeatSelected.some((seat) => seat.id === seatId && seatStatus === 'choosing'));
             if (!listSeatSelected.some((seat) => seat.id === seatId) && seatStatus === 'choosing') return;
             if (myStompClient !== null) {
                 myStompClient.publish({

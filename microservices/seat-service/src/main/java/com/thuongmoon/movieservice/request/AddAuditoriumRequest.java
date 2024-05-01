@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddAuditoriumRequest {
     private String name;
+    private String address;
 }

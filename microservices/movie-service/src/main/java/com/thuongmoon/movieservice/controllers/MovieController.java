@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/movie")
@@ -59,8 +60,13 @@ public class MovieController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         MovieAddRequest movieInfoParse = objectMapper.readValue(movieInfo, MovieAddRequest.class);
-        System.out.println(movieInfoParse.toString());
+//        System.out.println(movieInfoParse.toString());
         return movieService.editMovie(movieId, movieInfoParse.getMovie(), actorImages, movieImages, movieTrailer);
+    }
+
+    @PutMapping("/approve/{movieId}")
+    public ResponseEntity<ResponseMessage> editStateMovie(@RequestHeader("role") String role, @PathVariable String movieId, @RequestBody Map<String,String> request) {
+        return movieService.editStateMovie(role, movieId, request.get("state"));
     }
 
     @PutMapping("/requirement/{requirementId}")
@@ -82,6 +88,12 @@ public class MovieController {
                                                      @RequestParam(required = false, defaultValue = "6") int size,
                                                      @RequestParam(required = false, defaultValue = "1") int cPage) {
         return movieService.fetchMoviePagination(q, type, genreIds, manufacturers, size, cPage);
+    }
+
+    @GetMapping("/new")
+    public ResponseEntity<ResponsePagination> fetchNewMoviePagination(@RequestParam(required = false, defaultValue = "6") int size,
+                                                                   @RequestParam(required = false, defaultValue = "1") int cPage) {
+        return movieService.fetchNewMoviePagination(size, cPage);
     }
 
     @GetMapping("/business/search")

@@ -18,6 +18,20 @@ export const search = async (q, type = '', genreIds = [], manufacturers = [], si
     }
 };
 
+export const getNewMovies = async (size = 6, cPage = 1) => {
+    try {
+        const res = await request.get('/new', {
+            params: {
+                size,
+                cPage,
+            },
+        });
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const pagination = async (q = '', size = 6, cpage = 1, genres = null, type = '', manufacturers = null) => {
     try {
         const res = await request.get('/pagination', {

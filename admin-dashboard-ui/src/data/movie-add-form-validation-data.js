@@ -15,6 +15,9 @@ export const movieAddFormValidation = {
         blank: false,
         maxLength: 30,
     },
+    price: {
+        blank: false,
+    },
     duration_min: {
         blank: false,
     },

@@ -24,6 +24,7 @@ import { manageRoutes } from '@/routes';
 import EditMovie from './movie/editMovie';
 import EditGenre from './genre/editGenre';
 import EditAuditorium from './auditorium/editAuditorium';
+import UpdateMovieState from './movie/updateMovieState';
 
 export function Manage({ routes }) {
     const [notification, setNotification] = React.useState({ type: '', message: '' });
@@ -91,6 +92,7 @@ export function Manage({ routes }) {
                 <Route exact path="/genre/edit/:genreId" element={<EditGenre />} />
                 <Route exact path="/auditorium/edit/:auditoriumId" element={<EditAuditorium />} />
                 <Route exact path="/movie/edit/:movieId" element={<EditMovie />} />
+                <Route exact path="/movie/update/:movieId" element={<UpdateMovieState />} />
             </Routes>
         </div>
     );

@@ -15,6 +15,10 @@ import com.thuongmoon.movieservice.services.MovieService;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -103,7 +107,8 @@ public class MovieServiceImpl implements MovieService {
                 .releaseDate(dateTimeTransfer.transperStrToLocalDateTime(request.getMovie().getReleaseDate()))
                 .rating(request.getMovie().getRating())
                 .whoAdd(username)
-                .state("Coming soon")
+                .state("coming soon")
+                .price(request.getMovie().getPrice())
                 .cast(request.getMovie().getCast())
                 .reviews(request.getMovie().getReviews())
                 .galleries(galleries)
@@ -163,6 +168,7 @@ public class MovieServiceImpl implements MovieService {
             movie.get().setDuration_min(newMovie.getDuration_min());
             movie.get().setReleaseDate(dateTimeTransfer.transperStrToLocalDateTime(newMovie.getReleaseDate()));
             movie.get().setRating(newMovie.getRating());
+            movie.get().setPrice(newMovie.getPrice());
             movie.get().setWhoAdd(newMovie.getWhoAdd());
             movie.get().setGalleries(newMovie.getGalleries());
             movie.get().setGenres(genres);
@@ -345,5 +351,45 @@ public class MovieServiceImpl implements MovieService {
         responsePagination.setPagination(pagination);
         responsePagination.setData(movies);
         return new ResponseEntity<>(responsePagination, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<ResponseMessage> editStateMovie(String role, String movieId, String state) {
+        ResponseMessage responseMessage = new ResponseMessage();
+        if (!role.equals("ADMIN")) {
+            responseMessage.setMessage("Do not have permission!");
+            responseMessage.setState("error");
+            responseMessage.setRspCode("400");
+            return ResponseEntity.ok(responseMessage);
+        }
+        Optional<Movie> movieOptional = movieDao.findById(movieId);
+        if (movieOptional.isPresent()) {
+            movieOptional.get().setState(state);
+            movieDao.save(movieOptional.get());
+
+            responseMessage.setMessage("State is updated!");
+        } else {
+            responseMessage.setMessage("This movie is not existed!");
+            responseMessage.setState("error");
+            responseMessage.setRspCode("400");
+        }
+        return ResponseEntity.ok(responseMessage);
+    }
+
+    @Override
+    public ResponseEntity<ResponsePagination> fetchNewMoviePagination(int size, int cPage) {
+        Pageable pageable = PageRequest.of(cPage - 1, size, Sort.by(Sort.Direction.DESC, "releaseDate"));
+        Page<Movie> page = movieDao.findAll(pageable);
+        Pagination pagination = Pagination.builder()
+                .currentPage(cPage)
+                .size(size)
+                .totalPage(page.getTotalPages())
+                .totalResult((int) page.getTotalElements())
+                .build();
+        ResponsePagination paginationResponse = ResponsePagination.builder()
+                .data(page.getContent())
+                .pagination(pagination)
+                .build();
+        return new ResponseEntity<>(paginationResponse, HttpStatus.OK);
     }
 }

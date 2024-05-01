@@ -30,12 +30,13 @@ export const search = async (q = '', size = 8, cPage = 1) => {
     }
 };
 
-export const editAuditorium = async (id, newName) => {
+export const editAuditorium = async (id, name, address) => {
     try {
         const res = await seatRequest.put(
             `/${id}`,
             {
-                name: newName,
+                name,
+                address,
             },
             {
                 headers: {
@@ -50,12 +51,13 @@ export const editAuditorium = async (id, newName) => {
     }
 };
 
-export const addAuditorium = async (newName) => {
+export const addAuditorium = async (name, address) => {
     try {
         const res = await seatRequest.post(
             ``,
             {
-                name: newName,
+                name,
+                address,
             },
             {
                 headers: {

@@ -36,6 +36,9 @@ public class Screening implements Serializable {
 	private List<String> seatDetailId;
 
 	@DocumentReference
+	private ScheduleState scheduleDetail;
+
+	@DocumentReference
 	private Movie movie;
 //
 //	private Auditorium auditorium;

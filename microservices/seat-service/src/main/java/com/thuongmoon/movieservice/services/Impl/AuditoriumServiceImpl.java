@@ -42,7 +42,7 @@ public class AuditoriumServiceImpl implements AuditoriumService {
             responseMessage.setRspCode("400");
             return new ResponseEntity<>(responseMessage, HttpStatus.OK);
         }
-        Auditorium newAuditorium = new Auditorium(null, request.getName(), LocalDateTime.now());
+        Auditorium newAuditorium = new Auditorium(null, request.getName(), request.getAddress(), LocalDateTime.now());
         Auditorium savedAd = auditoriumDao.save(newAuditorium);
         newAuditorium.setName(request.getName());
         List<String> nameRows = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M");
@@ -87,6 +87,7 @@ public class AuditoriumServiceImpl implements AuditoriumService {
         Optional<Auditorium> oldAuditorium = auditoriumDao.findById(id);
         if(oldAuditorium.isPresent()) {
             oldAuditorium.get().setName(newAuditorium.getName());
+            oldAuditorium.get().setAddress(newAuditorium.getAddress());
             oldAuditorium.get().setLastUpdated(LocalDateTime.now());
 
             Auditorium savedAdm = auditoriumDao.save(oldAuditorium.get());

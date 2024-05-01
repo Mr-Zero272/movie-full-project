@@ -8,6 +8,7 @@ function AddAuditorium() {
     const notify = useNotify();
     const [auditoriumInfo, setAuditoriumInfo] = useState(() => ({
         name: '',
+        address: '',
     }));
     const nameInputRef = useRef(null);
 
@@ -19,11 +20,12 @@ function AddAuditorium() {
     };
 
     const handleSubmit = async () => {
-        const res = await auditoriumService.addAuditorium(auditoriumInfo.name);
+        const res = await auditoriumService.addAuditorium(auditoriumInfo.name, auditoriumInfo.address);
         if (res && res.state === 'success') {
             notify(res.message);
             setAuditoriumInfo(() => ({
                 name: '',
+                address: '',
             }));
             nameInputRef.current.focus();
         } else {
@@ -33,13 +35,24 @@ function AddAuditorium() {
     return (
         <div className="h-lg">
             <form>
-                <div className="">
+                <div className="mb-5">
                     <MyCustomInput
                         ref={nameInputRef}
                         label="Auditorium name:"
                         name="name"
                         value={auditoriumInfo.name}
                         placeholder="Auditorium name..."
+                        validation={{ patternRegex: '', errorMessage: '', maxLength: 100 }}
+                        // error={movieInfo.titleErrorMessage}
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <div className="mb-5">
+                    <MyCustomInput
+                        label="Address:"
+                        name="address"
+                        value={auditoriumInfo.address}
+                        placeholder="Address..."
                         validation={{ patternRegex: '', errorMessage: '', maxLength: 100 }}
                         // error={movieInfo.titleErrorMessage}
                         onChange={handleInputChange}

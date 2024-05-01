@@ -17,6 +17,7 @@ public class RouteValidator {
             "/api/v1/auth/change-pass",
             "/api/v1/movie/genre/all",
             "/api/v1/movie/search",
+            "/api/v1/movie/new",
             "/api/v1/movie/info",
             "/api/v1/movie/manufacture",
             "/api/v1/movie/review/all",

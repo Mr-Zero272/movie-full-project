@@ -30,6 +30,7 @@ public class Auditorium implements Serializable {
 	@Id
 	private String id;
 	private String name;
+	private String address;
 	private LocalDateTime lastUpdated;
 
 	@Override

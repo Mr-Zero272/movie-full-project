@@ -86,3 +86,21 @@ export const doSchedule = async (startDate, token) => {
         console.log(error);
     }
 };
+
+export const editMovieState = async (movieId, state, token) => {
+    try {
+        const res = await movieRequest.put(
+            `/approve/${movieId}`,
+            { state },
+            {
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                },
+            },
+        );
+        return res;
+    } catch (error) {
+        console.log(error);
+        console.log('Edit movie error!');
+    }
+};

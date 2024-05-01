@@ -41,7 +41,7 @@ public class SeatStatusServiceImpl implements SeatStatusService {
         ResponseMessage responseMessage = new ResponseMessage();
         List<Seat> seats = seatDao.findByAuditoriumId(new ObjectId(request.getAuditoriumId()));
         List<SeatStatus> seatStatuses = new ArrayList<>();
-        for (Seat seatItem: seats) {
+        for (Seat seatItem : seats) {
             SeatStatus seatStatus = new SeatStatus(null, "available", request.getPrice(), "", request.getScreeningId(), seatItem);
             seatStatuses.add(seatStatus);
         }
@@ -75,7 +75,7 @@ public class SeatStatusServiceImpl implements SeatStatusService {
                         seatStatusDao.save(seatStatus.get());
                         sendDataToWebSocket("/topic/seat-state", request);
                     }
-                } else if (seatStatus.get().getWhoChoose().isEmpty()){
+                } else if (seatStatus.get().getWhoChoose().isEmpty()) {
                     if (request.getStatus().equals("available")) {
                         seatStatus.get().setWhoChoose(request.getUsername());
                         seatStatus.get().setStatus("choosing");
@@ -109,17 +109,15 @@ public class SeatStatusServiceImpl implements SeatStatusService {
     @Transactional
     public ResponseEntity<List<String>> checkoutSeat(List<ChoosingSeatRequest> requests) {
         List<String> listDisableIds = new ArrayList<>();
-        for (ChoosingSeatRequest req: requests) {
+        for (ChoosingSeatRequest req : requests) {
             Optional<SeatStatus> seatStatus = seatStatusDao.findById(req.getId());
             if (seatStatus.isPresent()) {
-                if (seatStatus.get().getWhoChoose().isEmpty()){
-                    if (seatStatus.get().getStatus().equals("available")) {
-                        seatStatus.get().setWhoChoose(req.getUsername());
-                        seatStatus.get().setStatus("choosing");
-                        req.setStatus("choosing");
-                        seatStatusDao.save(seatStatus.get());
-                        sendDataToWebSocket("/topic/seat-state", seatStatus);
-                    }
+                if (seatStatus.get().getWhoChoose().isEmpty() && seatStatus.get().getStatus().equals("available")) {
+                    seatStatus.get().setWhoChoose(req.getUsername());
+                    seatStatus.get().setStatus("choosing");
+                    req.setStatus("choosing");
+                    seatStatusDao.save(seatStatus.get());
+                    sendDataToWebSocket("/topic/seat-state", seatStatus);
                 } else {
                     listDisableIds.add(req.getId());
                 }

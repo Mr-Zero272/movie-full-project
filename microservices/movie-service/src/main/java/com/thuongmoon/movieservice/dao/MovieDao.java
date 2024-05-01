@@ -4,6 +4,7 @@ import com.thuongmoon.movieservice.model.Movie;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -89,7 +90,7 @@ public interface MovieDao extends MongoRepository<Movie, String> {
             @Param("type") String type);
 
     @Aggregation({"{$lookup: {from : \"requirement\", localField: \"requirement\", foreignField: \"_id\", as: \"req\"}}",
-            "{$match: { \"req.0.totalWeekScheduling\": { $gt: 0 }}}"})
+            "{$match: { 'state': { $regex: 'published', $options: 'i' },  \"req.0.totalWeekScheduling\": { $gt: 0 }}}"})
     List<Movie> getMovieToSchedule();
 
     @Aggregation({"{$count: \"totalMovies\"}"})

@@ -28,4 +28,8 @@ public interface MovieService {
     public ResponseEntity<Movie> getMovieInfo(String movieId);
     public ResponseEntity<List<String>> getListManufactures();
     ResponseEntity<ResponsePagination> fetchAdminMoviePagination(String username, String role, String q, int size, int cPage);
+
+    ResponseEntity<ResponseMessage> editStateMovie(String role, String movieId, String state);
+
+    ResponseEntity<ResponsePagination> fetchNewMoviePagination(int size, int cPage);
 }

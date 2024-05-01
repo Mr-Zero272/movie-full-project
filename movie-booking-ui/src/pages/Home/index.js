@@ -47,8 +47,8 @@ function Home() {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const result1 = await searchService.search('', '', [], [], 6, 1);
-            const result2 = await searchService.search('', '', [], [], 6, 2);
+            const result1 = await searchService.getNewMovies(6, 1);
+            const result2 = await searchService.getNewMovies(6, 2);
             if (result1 && result2) {
                 setListMovie1(result1.data);
                 setListMovie2(result2.data);

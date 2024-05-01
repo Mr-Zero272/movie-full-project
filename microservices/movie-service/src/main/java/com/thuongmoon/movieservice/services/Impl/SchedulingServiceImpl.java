@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class SchedulingServiceImpl implements SchedulingService {
     @Autowired
     private JsonKafkaProducer jsonKafkaProducer;
 
+    @Transactional
     public ResponseEntity<String> doSchedule(String role, LocalDateTime startDate) {
         if (!role.equals("ADMIN")) {
             return new ResponseEntity<>("Do not have permission.", HttpStatus.OK);
@@ -72,7 +74,7 @@ public class SchedulingServiceImpl implements SchedulingService {
                 (total, movie) -> total + movie.getRequirement().getScreeningsPerWeek(), Integer::sum);
 //        System.out.println(totalScreeningsEstimated);
         int totalAuditoriumNeeded = (int) Math.ceil((double) totalScreeningsEstimated /(maxScreeningsPerDay*7));
-        System.out.println(totalAuditoriumNeeded);
+//        System.out.println(totalAuditoriumNeeded);
         // call service roi lay so rap can thiet
         // tinh toan truoc so suat chieu tren tuan sau do lay so rap phu hop
         List<String> auditoriumIds = seatServiceInterface.getAvailableAuditorium(totalAuditoriumNeeded, startDate).getBody();
@@ -112,14 +114,14 @@ public class SchedulingServiceImpl implements SchedulingService {
                 }
 
                 // random from 60 to 200
-                Random random = new Random();
-                int randomPrice = random.nextInt(141) + 60;
+//                Random random = new Random();
+//                int randomPrice = random.nextInt(141) + 60;
 
                 Screening screening = Screening.builder()
                         .type(movie.getRequirement().getSpecificRequireTypes().get(0).getTypeName())
                         .screeningStart(screeningStart)
                         .auditoriumId(auditoriumStates.get(indexAuditorium).getAuditoriumId())
-                        .price(randomPrice * 1000)
+                        .price(movie.getPrice())
                         .movie(movie)
                         .build();
 
@@ -155,13 +157,15 @@ public class SchedulingServiceImpl implements SchedulingService {
 //            requirements.remove(0);
 //        });
 //        movieDao.saveAll(movies);
-        List<Screening> screeningListSaved = screeningDao.saveAll(screenings);
 
         // update schedule state
         ScheduleState scheduleState = new ScheduleState();
         scheduleState.setLastScheduledTime(startDate.plusDays(7L));
-        scheduleState.setTotalSchedules(screeningListSaved.size());
-        scheduleStateDao.save(scheduleState);
+        scheduleState.setTotalSchedules(screenings.size());
+        ScheduleState sStateSaved = scheduleStateDao.save(scheduleState);
+
+        screenings.forEach(screening -> screening.setScheduleDetail(sStateSaved));
+        List<Screening> screeningListSaved = screeningDao.saveAll(screenings);
 
         screeningListSaved.forEach(screening -> {
             // send message to seat-service through kafka to generate list seat status

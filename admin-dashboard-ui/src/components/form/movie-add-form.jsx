@@ -40,6 +40,7 @@ export function MovieAddForm() {
         duration_min: '90',
         releaseDate: '',
         rating: 1,
+        price: 0,
         whoAdd: '',
     });
     const [specificRequireType, setSpecificRequireType] = useState({ typeName: '', nscreenings: 1 });
@@ -57,6 +58,7 @@ export function MovieAddForm() {
         manufacturerErrorMessage: '',
         duration_minErrorMessage: '',
         releaseDateErrorMessage: '',
+        priceErrorMessage: '',
         movieImagesErrorMessage: '',
         movieTrailerErrorMessage: '',
         fullNameErrorMessage: '',
@@ -776,11 +778,32 @@ export function MovieAddForm() {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <Typography variant="h6" color="blue-gray" className="mt-3">
-                                        Rating
-                                    </Typography>
-                                    <RatingStar stars={movieInfo.rating} totalStars={10} onChange={handleInputChange} />
+                                <div className="md:flex md:gap-6">
+                                    <div className="md:w-1/2">
+                                        <Typography variant="h6" color="blue-gray" className="mt-3">
+                                            Rating
+                                        </Typography>
+                                        <RatingStar
+                                            stars={movieInfo.rating}
+                                            totalStars={10}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="md:w-1/2">
+                                        <MyCustomInput
+                                            label="Price for each ticket"
+                                            name="price"
+                                            value={movieInfo.price}
+                                            placeholder="From 1000 to 1000000"
+                                            validation={{
+                                                patternRegex: /^(?!0*(\\.0+)?$)(\\d*(?:\\.[0-9]{0,4})?)$/,
+                                                errorMessage: '',
+                                                maxLength: 30,
+                                            }}
+                                            error={errorMessages.priceErrorMessage}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="mb-5">

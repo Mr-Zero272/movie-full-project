@@ -3,13 +3,15 @@ import NormalTable from '@/components/CustomTable/NormalTable';
 import { useCallback, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
-const tableLabelsBusiness = ['title', 'director', 'manufacturer', 'releaseDate', 'action'];
-const tableLabelsAdmin = ['title', 'director', 'manufacturer', 'releaseDate', 'rating'];
+const tableLabelsBusiness = ['title', 'director', 'state', 'releaseDate', 'action'];
+const tableLabelsAdmin = ['title', 'director', 'releaseDate', 'state', 'action'];
 
 function MovieTable() {
     const currentUserRole = useSelector((state) => state.user.role);
     const [listMovies, setListMovies] = useState();
+    const { pathname } = useLocation();
     const [paginationInfo, setPaginationInfo] = useState(() => ({
         currentPage: 1,
         size: 7,
@@ -72,7 +74,8 @@ function MovieTable() {
                     name="movie"
                     labels={currentUserRole === 'ADMIN' ? tableLabelsAdmin : tableLabelsBusiness}
                     data={listMovies}
-                    actionCol={currentUserRole !== 'ADMIN'}
+                    actionCol
+                    linkToAction={'/update/'}
                     pagination={paginationInfo}
                     onNextPage={handleNextPage}
                     onPrevPage={handlePrevPage}
